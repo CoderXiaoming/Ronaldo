@@ -12,6 +12,18 @@
 		18C202C41DD3081A00C0117C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18C202C21DD3081A00C0117C /* LaunchScreen.storyboard */; };
 		18C202CF1DD3081A00C0117C /* SaleManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C202CE1DD3081A00C0117C /* SaleManagerTests.swift */; };
 		18C202DA1DD3081A00C0117C /* SaleManagerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C202D91DD3081A00C0117C /* SaleManagerUITests.swift */; };
+		18C203401DD30EA900C0117C /* SAMMainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C2033F1DD30EA900C0117C /* SAMMainTabBarController.swift */; };
+		18C203431DD30FB400C0117C /* SAMHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C203411DD30FB400C0117C /* SAMHomeViewController.swift */; };
+		18C203461DD30FDB00C0117C /* SAMStockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C203451DD30FDB00C0117C /* SAMStockViewController.swift */; };
+		18C203481DD30FEC00C0117C /* SAMCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C203471DD30FEC00C0117C /* SAMCodeViewController.swift */; };
+		18C2034A1DD30FF800C0117C /* SAMCarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C203491DD30FF800C0117C /* SAMCarViewController.swift */; };
+		18C2034C1DD3100900C0117C /* SAMCustomerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C2034B1DD3100900C0117C /* SAMCustomerViewController.swift */; };
+		18C2034E1DD3143700C0117C /* SAMBaseNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C2034D1DD3143700C0117C /* SAMBaseNavigationController.swift */; };
+		18C203501DD322EF00C0117C /* SAMConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C2034F1DD322EF00C0117C /* SAMConstant.swift */; };
+		18C203521DD32FCE00C0117C /* SAMHomeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C203511DD32FCE00C0117C /* SAMHomeButton.swift */; };
+		18C203541DD477D800C0117C /* SAMStockViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18C203531DD477D800C0117C /* SAMStockViewController.xib */; };
+		18C203941DD4C8F600C0117C /* SAMStockProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C203931DD4C8F600C0117C /* SAMStockProductCell.swift */; };
+		18C203981DD4CAC400C0117C /* SAMStockProductCellDiv.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18C203971DD4CAC400C0117C /* SAMStockProductCellDiv.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +55,18 @@
 		18C202D51DD3081A00C0117C /* SaleManagerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaleManagerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		18C202D91DD3081A00C0117C /* SaleManagerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaleManagerUITests.swift; sourceTree = "<group>"; };
 		18C202DB1DD3081A00C0117C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		18C2033F1DD30EA900C0117C /* SAMMainTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMMainTabBarController.swift; sourceTree = "<group>"; };
+		18C203411DD30FB400C0117C /* SAMHomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMHomeViewController.swift; sourceTree = "<group>"; };
+		18C203451DD30FDB00C0117C /* SAMStockViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMStockViewController.swift; sourceTree = "<group>"; };
+		18C203471DD30FEC00C0117C /* SAMCodeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMCodeViewController.swift; sourceTree = "<group>"; };
+		18C203491DD30FF800C0117C /* SAMCarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMCarViewController.swift; sourceTree = "<group>"; };
+		18C2034B1DD3100900C0117C /* SAMCustomerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMCustomerViewController.swift; sourceTree = "<group>"; };
+		18C2034D1DD3143700C0117C /* SAMBaseNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMBaseNavigationController.swift; sourceTree = "<group>"; };
+		18C2034F1DD322EF00C0117C /* SAMConstant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMConstant.swift; sourceTree = "<group>"; };
+		18C203511DD32FCE00C0117C /* SAMHomeButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMHomeButton.swift; sourceTree = "<group>"; };
+		18C203531DD477D800C0117C /* SAMStockViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMStockViewController.xib; sourceTree = "<group>"; };
+		18C203931DD4C8F600C0117C /* SAMStockProductCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMStockProductCell.swift; sourceTree = "<group>"; };
+		18C203971DD4CAC400C0117C /* SAMStockProductCellDiv.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMStockProductCellDiv.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +164,7 @@
 		18C202E81DD30ADE00C0117C /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				18C203491DD30FF800C0117C /* SAMCarViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -171,6 +196,7 @@
 		18C202EC1DD30ADE00C0117C /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				18C203471DD30FEC00C0117C /* SAMCodeViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -202,6 +228,7 @@
 		18C202F01DD30ADE00C0117C /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				18C2034B1DD3100900C0117C /* SAMCustomerViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -233,6 +260,7 @@
 		18C202F41DD30ADE00C0117C /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				18C203411DD30FB400C0117C /* SAMHomeViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -247,6 +275,7 @@
 		18C202F61DD30ADE00C0117C /* View */ = {
 			isa = PBXGroup;
 			children = (
+				18C203511DD32FCE00C0117C /* SAMHomeButton.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -264,6 +293,8 @@
 		18C202F81DD30ADE00C0117C /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				18C2033F1DD30EA900C0117C /* SAMMainTabBarController.swift */,
+				18C2034D1DD3143700C0117C /* SAMBaseNavigationController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -285,6 +316,7 @@
 		18C202FB1DD30ADE00C0117C /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				18C2034F1DD322EF00C0117C /* SAMConstant.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -302,6 +334,8 @@
 		18C202FD1DD30ADE00C0117C /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				18C203451DD30FDB00C0117C /* SAMStockViewController.swift */,
+				18C203531DD477D800C0117C /* SAMStockViewController.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -316,6 +350,8 @@
 		18C202FF1DD30ADE00C0117C /* View */ = {
 			isa = PBXGroup;
 			children = (
+				18C203931DD4C8F600C0117C /* SAMStockProductCell.swift */,
+				18C203971DD4CAC400C0117C /* SAMStockProductCellDiv.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -438,8 +474,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18C203981DD4CAC400C0117C /* SAMStockProductCellDiv.xib in Resources */,
 				18C202C41DD3081A00C0117C /* LaunchScreen.storyboard in Resources */,
 				18C202C11DD3081A00C0117C /* Assets.xcassets in Resources */,
+				18C203541DD477D800C0117C /* SAMStockViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -464,7 +502,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18C203401DD30EA900C0117C /* SAMMainTabBarController.swift in Sources */,
+				18C203481DD30FEC00C0117C /* SAMCodeViewController.swift in Sources */,
+				18C2034C1DD3100900C0117C /* SAMCustomerViewController.swift in Sources */,
 				18C202BA1DD3081A00C0117C /* AppDelegate.swift in Sources */,
+				18C2034E1DD3143700C0117C /* SAMBaseNavigationController.swift in Sources */,
+				18C2034A1DD30FF800C0117C /* SAMCarViewController.swift in Sources */,
+				18C203521DD32FCE00C0117C /* SAMHomeButton.swift in Sources */,
+				18C203501DD322EF00C0117C /* SAMConstant.swift in Sources */,
+				18C203431DD30FB400C0117C /* SAMHomeViewController.swift in Sources */,
+				18C203941DD4C8F600C0117C /* SAMStockProductCell.swift in Sources */,
+				18C203461DD30FDB00C0117C /* SAMStockViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -612,7 +660,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.YaZhouHong.SaleManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -626,7 +674,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.YaZhouHong.SaleManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};
