@@ -19,7 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         //设置窗口跟控制器，并显示
         window = UIWindow.init(frame: UIScreen.mainScreen().bounds)
-        window?.rootViewController = SAMMainTabBarController()
+//        window?.rootViewController = SAMMainTabBarController()
+        window?.rootViewController = SAMLoginController()
         window?.makeKeyAndVisible()
         
         return true

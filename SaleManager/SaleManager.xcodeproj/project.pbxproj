@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18B7F1EF1DD550B200993C35 /* SAMProductInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B7F1EE1DD550B200993C35 /* SAMProductInfo.swift */; };
+		18B7F1F31DD5680100993C35 /* SAMStockProductCellDiv.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B7F1F21DD5680100993C35 /* SAMStockProductCellDiv.swift */; };
 		18C202BA1DD3081A00C0117C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C202B91DD3081A00C0117C /* AppDelegate.swift */; };
 		18C202C11DD3081A00C0117C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18C202C01DD3081A00C0117C /* Assets.xcassets */; };
 		18C202C41DD3081A00C0117C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18C202C21DD3081A00C0117C /* LaunchScreen.storyboard */; };
@@ -24,6 +26,9 @@
 		18C203541DD477D800C0117C /* SAMStockViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18C203531DD477D800C0117C /* SAMStockViewController.xib */; };
 		18C203941DD4C8F600C0117C /* SAMStockProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C203931DD4C8F600C0117C /* SAMStockProductCell.swift */; };
 		18C203981DD4CAC400C0117C /* SAMStockProductCellDiv.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18C203971DD4CAC400C0117C /* SAMStockProductCellDiv.xib */; };
+		18F50F0F1DD5A94F00CEA8C9 /* SAMLoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F50F0D1DD5A94F00CEA8C9 /* SAMLoginController.swift */; };
+		18F50F101DD5A94F00CEA8C9 /* SAMLoginController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18F50F0E1DD5A94F00CEA8C9 /* SAMLoginController.xib */; };
+		18F50F121DD698FF00CEA8C9 /* SAMLoginTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F50F111DD698FF00CEA8C9 /* SAMLoginTextField.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +49,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		18B7F1EE1DD550B200993C35 /* SAMProductInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMProductInfo.swift; sourceTree = "<group>"; };
+		18B7F1F21DD5680100993C35 /* SAMStockProductCellDiv.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMStockProductCellDiv.swift; sourceTree = "<group>"; };
 		18C202B61DD3081A00C0117C /* SaleManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SaleManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18C202B91DD3081A00C0117C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		18C202C01DD3081A00C0117C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -67,6 +74,9 @@
 		18C203531DD477D800C0117C /* SAMStockViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMStockViewController.xib; sourceTree = "<group>"; };
 		18C203931DD4C8F600C0117C /* SAMStockProductCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMStockProductCell.swift; sourceTree = "<group>"; };
 		18C203971DD4CAC400C0117C /* SAMStockProductCellDiv.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMStockProductCellDiv.xib; sourceTree = "<group>"; };
+		18F50F0D1DD5A94F00CEA8C9 /* SAMLoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMLoginController.swift; sourceTree = "<group>"; };
+		18F50F0E1DD5A94F00CEA8C9 /* SAMLoginController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMLoginController.xib; sourceTree = "<group>"; };
+		18F50F111DD698FF00CEA8C9 /* SAMLoginTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMLoginTextField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -295,6 +305,8 @@
 			children = (
 				18C2033F1DD30EA900C0117C /* SAMMainTabBarController.swift */,
 				18C2034D1DD3143700C0117C /* SAMBaseNavigationController.swift */,
+				18F50F0D1DD5A94F00CEA8C9 /* SAMLoginController.swift */,
+				18F50F0E1DD5A94F00CEA8C9 /* SAMLoginController.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -309,6 +321,7 @@
 		18C202FA1DD30ADE00C0117C /* View */ = {
 			isa = PBXGroup;
 			children = (
+				18F50F111DD698FF00CEA8C9 /* SAMLoginTextField.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -343,6 +356,7 @@
 		18C202FE1DD30ADE00C0117C /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				18B7F1EE1DD550B200993C35 /* SAMProductInfo.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -351,6 +365,7 @@
 			isa = PBXGroup;
 			children = (
 				18C203931DD4C8F600C0117C /* SAMStockProductCell.swift */,
+				18B7F1F21DD5680100993C35 /* SAMStockProductCellDiv.swift */,
 				18C203971DD4CAC400C0117C /* SAMStockProductCellDiv.xib */,
 			);
 			path = View;
@@ -474,6 +489,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18F50F101DD5A94F00CEA8C9 /* SAMLoginController.xib in Resources */,
 				18C203981DD4CAC400C0117C /* SAMStockProductCellDiv.xib in Resources */,
 				18C202C41DD3081A00C0117C /* LaunchScreen.storyboard in Resources */,
 				18C202C11DD3081A00C0117C /* Assets.xcassets in Resources */,
@@ -502,7 +518,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18B7F1F31DD5680100993C35 /* SAMStockProductCellDiv.swift in Sources */,
 				18C203401DD30EA900C0117C /* SAMMainTabBarController.swift in Sources */,
+				18B7F1EF1DD550B200993C35 /* SAMProductInfo.swift in Sources */,
+				18F50F0F1DD5A94F00CEA8C9 /* SAMLoginController.swift in Sources */,
 				18C203481DD30FEC00C0117C /* SAMCodeViewController.swift in Sources */,
 				18C2034C1DD3100900C0117C /* SAMCustomerViewController.swift in Sources */,
 				18C202BA1DD3081A00C0117C /* AppDelegate.swift in Sources */,
@@ -513,6 +532,7 @@
 				18C203431DD30FB400C0117C /* SAMHomeViewController.swift in Sources */,
 				18C203941DD4C8F600C0117C /* SAMStockProductCell.swift in Sources */,
 				18C203461DD30FDB00C0117C /* SAMStockViewController.swift in Sources */,
+				18F50F121DD698FF00CEA8C9 /* SAMLoginTextField.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -755,6 +775,7 @@
 				18C202E01DD3081A00C0117C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		18C202E11DD3081A00C0117C /* Build configuration list for PBXNativeTarget "SaleManagerTests" */ = {
 			isa = XCConfigurationList;
@@ -763,6 +784,7 @@
 				18C202E31DD3081A00C0117C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		18C202E41DD3081A00C0117C /* Build configuration list for PBXNativeTarget "SaleManagerUITests" */ = {
 			isa = XCConfigurationList;
@@ -771,6 +793,7 @@
 				18C202E61DD3081A00C0117C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -12,9 +12,7 @@ class SAMBaseNavigationController: UINavigationController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupUI()
-
     }
 
     //MARK: - 初始化UI
@@ -23,7 +21,6 @@ class SAMBaseNavigationController: UINavigationController {
         let navBar = UINavigationBar.appearance()
         navBar.barTintColor = mainColor_green
         navBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.boldSystemFontOfSize(19)]
-        
     }
     
     override func didReceiveMemoryWarning() {
