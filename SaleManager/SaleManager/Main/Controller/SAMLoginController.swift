@@ -35,12 +35,13 @@ class SAMLoginController: UIViewController {
         PwdTF.addTarget(self, action: #selector(SAMLoginController.checkBtnState(_:)), forControlEvents: .EditingChanged)
         serverAddTF.addTarget(self, action: #selector(SAMLoginController.checkBtnState(_:)), forControlEvents: .EditingChanged)
         
-        //缩小logo 方便执行后续动画
+        //缩小logo，方便执行后续动画
         logoView.transform = CGAffineTransformMakeScale(0.001, 0.001)
     }
     
     //MARK: - 登录按钮点击
     @IBAction func loginBtnClick(sender: AnyObject) {
+        endEditing()
         loginAnim()
     }
     
@@ -101,26 +102,13 @@ class SAMLoginController: UIViewController {
                 self.setupLoginCircleAnim()
         }
     }
+    
     //MARK: - 调试所用
     @IBAction func liuclick(sender: AnyObject) {
         loginDefeatAnim()
     }
     @IBAction func qiclick(sender: AnyObject) {
-        UIView.animateWithDuration(animationDuration, animations: { 
-            self.logoView.transform = CGAffineTransformMakeScale(2.0, 2.0)
-            self.logoView.alpha = 0.001
-            }) { (_) in
-                let alertVC = UIAlertController(title: "谢谢观赏", message: "君君真漂亮🙄😣😖😫", preferredStyle: .Alert)
-                alertVC.addAction(UIAlertAction(title: "对呀对呀😍", style: .Default, handler: { (_) in
-                    let arr = [1, 2, 3]
-                    arr[4]
-                }))
-                alertVC.addAction(UIAlertAction(title: "屁😂", style: .Cancel, handler: { (_) in
-                    let arr = [1, 2, 3]
-                    arr[4]
-                }))
-                self.presentViewController(alertVC, animated: true, completion: nil)
-        }
+        loginSuccessAnim()
     }
     //MARK: - 调试所用结束
     ///登陆失败的动画
@@ -135,8 +123,16 @@ class SAMLoginController: UIViewController {
             print("登陆失败")
         }
     }
-    
-    //设置登陆圆圈动画
+    ///登陆成功的动画
+    private func loginSuccessAnim() {
+        UIView.animateWithDuration(animationDuration, animations: {
+            self.logoView.transform = CGAffineTransformMakeScale(2.0, 2.0)
+            self.logoView.alpha = 0.001
+        }) { (_) in
+            NSNotificationCenter.defaultCenter().postNotificationName(LoginSuccessNotification, object: nil, userInfo: nil)
+        }
+    }
+    ///设置登陆圆圈动画
     private func setupLoginCircleAnim() {
         loginAnimLayer = CAReplicatorLayer()
         loginAnimLayer!.frame = logoView.bounds

@@ -29,6 +29,7 @@
 		18F50F0F1DD5A94F00CEA8C9 /* SAMLoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F50F0D1DD5A94F00CEA8C9 /* SAMLoginController.swift */; };
 		18F50F101DD5A94F00CEA8C9 /* SAMLoginController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18F50F0E1DD5A94F00CEA8C9 /* SAMLoginController.xib */; };
 		18F50F121DD698FF00CEA8C9 /* SAMLoginTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F50F111DD698FF00CEA8C9 /* SAMLoginTextField.swift */; };
+		535A88B0197280CACB8BA322 /* Pods_SaleManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8086D1F1C8470C338633799F /* Pods_SaleManager.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +78,9 @@
 		18F50F0D1DD5A94F00CEA8C9 /* SAMLoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMLoginController.swift; sourceTree = "<group>"; };
 		18F50F0E1DD5A94F00CEA8C9 /* SAMLoginController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMLoginController.xib; sourceTree = "<group>"; };
 		18F50F111DD698FF00CEA8C9 /* SAMLoginTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMLoginTextField.swift; sourceTree = "<group>"; };
+		8086D1F1C8470C338633799F /* Pods_SaleManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SaleManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C654EF8124BE0CC8B012C687 /* Pods-SaleManager.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaleManager.release.xcconfig"; path = "Pods/Target Support Files/Pods-SaleManager/Pods-SaleManager.release.xcconfig"; sourceTree = "<group>"; };
+		FA19BEFDEDE3927824F5E8B3 /* Pods-SaleManager.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SaleManager.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SaleManager/Pods-SaleManager.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +88,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				535A88B0197280CACB8BA322 /* Pods_SaleManager.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -111,6 +116,8 @@
 				18C202CD1DD3081A00C0117C /* SaleManagerTests */,
 				18C202D81DD3081A00C0117C /* SaleManagerUITests */,
 				18C202B71DD3081A00C0117C /* Products */,
+				9969C18FEECE61EB80CB1998 /* Pods */,
+				52E1A8A367A790BEE279E4A2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -378,6 +385,23 @@
 			path = Tools;
 			sourceTree = "<group>";
 		};
+		52E1A8A367A790BEE279E4A2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8086D1F1C8470C338633799F /* Pods_SaleManager.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9969C18FEECE61EB80CB1998 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				FA19BEFDEDE3927824F5E8B3 /* Pods-SaleManager.debug.xcconfig */,
+				C654EF8124BE0CC8B012C687 /* Pods-SaleManager.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -385,9 +409,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 18C202DE1DD3081A00C0117C /* Build configuration list for PBXNativeTarget "SaleManager" */;
 			buildPhases = (
+				28B526A6310A702A34B0148D /* [CP] Check Pods Manifest.lock */,
 				18C202B21DD3081A00C0117C /* Sources */,
 				18C202B31DD3081A00C0117C /* Frameworks */,
 				18C202B41DD3081A00C0117C /* Resources */,
+				18B089D11DD70D7D00CDF36D /* ShellScript */,
+				101CCF01456BA518A09D8213 /* [CP] Embed Pods Frameworks */,
+				B975061B70AAA1C75FB6B257 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -512,6 +540,67 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		101CCF01456BA518A09D8213 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SaleManager/Pods-SaleManager-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		18B089D11DD70D7D00CDF36D /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TAGS=\"TODO:|FIXME:\"\necho \"searching ${SRCROOT} for ${TAGS}\"\nfind \"${SRCROOT}\" \\( -name \"*.swift\" \\) -print0 | xargs -0 egrep --with-filename --line-number --only-matching \"($TAGS).*\\$\" | perl -p -e \"s/($TAGS)/ warning: \\$1/\"\n";
+		};
+		28B526A6310A702A34B0148D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		B975061B70AAA1C75FB6B257 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SaleManager/Pods-SaleManager-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		18C202B21DD3081A00C0117C /* Sources */ = {
@@ -672,6 +761,7 @@
 		};
 		18C202DF1DD3081A00C0117C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FA19BEFDEDE3927824F5E8B3 /* Pods-SaleManager.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = GPQ66V2HR2;
@@ -686,6 +776,7 @@
 		};
 		18C202E01DD3081A00C0117C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C654EF8124BE0CC8B012C687 /* Pods-SaleManager.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = GPQ66V2HR2;

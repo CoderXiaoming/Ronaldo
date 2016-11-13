@@ -8,6 +8,8 @@
 
 import UIKit
 
+let LoginSuccessNotification = "LoginSuccessNotification"
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -23,7 +25,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = SAMLoginController()
         window?.makeKeyAndVisible()
         
+        //监听界面跳转通知
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AppDelegate.loginSuccess(_:)), name: LoginSuccessNotification, object: nil)
+        
         return true
+    }
+    
+    func loginSuccess(notification: NSNotification) {
+        
+        let anim = CATransition()
+        anim.type = "fade"
+        anim.duration = 0.7;
+        window?.layer.addAnimation(anim, forKey: nil)
+        
+        window?.rootViewController = SAMMainTabBarController()
     }
 
     func applicationWillResignActive(application: UIApplication) {
