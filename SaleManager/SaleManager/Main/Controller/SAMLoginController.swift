@@ -7,6 +7,13 @@
 //
 
 import UIKit
+import AFNetworking
+import MBProgressHUD
+
+//用于读写 服务器地址 的Key
+private let severAddStrKey = "severAddStrKey"
+//用于读写 用户名 的Key
+private let userNameStrKey = "userNameStrKey"
 
 private let animationDuration = 0.7
 
@@ -16,12 +23,39 @@ class SAMLoginController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //检查登录状态
+        checkSeverStr()
+        
         //初始化设置UI
         setupUI()
         
         //记录原始数据
         logoOriBotDis = logoBotDis.constant
         logoAnimBotDis = (ScreenH - logoView.bounds.height) * 0.6
+    }
+    
+    //MARK: - 检查登录状态
+    private func checkSeverStr() {
+        //读取 服务器地址
+        severAddStr = NSUserDefaults.standardUserDefaults().stringForKey(severAddStrKey)
+        if severAddStr == nil { //没有服务器地址
+            //显示服务器地址界面
+            loginView.transform = CGAffineTransformMakeTranslation(ScreenW, 0)
+            serverView.transform = CGAffineTransformMakeTranslation(ScreenW, 0)
+            
+        }else { //有服务器地址
+            //对serverAddTF设值，显示用户名界面
+            serverAddTF.text = severAddStr
+            
+            //判断 是否有用户名
+            userNameStr = NSUserDefaults.standardUserDefaults().stringForKey(userNameStrKey)
+            if userNameStr != nil { //有用户名
+                userNameTF.text = userNameStr
+                remNameBtn.selected = true
+            }
+            //检查按钮状态
+            checkBtnState(serverAddTF)
+        }
     }
     
     //MARK: - 初始化设置UI
@@ -37,25 +71,37 @@ class SAMLoginController: UIViewController {
         
         //缩小logo，方便执行后续动画
         logoView.transform = CGAffineTransformMakeScale(0.001, 0.001)
+        
+        //禁止用户交互
+        view.userInteractionEnabled = false
     }
     
-    //MARK: - 登录按钮点击
+    //MARK: - 界面交互点击事件处理
+    //记住名字按钮点击
+    @IBAction func remNameBtnClick(sender: AnyObject) {
+        remNameBtn.selected = !remNameBtn.selected
+    }
+    //登录按钮点击
     @IBAction func loginBtnClick(sender: AnyObject) {
         endEditing()
+        //记录用户名和密码
+        userNameStr = userNameTF.text
+        PWDStr = PwdTF.text
+        //执行动画
         loginAnim()
     }
-    
     //点击界面退出编辑状态
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         endEditing()
     }
+    //服务器地址确认按钮点击 和 返回服务器设置界面按钮点击 处理在下面动画项中
     
     //MARK: - 结束界面编辑状态
     func endEditing() {
         view.endEditing(false)
     }
     
-    //MARK: - 检查确认和登录按钮的状态
+    //MARK: - 检查 确认、登录 按钮的状态
     func checkBtnState(textField: UITextField) {
         switch textField {
         case serverAddTF:
@@ -67,30 +113,75 @@ class SAMLoginController: UIViewController {
         }
     }
     
+    //MARK: - 发送用户登录请求
+    private func loginRequest() {
+        
+        let URLStr = String(format: "http://%@/handleLogin.ashx", severAddStr!)
+        let parameters = ["userName": userNameStr!, "pwd": PWDStr!]
+        //发送请求
+        SAMNetWorker.sharedNetWorker().GET(URLStr, parameters: parameters, progress: nil, success: { (Task, Json) in
+            //判断返回数据状态
+            let status = Json!["head"]! as! [String: String]
+            if status["status"]! == "fail" { //用户名或者密码错误
+                self.showLoginInfo("用户名或者密码错误")
+            } else { //登录成功
+                //模型化数据
+                let dict = Json!["body"]!![0] as! [String: String]
+                let id = dict["id"]
+                let employeeID = dict["employeeID"]
+                let appPower = dict["appPower"]
+                SAMUserAuth.auth(id, employeeID: employeeID, appPower: appPower)
+                //执行动画
+                self.loginSuccessAnim()
+            }
+            
+            }) { (Task, Error) in
+                self.showLoginInfo("神秘错误")
+        }
+    }
+    
+    //MARK: - 登录出现错误时候提示的消息
+    private func showLoginInfo(title: String!) {
+        //执行动画
+        loginDefeatAnim()
+        
+        let title = String(format: "%@ 😳", title)
+        let hud = MBProgressHUD.showHUDAddedTo(view, animated: true)
+        hud.mode = MBProgressHUDMode.Text;
+        hud.labelText = NSLocalizedString(title, comment: "HUD message title")
+        hud.hide(true, afterDelay: animationDuration * 2)
+    }
+    
     //MARK: - 所有动画集合
-    ///动态回复log
+    ///进入界面动态恢复log
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         //动态回复logo
-        UIView.animateWithDuration(1.0) {
+        UIView.animateWithDuration(animationDuration, animations: {
             self.logoView.transform = CGAffineTransformIdentity
+            }) { (_) in
+                //恢复页面用户交互
+                self.view.userInteractionEnabled = true
         }
     }
     ///服务器地址确认按钮点击后执行动画
     @IBAction func severBtnClick(sender: AnyObject) {
         endEditing()
-        UIView.animateWithDuration(animationDuration) {
+        //记录服务器地址
+        severAddStr = serverAddTF.text
+        //执行动画
+        UIView.animateWithDuration(animationDuration, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 7, options: .CurveEaseIn, animations: {
             self.loginView.transform = CGAffineTransformIdentity
             self.serverView.transform = CGAffineTransformIdentity
-        }
+            }, completion: nil)
     }
     ///返回服务器设置界面按钮点击动画
     @IBAction func loginBackBtnClick(sender: UIButton) {
         endEditing()
-        UIView.animateWithDuration(animationDuration) {
+        UIView.animateWithDuration(animationDuration, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 7, options: .CurveEaseIn, animations: {
             self.loginView.transform = CGAffineTransformMakeTranslation(ScreenW, 0)
             self.serverView.transform = CGAffineTransformMakeTranslation(ScreenW, 0)
-        }
+            }, completion: nil)
     }
     ///正在登陆中的动画
     private func loginAnim() {
@@ -100,36 +191,6 @@ class SAMLoginController: UIViewController {
             self.view.layoutIfNeeded()
             }) { (_) in
                 self.setupLoginCircleAnim()
-        }
-    }
-    
-    //MARK: - 调试所用
-    @IBAction func liuclick(sender: AnyObject) {
-        loginDefeatAnim()
-    }
-    @IBAction func qiclick(sender: AnyObject) {
-        loginSuccessAnim()
-    }
-    //MARK: - 调试所用结束
-    ///登陆失败的动画
-    private func loginDefeatAnim() {
-        UIView.animateWithDuration(animationDuration, animations: {
-            self.loginAnimLayer!.removeFromSuperlayer()
-            self.loginAnimLayer = nil
-            self.loginView.transform = CGAffineTransformIdentity
-            self.logoBotDis.constant = self.logoOriBotDis
-            self.view.layoutIfNeeded()
-        }) { (_) in
-            print("登陆失败")
-        }
-    }
-    ///登陆成功的动画
-    private func loginSuccessAnim() {
-        UIView.animateWithDuration(animationDuration, animations: {
-            self.logoView.transform = CGAffineTransformMakeScale(2.0, 2.0)
-            self.logoView.alpha = 0.001
-        }) { (_) in
-            NSNotificationCenter.defaultCenter().postNotificationName(LoginSuccessNotification, object: nil, userInfo: nil)
         }
     }
     ///设置登陆圆圈动画
@@ -144,7 +205,7 @@ class SAMLoginController: UIViewController {
         layer.position = CGPointMake(loginView.bounds.size.width / 2, 20)
         layer.bounds = CGRectMake(0, 0, 10, 10)
         layer.cornerRadius = 5
-        layer.backgroundColor = UIColor.greenColor().CGColor;
+        layer.backgroundColor = UIColor.greenColor().CGColor
         loginAnimLayer!.addSublayer(layer)
         
         //设置缩放动画
@@ -161,22 +222,66 @@ class SAMLoginController: UIViewController {
         let count : CGFloat = 20
         let angle = CGFloat(M_PI * 2) / count
         loginAnimLayer!.instanceCount = Int(count)
-        loginAnimLayer!.instanceTransform = CATransform3DMakeRotation(angle, 0, 0, 1);
+        loginAnimLayer!.instanceTransform = CATransform3DMakeRotation(angle, 0, 0, 1)
         
-        loginAnimLayer!.instanceDelay = Double(animDuration) / Double(count);
+        loginAnimLayer!.instanceDelay = Double(animDuration) / Double(count)
+        
+        //向服务器发送登录请求
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(1000000000 * animationDuration)), dispatch_get_global_queue(0, 0)) {
+            self.loginRequest()
+        }
+    }
+    ///登陆失败的动画
+    private func loginDefeatAnim() {
+        UIView.animateWithDuration(animationDuration, animations: {
+            self.loginAnimLayer!.removeFromSuperlayer()
+            self.loginAnimLayer = nil
+            self.loginView.transform = CGAffineTransformIdentity
+            self.logoBotDis.constant = self.logoOriBotDis
+            self.view.layoutIfNeeded()
+        }) { (_) in
+        }
+    }
+    ///登陆成功的动画
+    private func loginSuccessAnim() {
+        UIView.animateWithDuration(animationDuration, animations: {
+            self.logoView.transform = CGAffineTransformMakeScale(2.0, 2.0)
+            self.logoView.alpha = 0.001
+        }) { (_) in
+            //存储登录数据
+            NSUserDefaults.standardUserDefaults().setObject(self.severAddStr, forKey: severAddStrKey)
+            if self.remNameBtn.selected == true {
+                NSUserDefaults.standardUserDefaults().setObject(self.userNameStr, forKey: userNameStrKey)
+            }else {
+                NSUserDefaults.standardUserDefaults().setObject(nil, forKey: userNameStrKey)
+            }
+            NSUserDefaults.standardUserDefaults().synchronize()
+            //发出登录成功的通知
+            NSNotificationCenter.defaultCenter().postNotificationName(LoginSuccessNotification, object: nil, userInfo: nil)
+        }
     }
     
     //MARK: - 懒加载集合
+    ///服务器地址
+    private var severAddStr: String?
+    ///用户名
+    private var userNameStr: String?
+    ///密码
+    private var PWDStr: String?
+    ///logoView的原始底部距离
     private var logoOriBotDis: CGFloat = 0
+    ///logoView的动画底部距离
     private var logoAnimBotDis: CGFloat = 0
-    
+    ///小绿圈动画Layer
     private var loginAnimLayer: CAReplicatorLayer?
-    
     //MARK: - xib链接属性
     @IBOutlet weak var loginView: UIView!
     @IBOutlet weak var userNameTF: UITextField!
     @IBOutlet weak var PwdTF: UITextField!
+    
     @IBOutlet weak var loginBtn: UIButton!
+    
+    @IBOutlet weak var remNameBtn: UIButton!
     
     @IBOutlet weak var serverView: UIView!
     @IBOutlet weak var serverAddTF: UITextField!
@@ -184,7 +289,6 @@ class SAMLoginController: UIViewController {
 
     @IBOutlet weak var logoView: UIView!
     @IBOutlet weak var logoBotDis: NSLayoutConstraint!
-    
     
     //MARK: - 其他方法
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {

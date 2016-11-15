@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18ABA9561DDB4EE100B503F0 /* SAMUserAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18ABA9551DDB4EE100B503F0 /* SAMUserAuth.swift */; };
+		18B089D31DD7EC9900CDF36D /* SAMNetWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B089D21DD7EC9900CDF36D /* SAMNetWorker.swift */; };
 		18B7F1EF1DD550B200993C35 /* SAMProductInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B7F1EE1DD550B200993C35 /* SAMProductInfo.swift */; };
 		18B7F1F31DD5680100993C35 /* SAMStockProductCellDiv.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B7F1F21DD5680100993C35 /* SAMStockProductCellDiv.swift */; };
 		18C202BA1DD3081A00C0117C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C202B91DD3081A00C0117C /* AppDelegate.swift */; };
@@ -50,6 +52,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		18ABA9551DDB4EE100B503F0 /* SAMUserAuth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMUserAuth.swift; sourceTree = "<group>"; };
+		18B089D21DD7EC9900CDF36D /* SAMNetWorker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMNetWorker.swift; sourceTree = "<group>"; };
 		18B7F1EE1DD550B200993C35 /* SAMProductInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMProductInfo.swift; sourceTree = "<group>"; };
 		18B7F1F21DD5680100993C35 /* SAMStockProductCellDiv.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMStockProductCellDiv.swift; sourceTree = "<group>"; };
 		18C202B61DD3081A00C0117C /* SaleManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SaleManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -321,6 +325,7 @@
 		18C202F91DD30ADE00C0117C /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				18ABA9551DDB4EE100B503F0 /* SAMUserAuth.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -381,6 +386,7 @@
 		18C203001DD30ADE00C0117C /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				18B089D21DD7EC9900CDF36D /* SAMNetWorker.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -610,6 +616,7 @@
 				18B7F1F31DD5680100993C35 /* SAMStockProductCellDiv.swift in Sources */,
 				18C203401DD30EA900C0117C /* SAMMainTabBarController.swift in Sources */,
 				18B7F1EF1DD550B200993C35 /* SAMProductInfo.swift in Sources */,
+				18ABA9561DDB4EE100B503F0 /* SAMUserAuth.swift in Sources */,
 				18F50F0F1DD5A94F00CEA8C9 /* SAMLoginController.swift in Sources */,
 				18C203481DD30FEC00C0117C /* SAMCodeViewController.swift in Sources */,
 				18C2034C1DD3100900C0117C /* SAMCustomerViewController.swift in Sources */,
@@ -622,6 +629,7 @@
 				18C203941DD4C8F600C0117C /* SAMStockProductCell.swift in Sources */,
 				18C203461DD30FDB00C0117C /* SAMStockViewController.swift in Sources */,
 				18F50F121DD698FF00CEA8C9 /* SAMLoginTextField.swift in Sources */,
+				18B089D31DD7EC9900CDF36D /* SAMNetWorker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -708,7 +716,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -751,7 +759,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";

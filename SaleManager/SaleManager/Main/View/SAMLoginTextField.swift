@@ -7,9 +7,8 @@
 //
 
 import UIKit
-
+//该类是提供给登录界面使用
 class SAMLoginTextField: UITextField {
-
     
     override func awakeFromNib() {
         super.awakeFromNib()
