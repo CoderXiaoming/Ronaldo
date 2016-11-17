@@ -24,6 +24,16 @@ class SAMUserAuth: NSObject{
         return user
     }
     
+    //MARK: - 对外提供判断权限的方法
+    class func checkAuth(authArr: [String]) -> Bool {
+        for authStr in authArr {
+            if !((user!.appPower!.contains(authStr))) {
+                return false
+            }
+        }
+        return true
+    }
+    
     //MARK: - 对外提供的类工厂方法
     class func auth(id: String?, employeeID: String?, appPower: String?) -> SAMUserAuth {
         if user != nil {

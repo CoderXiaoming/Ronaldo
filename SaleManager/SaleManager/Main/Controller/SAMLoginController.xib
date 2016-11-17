@@ -38,20 +38,20 @@
                     <rect key="frame" x="0.0" y="80" width="375" height="240"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="m0F-UO-mra" userLabel="loginTextFieldView">
-                            <rect key="frame" x="47.5" y="30" width="281.5" height="98"/>
+                            <rect key="frame" x="47" y="30" width="281" height="98"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="login_textfield_bg" translatesAutoresizingMaskIntoConstraints="NO" id="Zib-cU-GmT">
-                                    <rect key="frame" x="0.0" y="0.0" width="281.5" height="98"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="281" height="98"/>
                                 </imageView>
                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="用户名" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="i5N-OV-aK6" userLabel="UserNameTextField" customClass="SAMLoginTextField" customModule="SaleManager" customModuleProvider="target">
-                                    <rect key="frame" x="15" y="0.0" width="266.5" height="49"/>
+                                    <rect key="frame" x="15" y="0.0" width="266" height="49"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                     <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
                                 </textField>
                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="密码" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="FEd-Y5-p0r" userLabel="PassWordTextField" customClass="SAMLoginTextField" customModule="SaleManager" customModuleProvider="target">
-                                    <rect key="frame" x="15" y="49" width="266.5" height="49"/>
+                                    <rect key="frame" x="15" y="49" width="266" height="49"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
@@ -77,7 +77,7 @@
                             </constraints>
                         </view>
                         <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tpP-Ow-s38">
-                            <rect key="frame" x="46.5" y="148" width="281.5" height="40"/>
+                            <rect key="frame" x="47" y="148" width="281" height="40"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                             <state key="normal" title="登  录" backgroundImage="login_enabled">
@@ -107,18 +107,18 @@
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SQ2-zy-1Yx">
-                            <rect key="frame" x="132.5" y="198" width="110" height="30"/>
+                            <rect key="frame" x="128" y="198" width="120" height="30"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
-                                <constraint firstAttribute="width" constant="110" id="iLS-Dd-2R5"/>
+                                <constraint firstAttribute="width" constant="120" id="iLS-Dd-2R5"/>
                                 <constraint firstAttribute="height" constant="30" id="wep-Hb-N7a"/>
                             </constraints>
                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                            <state key="normal" title="记住名字 🙃">
+                            <state key="normal" image="remeberNameBG">
                                 <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
-                            <state key="selected" title="记住名字 🙂">
-                                <color key="titleColor" red="0.49019607840000001" green="1" blue="0.31764705879999999" alpha="1" colorSpace="calibratedRGB"/>
+                            <state key="selected" image="remeberNameHighlightedBG">
+                                <color key="titleColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </state>
                             <connections>
                                 <action selector="remNameBtnClick:" destination="-1" eventType="touchUpInside" id="lkm-Ht-geY"/>
@@ -203,10 +203,10 @@
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fKp-ni-2al" userLabel="LogoView">
-                    <rect key="frame" x="113.5" y="489" width="148" height="148"/>
+                    <rect key="frame" x="114" y="489" width="148" height="148"/>
                     <subviews>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="firstLogo" translatesAutoresizingMaskIntoConstraints="NO" id="gtU-AQ-7gx" userLabel="Logo">
-                            <rect key="frame" x="17.5" y="27" width="113" height="93"/>
+                            <rect key="frame" x="17" y="27" width="113" height="93"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="93" id="7y5-H2-hLC"/>
@@ -249,6 +249,8 @@
         <image name="login_enabled" width="266" height="40"/>
         <image name="login_highlighted" width="266" height="40"/>
         <image name="login_textfield_bg" width="266" height="92"/>
+        <image name="remeberNameBG" width="91" height="17"/>
+        <image name="remeberNameHighlightedBG" width="91" height="17"/>
         <image name="three" width="375" height="667"/>
     </resources>
 </document>

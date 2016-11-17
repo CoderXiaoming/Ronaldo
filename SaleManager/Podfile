@@ -3,4 +3,6 @@ use_frameworks!
 target :'SaleManager' do
 	pod 'AFNetworking'
 	pod 'MBProgressHUD'
+    pod 'MJExtension'
+    pod 'MJRefresh'
 end

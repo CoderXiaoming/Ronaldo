@@ -36,9 +36,6 @@ class SAMHomeViewController: UIViewController {
         
         //添加子控件
         view.addSubview(buttonView)
-        
-        let user = SAMUserAuth.shareUser()
-        print(user)
     }
     
     private func setupUI() {

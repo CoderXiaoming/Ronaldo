@@ -13,22 +13,44 @@ import AFNetworking
 
 class SAMNetWorker: AFHTTPSessionManager {
     
-    static let netWorker: SAMNetWorker = {
-        //基础路径
-//        let baseUrl = NSURL(string: "https://api.weibo.com/")
-//        let netWorker = SAMNetWorker(baseURL: baseUrl)
-//        let netWorker = SAMNetWorker()
-//        //新浪返回的json类型为text/plain 需要手动添加
-//        netWorker.responseSerializer.acceptableContentTypes! = NSSet(objects: "application/json", "text/json", "text/javascript", "text/plain") as! Set<String>
-        
+    ///全局使用的netWorker单例
+    private static var netWorker: SAMNetWorker?{
+        didSet{
+            loginNetWorker = nil
+        }
+    }
+    
+    //MARK: - 对外提供全局使用的单例的类方法
+    class func sharedNetWorker() -> SAMNetWorker {
+        return netWorker!
+    }
+    
+    //MARK: - 创建全局使用单例的类方法
+    class func globalNetWorker(baseURLStr: String) -> SAMNetWorker{
+        if netWorker != nil {
+            return netWorker!
+        }else {
+            let URLStr = String(format: "http://%@", baseURLStr)
+            let URL = NSURL(string: URLStr)
+            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+            configuration.timeoutIntervalForResource = 4.0
+            configuration.timeoutIntervalForRequest = 4.0
+            netWorker = SAMNetWorker(baseURL: URL!, sessionConfiguration: configuration)
+            return netWorker!
+        }
+    }
+    
+    ///登录界面用的netWorker
+    private static var loginNetWorker: SAMNetWorker? = {
+        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+        configuration.timeoutIntervalForRequest = 4.0
+        configuration.timeoutIntervalForResource = 4.0
+        let worker = SAMNetWorker(sessionConfiguration: configuration)
         return SAMNetWorker()
     }()
-    
-    /**
-     *  对外提供单例的类方法
-     */
-    class func sharedNetWorker() -> SAMNetWorker {
-        return netWorker
+    //MARK: - 对外提供登录netWorker单例的类方法
+    class func sharedLoginNetWorker() -> SAMNetWorker {
+        return loginNetWorker!
     }
     
 }

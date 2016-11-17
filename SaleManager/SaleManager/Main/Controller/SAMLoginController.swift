@@ -119,14 +119,15 @@ class SAMLoginController: UIViewController {
         let URLStr = String(format: "http://%@/handleLogin.ashx", severAddStr!)
         let parameters = ["userName": userNameStr!, "pwd": PWDStr!]
         //发送请求
-        SAMNetWorker.sharedNetWorker().GET(URLStr, parameters: parameters, progress: nil, success: { (Task, Json) in
+        SAMNetWorker.sharedLoginNetWorker().GET(URLStr, parameters: parameters, progress: nil, success: { (Task, Json) in
             //判断返回数据状态
             let status = Json!["head"]! as! [String: String]
             if status["status"]! == "fail" { //用户名或者密码错误
                 self.showLoginInfo("用户名或者密码错误")
             } else { //登录成功
                 //模型化数据
-                let dict = Json!["body"]!![0] as! [String: String]
+                let arr = Json!["body"] as! [[String: String]]
+                let dict = arr[0]
                 let id = dict["id"]
                 let employeeID = dict["employeeID"]
                 let appPower = dict["appPower"]
@@ -145,11 +146,7 @@ class SAMLoginController: UIViewController {
         //执行动画
         loginDefeatAnim()
         
-        let title = String(format: "%@ 😳", title)
-        let hud = MBProgressHUD.showHUDAddedTo(view, animated: true)
-        hud.mode = MBProgressHUDMode.Text;
-        hud.labelText = NSLocalizedString(title, comment: "HUD message title")
-        hud.hide(true, afterDelay: animationDuration * 2)
+        SAMHUD.showMessage(String(format: "%@ 😳", title), superView: view, hideDelay: animationDuration * 2, animated: true)
     }
     
     //MARK: - 所有动画集合
@@ -256,6 +253,9 @@ class SAMLoginController: UIViewController {
                 NSUserDefaults.standardUserDefaults().setObject(nil, forKey: userNameStrKey)
             }
             NSUserDefaults.standardUserDefaults().synchronize()
+            
+            //创建全局使用的netWorker单例
+            SAMNetWorker.globalNetWorker(self.severAddStr!)
             //发出登录成功的通知
             NSNotificationCenter.defaultCenter().postNotificationName(LoginSuccessNotification, object: nil, userInfo: nil)
         }

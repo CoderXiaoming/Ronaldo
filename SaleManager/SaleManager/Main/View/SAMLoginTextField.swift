@@ -26,4 +26,10 @@ class SAMLoginTextField: UITextField {
         return super.resignFirstResponder()
     }
     
+    //MARK: - 设置leftView左边距
+    override func leftViewRectForBounds(bounds: CGRect) -> CGRect {
+        var frame = super.leftViewRectForBounds(bounds)
+        frame.origin.x = 5
+        return frame
+    }
 }
