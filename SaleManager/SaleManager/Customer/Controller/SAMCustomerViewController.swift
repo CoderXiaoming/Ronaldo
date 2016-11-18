@@ -40,8 +40,19 @@ class SAMCustomerViewController: UIViewController {
         
         //检查查询权限
         if !hasCXAuth {
-            //TODO: 没有权限时这个懒加载一个view遮挡
+            view.addSubview(CXAuthView)
             return
+        }
+        
+        //检查新增权限
+        if hasXZAuth {
+            let addBtn = UIButton(type: .Custom)
+            addBtn.setBackgroundImage(UIImage(named: "addButtton"), forState: .Normal)
+            addBtn.addTarget(self, action: #selector(SAMCustomerViewController.addCustomer), forControlEvents: .TouchUpInside)
+            addBtn.sizeToFit()
+            
+            let addItem = UIBarButtonItem(customView: addBtn)
+            navigationItem.rightBarButtonItem = addItem
         }
         
         //设置按钮外观
@@ -89,6 +100,11 @@ class SAMCustomerViewController: UIViewController {
         collectionView.mj_header.beginRefreshing()
     }
     
+    //MARK: - 添加客户按钮点击
+    func addCustomer() {
+        navigationController!.presentViewController(customerAddVC, animated: true, completion: nil)
+    }
+    
     //MARK: - 加载新数据
     func loadNewInfo(){
         //结束下拉刷新
@@ -97,7 +113,7 @@ class SAMCustomerViewController: UIViewController {
         //判断搜索条件
         let searchStr = searchCon()
         if searchStr == nil {
-            SAMHUD.showMessage("请输入客户", superView: view, hideDelay: 1.5, animated: true)
+            SAMHUD.showMessage("请输入客户", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
             collectionView.mj_header.endRefreshing()
             return
         }
@@ -117,9 +133,9 @@ class SAMCustomerViewController: UIViewController {
             
             //获取模型数组
             let dictArr = Json!["body"] as? [[String: AnyObject]]
-            if dictArr?.count == 0 { //没有模型数据
-                SAMHUD.showMessage("没有该客户", superView: self.view, hideDelay: 1.5, animated: true)
-                
+            let count = dictArr?.count ?? 0
+            if count == 0 { //没有模型数据
+                SAMHUD.showMessage("没有该客户", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
             }else { //有数据模型
                 
                 let arr = SAMCustomerModel.mj_objectArrayWithKeyValuesArray(dictArr)!
@@ -143,13 +159,14 @@ class SAMCustomerViewController: UIViewController {
             }) { (Task, Error) in
                 //处理上拉
                 self.collectionView.mj_header.endRefreshing()
-                SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: 1.5, animated: true)
+                SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     
     //MARK: - 获取搜索字符串
     func searchCon() -> String? {
-        let searchStr = searchTF.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+        let searchStr = searchTF.text?.stringByTrimmingWhitespace()
+        print(searchStr)
         if searchStr == "" { //没有内容
             return nil
         }
@@ -172,7 +189,7 @@ class SAMCustomerViewController: UIViewController {
             if dictArr?.count == 0 { //没有模型数据
                 
                 //提示用户
-                SAMHUD.showMessage("没有更多客户", superView: self.view, hideDelay: 1.5, animated: true)
+                SAMHUD.showMessage("没有更多客户", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
                 //设置footer
                 self.collectionView.mj_footer.endRefreshingWithNoMoreData()
             }else {//有数据模型
@@ -197,7 +214,7 @@ class SAMCustomerViewController: UIViewController {
         }) { (Task, Error) in
             //处理下拉
             self.collectionView.mj_footer.endRefreshing()
-            SAMHUD.showMessage("请检查网络 😉", superView: self.view, hideDelay: 1.5, animated: true)
+            SAMHUD.showMessage("请检查网络 😉", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     
@@ -231,6 +248,24 @@ class SAMCustomerViewController: UIViewController {
     private lazy var hasXGAuth: Bool = SAMUserAuth.checkAuth(["KH_XG_APP"])
     ///禁用权限
     private lazy var hasJYAuth: Bool = SAMUserAuth.checkAuth(["KH_JY_APP"])
+    
+    ///查询权限遮挡View
+    private lazy var CXAuthView: UIView = {
+        let view = UIView(frame: self.view.bounds)
+        view.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
+        let imageView = UIImageView(image: UIImage(named: "cxAuthImage"))
+        view.addSubview(imageView)
+        imageView.center = CGPoint(x: ScreenW * 0.5, y: ScreenH * 0.5)
+        return view
+    }()
+    
+    ///添加用户的控制器
+    private lazy var customerAddVC: SAMCustomerAddController = {
+        let vc = SAMCustomerAddController()
+        vc.transitioningDelegate = self
+        vc.modalPresentationStyle = UIModalPresentationStyle.Custom
+        return vc
+    }()
     
     ///模型数组
     var customerModels = NSMutableArray()
@@ -337,6 +372,17 @@ extension SAMCustomerViewController: UITextFieldDelegate {
     func textFieldShouldEndEditing(textField: UITextField) -> Bool {
         HUDView.hidden = true
         return true
+    }
+}
+
+extension SAMCustomerViewController: UIViewControllerTransitioningDelegate {
+    
+    func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return SAMPresentingAnimator()
+    }
+    
+    func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return SAMDismissingAnimator()
     }
 }
 

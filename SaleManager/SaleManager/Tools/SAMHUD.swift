@@ -9,6 +9,9 @@
 import UIKit
 import MBProgressHUD
 
+///提示信息常规隐藏时间
+let SAMHUDNormalDuration = 1.5
+
 class SAMHUD: MBProgressHUD {
 
     //MARK: - 对外提供的类方法，提示文字信息

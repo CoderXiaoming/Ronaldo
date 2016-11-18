@@ -47,6 +47,7 @@ class SAMHomeViewController: UIViewController {
     //MARK: - 点击buttonView上按钮的处理
     func customerBtnClick() {
         print("customerBtnClick")
+        
     }
     func stockBtnClick() {
         print("stockBtnClick")

@@ -5,4 +5,5 @@ target :'SaleManager' do
 	pod 'MBProgressHUD'
     pod 'MJExtension'
     pod 'MJRefresh'
+    pod 'pop'
 end

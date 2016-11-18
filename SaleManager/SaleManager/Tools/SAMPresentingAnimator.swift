@@ -1,0 +1,50 @@
+//
+//  SAMPresentingAnimator.swift
+//  SaleManager
+//
+//  Created by apple on 16/11/18.
+//  Copyright © 2016年 YZH. All rights reserved.
+//
+
+import UIKit
+import pop
+
+class SAMPresentingAnimator: NSObject, UIViewControllerAnimatedTransitioning {
+    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval{
+        return 0.5
+    }
+    
+    func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
+        let fromView = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)?.view
+        fromView?.tintAdjustmentMode = UIViewTintAdjustmentMode.Dimmed
+        fromView?.userInteractionEnabled = false
+        
+        let dimmingView = UIView(frame: fromView!.bounds)
+        dimmingView.backgroundColor = customGrayColor
+        dimmingView.layer.opacity = 0.0
+        
+        let toView = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)?.view
+        toView?.frame = CGRect(x: 0, y: -100, width: ScreenW - 30, height: 195)
+        toView!.center = CGPoint(x: transitionContext.containerView().center.x, y: -100)
+        transitionContext.containerView().addSubview(dimmingView)
+        transitionContext.containerView().addSubview(toView!)
+        
+        let positionAnimation = POPSpringAnimation(propertyNamed: kPOPLayerPositionY)
+        positionAnimation.toValue = transitionContext.containerView().center.y - 100
+        positionAnimation.springBounciness = 10
+        positionAnimation.completionBlock = {(anim: POPAnimation!, finished: Bool) in
+            transitionContext.completeTransition(true)
+        }
+        
+        let scaleAnimation = POPSpringAnimation(propertyNamed: kPOPLayerScaleXY)
+        scaleAnimation.springBounciness = 20
+        scaleAnimation.fromValue = NSValue(CGPoint: CGPoint(x: 1.2, y: 1.4))
+        
+        let opacityAnimation = POPBasicAnimation(propertyNamed: kPOPLayerOpacity)
+        opacityAnimation.toValue = 0.2
+        
+        toView?.layer.pop_addAnimation(positionAnimation, forKey: "positionAnimation")
+        toView?.layer.pop_addAnimation(scaleAnimation, forKey: "scaleAnimation")
+        dimmingView.layer.pop_addAnimation(opacityAnimation, forKey: "opacityAnimation")
+    }
+}
