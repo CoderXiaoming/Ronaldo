@@ -15,6 +15,8 @@ class SAMUserAuth: NSObject{
     var employeeID: String?
     ///权限字符串数组
     var appPower: [String]?
+    ///对应员工部门ID
+    var deptID: String?
     
     ///单例
     static var user: SAMUserAuth?
@@ -35,14 +37,15 @@ class SAMUserAuth: NSObject{
     }
     
     //MARK: - 对外提供的类工厂方法
-    class func auth(id: String?, employeeID: String?, appPower: String?) -> SAMUserAuth {
+    class func auth(id: String?, employeeID: String?, appPower: String?, deptID: String?) -> SAMUserAuth {
         if user != nil {
             return user!
         }else {
             user = SAMUserAuth()
             user!.id = id
             user!.employeeID = employeeID
-            user?.appPower = appPower?.componentsSeparatedByString("|")
+            user!.appPower = appPower?.componentsSeparatedByString("|")
+            user!.deptID = deptID
             return user!
         }
     }

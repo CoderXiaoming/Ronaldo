@@ -15,11 +15,11 @@ private let SAMCustomerCellReuseIdentifier = "SAMCustomerCellReuseIdentifier"
 ///cell正常背景色
 private let CellNormalColor = UIColor.clearColor()
 ///cell正常size
-private let CellNormalSize = CGSize(width: ScreenW, height: 86)
+private let CellNormalSize = CGSize(width: ScreenW, height: 91)
 ///cell选中背景色
 private let CellSelectedColor = mainColor_green
 ///cell选中size
-private let CellSelectedSize = CGSize(width: ScreenW, height: 172)
+private let CellSelectedSize = CGSize(width: ScreenW, height: 160)
 
 class SAMCustomerViewController: UIViewController {
     //MARK: - viewDidLoad
@@ -166,7 +166,6 @@ class SAMCustomerViewController: UIViewController {
     //MARK: - 获取搜索字符串
     func searchCon() -> String? {
         let searchStr = searchTF.text?.stringByTrimmingWhitespace()
-        print(searchStr)
         if searchStr == "" { //没有内容
             return nil
         }
@@ -195,26 +194,30 @@ class SAMCustomerViewController: UIViewController {
             }else {//有数据模型
                 
                 let arr = SAMCustomerModel.mj_objectArrayWithKeyValuesArray(dictArr)!
-                if arr.count < self.pageSize { //设置footer状态
+                
+                if arr.count < self.pageSize {
+                    
+                    //设置footer状态
                     self.collectionView.mj_footer.endRefreshingWithNoMoreData()
-                }else { //设置pageIndex
+                }else {
+                    //设置pageIndex
                     self.pageIndex += 1
+                    
+                    //处理下拉
+                    self.collectionView.mj_footer.endRefreshing()
                 }
                 self.customerModels.addObjectsFromArray(arr as [AnyObject])
+                
+                //刷新数据
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.collectionView.reloadData()
+                })
             }
-            
-            //处理下拉
-            self.collectionView.mj_footer.endRefreshing()
-            
-            //刷新数据
-            dispatch_async(dispatch_get_main_queue(), {
-                self.collectionView.reloadData()
-            })
             
         }) { (Task, Error) in
             //处理下拉
             self.collectionView.mj_footer.endRefreshing()
-            SAMHUD.showMessage("请检查网络 😉", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     

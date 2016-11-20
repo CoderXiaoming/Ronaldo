@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1808BD681DE140B800D79718 /* provinces.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1808BD671DE140B800D79718 /* provinces.plist */; };
+		1808BD6A1DE1414200D79718 /* LXMProCityList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1808BD691DE1414200D79718 /* LXMProCityList.swift */; };
 		1849464B1DDE8D6700C2E9E8 /* SAMCustomerAddController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184946491DDE8D6700C2E9E8 /* SAMCustomerAddController.swift */; };
 		1849464C1DDE8D6700C2E9E8 /* SAMCustomerAddController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1849464A1DDE8D6700C2E9E8 /* SAMCustomerAddController.xib */; };
 		185D10101DDD4EC300556D17 /* SAMHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185D100F1DDD4EC300556D17 /* SAMHUD.swift */; };
@@ -62,6 +64,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1808BD671DE140B800D79718 /* provinces.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = provinces.plist; sourceTree = "<group>"; };
+		1808BD691DE1414200D79718 /* LXMProCityList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LXMProCityList.swift; sourceTree = "<group>"; };
 		184946491DDE8D6700C2E9E8 /* SAMCustomerAddController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMCustomerAddController.swift; sourceTree = "<group>"; };
 		1849464A1DDE8D6700C2E9E8 /* SAMCustomerAddController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMCustomerAddController.xib; sourceTree = "<group>"; };
 		185D100F1DDD4EC300556D17 /* SAMHUD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMHUD.swift; sourceTree = "<group>"; };
@@ -281,6 +285,7 @@
 			isa = PBXGroup;
 			children = (
 				18EC9B401DDC026F00E78C7E /* SAMCustomerModel.swift */,
+				1808BD691DE1414200D79718 /* LXMProCityList.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -367,6 +372,7 @@
 		18C202FB1DD30ADE00C0117C /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				1808BD671DE140B800D79718 /* provinces.plist */,
 				18C2034F1DD322EF00C0117C /* SAMConstant.swift */,
 				18F4530C1DDF43E100574FCB /* SAMStringExtension.swift */,
 			);
@@ -556,6 +562,7 @@
 			files = (
 				18F50F101DD5A94F00CEA8C9 /* SAMLoginController.xib in Resources */,
 				18C203981DD4CAC400C0117C /* SAMStockProductCellDiv.xib in Resources */,
+				1808BD681DE140B800D79718 /* provinces.plist in Resources */,
 				186EB3311DDC1FE000908E6A /* SAMCustomerViewController.xib in Resources */,
 				18C202C41DD3081A00C0117C /* LaunchScreen.storyboard in Resources */,
 				18EC9B451DDC06C900E78C7E /* SAMCustomerCollectionCell.xib in Resources */,
@@ -652,6 +659,7 @@
 				18B7F1EF1DD550B200993C35 /* SAMProductInfo.swift in Sources */,
 				18ABA9561DDB4EE100B503F0 /* SAMUserAuth.swift in Sources */,
 				18F50F0F1DD5A94F00CEA8C9 /* SAMLoginController.swift in Sources */,
+				1808BD6A1DE1414200D79718 /* LXMProCityList.swift in Sources */,
 				185D10101DDD4EC300556D17 /* SAMHUD.swift in Sources */,
 				18C203481DD30FEC00C0117C /* SAMCodeViewController.swift in Sources */,
 				18C2034C1DD3100900C0117C /* SAMCustomerViewController.swift in Sources */,
@@ -735,6 +743,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -784,6 +793,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;

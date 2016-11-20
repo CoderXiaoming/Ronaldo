@@ -131,7 +131,8 @@ class SAMLoginController: UIViewController {
                 let id = dict["id"]
                 let employeeID = dict["employeeID"]
                 let appPower = dict["appPower"]
-                SAMUserAuth.auth(id, employeeID: employeeID, appPower: appPower)
+                let deptID = dict["deptID"]
+                SAMUserAuth.auth(id, employeeID: employeeID, appPower: appPower, deptID: deptID)
                 //执行动画
                 self.loginSuccessAnim()
             }
