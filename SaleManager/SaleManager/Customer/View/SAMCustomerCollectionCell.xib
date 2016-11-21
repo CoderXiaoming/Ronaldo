@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -18,6 +19,49 @@
                 <rect key="frame" x="0.0" y="0.0" width="360" height="160"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fy8-8K-KPw" userLabel="ButtonView">
+                        <rect key="frame" x="300" y="0.0" width="60" height="160"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b1l-Cc-p1a">
+                                <rect key="frame" x="0.0" y="0.0" width="60" height="53.5"/>
+                                <state key="normal" title="编 辑"/>
+                                <connections>
+                                    <action selector="editBtnClick:" destination="gTV-IL-0wX" eventType="touchUpInside" id="BYX-wh-jeS"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="297-Md-xix">
+                                <rect key="frame" x="0.0" y="107" width="60" height="53"/>
+                                <state key="normal" title="电 话"/>
+                                <connections>
+                                    <action selector="phoneBtnClick:" destination="gTV-IL-0wX" eventType="touchUpInside" id="WhO-lJ-7iY"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qjA-n0-uvR">
+                                <rect key="frame" x="0.0" y="53.5" width="60" height="53.5"/>
+                                <state key="normal" title="回 访"/>
+                                <connections>
+                                    <action selector="visitBtnClick:" destination="gTV-IL-0wX" eventType="touchUpInside" id="kZI-gY-adU"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="b1l-Cc-p1a" secondAttribute="trailing" id="1cF-GD-X3c"/>
+                            <constraint firstItem="b1l-Cc-p1a" firstAttribute="top" secondItem="fy8-8K-KPw" secondAttribute="top" id="9wO-P0-cRg"/>
+                            <constraint firstAttribute="bottom" secondItem="297-Md-xix" secondAttribute="bottom" id="Gg4-Sz-7wb"/>
+                            <constraint firstAttribute="trailing" secondItem="297-Md-xix" secondAttribute="trailing" id="MvA-mR-pxb"/>
+                            <constraint firstItem="297-Md-xix" firstAttribute="leading" secondItem="fy8-8K-KPw" secondAttribute="leading" id="OgK-hm-HYB"/>
+                            <constraint firstAttribute="trailing" secondItem="qjA-n0-uvR" secondAttribute="trailing" id="OgQ-Aa-pWp"/>
+                            <constraint firstItem="b1l-Cc-p1a" firstAttribute="leading" secondItem="fy8-8K-KPw" secondAttribute="leading" id="Ypg-Oy-yRN"/>
+                            <constraint firstItem="qjA-n0-uvR" firstAttribute="height" secondItem="b1l-Cc-p1a" secondAttribute="height" id="Ze1-W3-mSg"/>
+                            <constraint firstAttribute="height" constant="160" id="okq-6f-cFr"/>
+                            <constraint firstItem="b1l-Cc-p1a" firstAttribute="height" secondItem="fy8-8K-KPw" secondAttribute="height" multiplier="0.333333" id="qc8-9X-cF1"/>
+                            <constraint firstItem="qjA-n0-uvR" firstAttribute="top" secondItem="b1l-Cc-p1a" secondAttribute="bottom" id="wa7-Ga-hMO"/>
+                            <constraint firstItem="297-Md-xix" firstAttribute="top" secondItem="qjA-n0-uvR" secondAttribute="bottom" id="yX0-Kg-aV9"/>
+                            <constraint firstAttribute="width" constant="60" id="yv7-lJ-w64"/>
+                            <constraint firstItem="qjA-n0-uvR" firstAttribute="leading" secondItem="fy8-8K-KPw" secondAttribute="leading" id="zzW-B8-jTh"/>
+                        </constraints>
+                    </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vql-HF-nqf" userLabel="ContainterView">
                         <rect key="frame" x="0.0" y="0.0" width="360" height="160"/>
                         <subviews>
@@ -168,13 +212,17 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="Vql-HF-nqf" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="KjY-SG-lhx"/>
+                <constraint firstAttribute="trailing" secondItem="fy8-8K-KPw" secondAttribute="trailing" id="M2F-eb-Htv"/>
                 <constraint firstAttribute="bottom" secondItem="Vql-HF-nqf" secondAttribute="bottom" id="QYG-XS-Ri6"/>
                 <constraint firstItem="Vql-HF-nqf" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="gmy-yD-HDB"/>
+                <constraint firstItem="fy8-8K-KPw" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="iSO-gg-Bpn"/>
                 <constraint firstAttribute="trailing" secondItem="Vql-HF-nqf" secondAttribute="trailing" id="zxy-iC-TTp"/>
             </constraints>
             <size key="customSize" width="360" height="235"/>
             <connections>
                 <outlet property="addLabel" destination="muv-kw-ckk" id="LTU-mf-ISe"/>
+                <outlet property="buttonView" destination="fy8-8K-KPw" id="ycL-Lf-EtE"/>
+                <outlet property="containterView" destination="Vql-HF-nqf" id="NjE-ck-Cst"/>
                 <outlet property="customerLabel" destination="Xpl-Hl-sTc" id="SRR-Xi-4p9"/>
                 <outlet property="faxLabel" destination="SqX-MH-iWS" id="kX4-dQ-4Km"/>
                 <outlet property="phoneLabel" destination="p30-jl-d8a" id="zxJ-mA-f3Y"/>

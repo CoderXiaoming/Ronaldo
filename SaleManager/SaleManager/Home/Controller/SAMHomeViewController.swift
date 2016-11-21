@@ -46,11 +46,23 @@ class SAMHomeViewController: UIViewController {
 
     //MARK: - 点击buttonView上按钮的处理
     func customerBtnClick() {
+        let patameters = ["codeID": 1, "imageIndex": 2]
+        SAMNetWorker.sharedNetWorker().POST("uploadImage.ashx", parameters: patameters, constructingBodyWithBlock: { (formData) in
+                let image = UIImage(named: "123")!
+                let data = UIImageJPEGRepresentation(image, 1.0)!
+                formData.appendPartWithFileData(data, name: "1", fileName: "image.jpg", mimeType: "image/jpg")
+            
+            }, progress: { (progress) in
+                
+            }, success: { (Task, Json) in
+                print(Json)
+            }) { (Task, Error) in
+                print(Error)
+        }
         print("customerBtnClick")
         
     }
     func stockBtnClick() {
-        print("stockBtnClick")
     }
     func saleBtnClick() {
         print("saleBtnClick")
