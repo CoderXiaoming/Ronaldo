@@ -327,9 +327,6 @@ class SAMCustomerAddController: UIViewController {
     override func loadView() {
         view = NSBundle.mainBundle().loadNibNamed("SAMCustomerAddController", owner: self, options: nil)![0] as! UIView
     }
-    deinit {
-        print("deinit")
-    }
 }
 
 extension SAMCustomerAddController: UITextFieldDelegate {

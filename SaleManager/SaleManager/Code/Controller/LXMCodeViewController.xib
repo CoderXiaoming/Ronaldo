@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11542" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LXMCodeViewController" customModule="SaleManager" customModuleProvider="target">
+            <connections>
+                <outlet property="containerView" destination="cdu-vV-ZlO" id="ouA-Jx-CXZ"/>
+                <outlet property="containerViewTopDis" destination="DWg-50-Olc" id="fcv-YO-mlP"/>
+                <outlet property="scanLineImage" destination="DPa-jP-GOv" id="3lL-Ro-8zA"/>
+                <outlet property="scanLineTopDis" destination="UTu-KK-C9s" id="jb9-rS-7hC"/>
+                <outlet property="view" destination="iN0-l3-epB" id="vjv-Gm-mfh"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cdu-vV-ZlO" userLabel="ContainerView">
+                    <rect key="frame" x="60" y="100" width="255" height="255"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="scanCorner" translatesAutoresizingMaskIntoConstraints="NO" id="RYj-6p-yRn">
+                            <rect key="frame" x="0.0" y="0.0" width="255" height="255"/>
+                        </imageView>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="scanLine" translatesAutoresizingMaskIntoConstraints="NO" id="DPa-jP-GOv">
+                            <rect key="frame" x="-30" y="0.0" width="315" height="12"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="12" id="vZf-yN-KxT"/>
+                            </constraints>
+                        </imageView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="RYj-6p-yRn" secondAttribute="trailing" id="2Dq-wA-Wys"/>
+                        <constraint firstItem="DPa-jP-GOv" firstAttribute="leading" secondItem="cdu-vV-ZlO" secondAttribute="leading" constant="-30" id="EW4-Ua-Vb8"/>
+                        <constraint firstItem="RYj-6p-yRn" firstAttribute="leading" secondItem="cdu-vV-ZlO" secondAttribute="leading" id="RJ3-si-VHm"/>
+                        <constraint firstItem="DPa-jP-GOv" firstAttribute="top" secondItem="cdu-vV-ZlO" secondAttribute="top" id="UTu-KK-C9s"/>
+                        <constraint firstAttribute="trailing" secondItem="DPa-jP-GOv" secondAttribute="trailing" constant="-30" id="WJD-N8-QAX"/>
+                        <constraint firstAttribute="bottom" secondItem="RYj-6p-yRn" secondAttribute="bottom" id="aod-9e-uSM"/>
+                        <constraint firstAttribute="width" secondItem="cdu-vV-ZlO" secondAttribute="height" multiplier="1:1" id="jYC-WF-T9k"/>
+                        <constraint firstItem="RYj-6p-yRn" firstAttribute="top" secondItem="cdu-vV-ZlO" secondAttribute="top" id="tiS-bq-f3I"/>
+                    </constraints>
+                </view>
+                <view alpha="0.29999999999999999" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sut-n7-CFz" userLabel="LeftView">
+                    <rect key="frame" x="0.0" y="0.0" width="60" height="667"/>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                </view>
+                <view alpha="0.29999999999999999" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XK9-rG-V2g" userLabel="RightView">
+                    <rect key="frame" x="315" y="0.0" width="60" height="667"/>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                </view>
+                <view alpha="0.29999999999999999" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fsr-ve-cjf" userLabel="TopView">
+                    <rect key="frame" x="60" y="0.0" width="255" height="100"/>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                </view>
+                <view alpha="0.29999999999999999" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K2d-FN-oW2" userLabel="BottomView">
+                    <rect key="frame" x="60" y="355" width="255" height="312"/>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                </view>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="将二维码放入框内，即可自动扫描" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oyZ-ot-jnO">
+                    <rect key="frame" x="80" y="375" width="214.5" height="17"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="XK9-rG-V2g" secondAttribute="trailing" id="0GV-sX-5iy"/>
+                <constraint firstAttribute="bottom" secondItem="XK9-rG-V2g" secondAttribute="bottom" id="47L-hR-bS0"/>
+                <constraint firstItem="XK9-rG-V2g" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="6Ne-Bl-bXY"/>
+                <constraint firstItem="sut-n7-CFz" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="6w4-rp-loy"/>
+                <constraint firstItem="sut-n7-CFz" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="9i8-JZ-uQz"/>
+                <constraint firstItem="oyZ-ot-jnO" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="9on-Zp-KVs"/>
+                <constraint firstItem="cdu-vV-ZlO" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="100" id="DWg-50-Olc"/>
+                <constraint firstItem="K2d-FN-oW2" firstAttribute="top" secondItem="cdu-vV-ZlO" secondAttribute="bottom" id="K6p-eI-wNt"/>
+                <constraint firstItem="XK9-rG-V2g" firstAttribute="leading" secondItem="K2d-FN-oW2" secondAttribute="trailing" id="RhY-hc-hKc"/>
+                <constraint firstItem="cdu-vV-ZlO" firstAttribute="leading" secondItem="sut-n7-CFz" secondAttribute="trailing" id="VYZ-U1-wET"/>
+                <constraint firstAttribute="trailing" secondItem="cdu-vV-ZlO" secondAttribute="trailing" constant="60" id="Xnw-nZ-VZP"/>
+                <constraint firstItem="cdu-vV-ZlO" firstAttribute="top" secondItem="fsr-ve-cjf" secondAttribute="bottom" id="aam-M1-WdU"/>
+                <constraint firstAttribute="bottom" secondItem="sut-n7-CFz" secondAttribute="bottom" id="avT-az-XbQ"/>
+                <constraint firstItem="K2d-FN-oW2" firstAttribute="leading" secondItem="sut-n7-CFz" secondAttribute="trailing" id="ctJ-8L-aOz"/>
+                <constraint firstItem="fsr-ve-cjf" firstAttribute="leading" secondItem="sut-n7-CFz" secondAttribute="trailing" id="gBs-aw-dM4"/>
+                <constraint firstItem="fsr-ve-cjf" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="lvf-bB-ZeB"/>
+                <constraint firstItem="XK9-rG-V2g" firstAttribute="leading" secondItem="cdu-vV-ZlO" secondAttribute="trailing" id="nL2-aR-Q6R"/>
+                <constraint firstItem="XK9-rG-V2g" firstAttribute="leading" secondItem="fsr-ve-cjf" secondAttribute="trailing" id="rB4-uu-5jh"/>
+                <constraint firstItem="oyZ-ot-jnO" firstAttribute="top" secondItem="cdu-vV-ZlO" secondAttribute="bottom" constant="20" id="vvG-Qo-JN0"/>
+                <constraint firstItem="cdu-vV-ZlO" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="60" id="y2n-ZN-2w7"/>
+                <constraint firstAttribute="bottom" secondItem="K2d-FN-oW2" secondAttribute="bottom" id="yR9-oP-pft"/>
+            </constraints>
+            <point key="canvasLocation" x="25.5" y="51.5"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="scanCorner" width="258" height="258"/>
+        <image name="scanLine" width="320" height="12"/>
+    </resources>
+</document>

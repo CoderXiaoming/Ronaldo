@@ -108,7 +108,7 @@ class SAMCustomerCollectionCell: UICollectionViewCell {
         if  hasSelected() == false {
             return
         }
-        UIView.animateWithDuration(0.3) { 
+        UIView.animateWithDuration(0.2) {
             self.containterView.transform = CGAffineTransformMakeTranslation(-60, 0)
         }
     }
@@ -117,7 +117,7 @@ class SAMCustomerCollectionCell: UICollectionViewCell {
         if  hasSelected() == false {
             return
         }
-        UIView.animateWithDuration(0.3) {
+        UIView.animateWithDuration(0.2) {
             self.containterView.transform = CGAffineTransformIdentity
         }
     }

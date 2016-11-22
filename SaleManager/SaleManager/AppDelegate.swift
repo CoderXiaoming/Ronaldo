@@ -11,6 +11,9 @@ import UIKit
 ///用户登录成功发出的通知
 let LoginSuccessNotification = "LoginSuccessNotification"
 
+/// applicationWillEnterForeground
+let ApplicationWillEnterForegroundNotification = "ApplicationWillEnterForegroundNotification"
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -52,7 +55,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
-        // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
