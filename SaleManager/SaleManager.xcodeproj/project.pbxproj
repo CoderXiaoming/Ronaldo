@@ -14,6 +14,13 @@
 		185D10101DDD4EC300556D17 /* SAMHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185D100F1DDD4EC300556D17 /* SAMHUD.swift */; };
 		186EB3311DDC1FE000908E6A /* SAMCustomerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 186EB3301DDC1FE000908E6A /* SAMCustomerViewController.xib */; };
 		187EA2761DE3EF5B004523A4 /* LXMCodeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 187EA2751DE3EF5B004523A4 /* LXMCodeViewController.xib */; };
+		187EA2791DE53295004523A4 /* SAMStockConditionalSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187EA2771DE53295004523A4 /* SAMStockConditionalSearchController.swift */; };
+		187EA27A1DE53295004523A4 /* SAMStockConditionalSearchController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 187EA2781DE53295004523A4 /* SAMStockConditionalSearchController.xib */; };
+		187EA27C1DE5477F004523A4 /* SAMStockCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187EA27B1DE5477F004523A4 /* SAMStockCategory.swift */; };
+		187EA27E1DE54794004523A4 /* SAMStockStorehouse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187EA27D1DE54794004523A4 /* SAMStockStorehouse.swift */; };
+		187EA2881DE5AF41004523A4 /* SAMStockCodeSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187EA2861DE5AF41004523A4 /* SAMStockCodeSearchCell.swift */; };
+		187EA2891DE5AF41004523A4 /* SAMStockCodeSearchCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 187EA2871DE5AF41004523A4 /* SAMStockCodeSearchCell.xib */; };
+		187EA28B1DE5BFEC004523A4 /* SAMStockCodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187EA28A1DE5BFEC004523A4 /* SAMStockCodeModel.swift */; };
 		18ABA9561DDB4EE100B503F0 /* SAMUserAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18ABA9551DDB4EE100B503F0 /* SAMUserAuth.swift */; };
 		18B089D31DD7EC9900CDF36D /* SAMNetWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B089D21DD7EC9900CDF36D /* SAMNetWorker.swift */; };
 		18B7F1EF1DD550B200993C35 /* SAMProductInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B7F1EE1DD550B200993C35 /* SAMProductInfo.swift */; };
@@ -72,6 +79,13 @@
 		185D100F1DDD4EC300556D17 /* SAMHUD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMHUD.swift; sourceTree = "<group>"; };
 		186EB3301DDC1FE000908E6A /* SAMCustomerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMCustomerViewController.xib; sourceTree = "<group>"; };
 		187EA2751DE3EF5B004523A4 /* LXMCodeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LXMCodeViewController.xib; sourceTree = "<group>"; };
+		187EA2771DE53295004523A4 /* SAMStockConditionalSearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMStockConditionalSearchController.swift; sourceTree = "<group>"; };
+		187EA2781DE53295004523A4 /* SAMStockConditionalSearchController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMStockConditionalSearchController.xib; sourceTree = "<group>"; };
+		187EA27B1DE5477F004523A4 /* SAMStockCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMStockCategory.swift; sourceTree = "<group>"; };
+		187EA27D1DE54794004523A4 /* SAMStockStorehouse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMStockStorehouse.swift; sourceTree = "<group>"; };
+		187EA2861DE5AF41004523A4 /* SAMStockCodeSearchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMStockCodeSearchCell.swift; sourceTree = "<group>"; };
+		187EA2871DE5AF41004523A4 /* SAMStockCodeSearchCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMStockCodeSearchCell.xib; sourceTree = "<group>"; };
+		187EA28A1DE5BFEC004523A4 /* SAMStockCodeModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMStockCodeModel.swift; sourceTree = "<group>"; };
 		18ABA9551DDB4EE100B503F0 /* SAMUserAuth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMUserAuth.swift; sourceTree = "<group>"; };
 		18B089D21DD7EC9900CDF36D /* SAMNetWorker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMNetWorker.swift; sourceTree = "<group>"; };
 		18B7F1EE1DD550B200993C35 /* SAMProductInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMProductInfo.swift; sourceTree = "<group>"; };
@@ -397,6 +411,8 @@
 			children = (
 				18C203451DD30FDB00C0117C /* SAMStockViewController.swift */,
 				18C203531DD477D800C0117C /* SAMStockViewController.xib */,
+				187EA2771DE53295004523A4 /* SAMStockConditionalSearchController.swift */,
+				187EA2781DE53295004523A4 /* SAMStockConditionalSearchController.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -405,6 +421,9 @@
 			isa = PBXGroup;
 			children = (
 				18B7F1EE1DD550B200993C35 /* SAMProductInfo.swift */,
+				187EA27B1DE5477F004523A4 /* SAMStockCategory.swift */,
+				187EA27D1DE54794004523A4 /* SAMStockStorehouse.swift */,
+				187EA28A1DE5BFEC004523A4 /* SAMStockCodeModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -415,6 +434,8 @@
 				18C203931DD4C8F600C0117C /* SAMStockProductCell.swift */,
 				18B7F1F21DD5680100993C35 /* SAMStockProductCellDiv.swift */,
 				18C203971DD4CAC400C0117C /* SAMStockProductCellDiv.xib */,
+				187EA2861DE5AF41004523A4 /* SAMStockCodeSearchCell.swift */,
+				187EA2871DE5AF41004523A4 /* SAMStockCodeSearchCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -564,6 +585,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				18F50F101DD5A94F00CEA8C9 /* SAMLoginController.xib in Resources */,
+				187EA2891DE5AF41004523A4 /* SAMStockCodeSearchCell.xib in Resources */,
+				187EA27A1DE53295004523A4 /* SAMStockConditionalSearchController.xib in Resources */,
 				18C203981DD4CAC400C0117C /* SAMStockProductCellDiv.xib in Resources */,
 				1808BD681DE140B800D79718 /* provinces.plist in Resources */,
 				187EA2761DE3EF5B004523A4 /* LXMCodeViewController.xib in Resources */,
@@ -660,7 +683,9 @@
 			files = (
 				18B7F1F31DD5680100993C35 /* SAMStockProductCellDiv.swift in Sources */,
 				18C203401DD30EA900C0117C /* SAMMainTabBarController.swift in Sources */,
+				187EA27C1DE5477F004523A4 /* SAMStockCategory.swift in Sources */,
 				18B7F1EF1DD550B200993C35 /* SAMProductInfo.swift in Sources */,
+				187EA2881DE5AF41004523A4 /* SAMStockCodeSearchCell.swift in Sources */,
 				18ABA9561DDB4EE100B503F0 /* SAMUserAuth.swift in Sources */,
 				18F50F0F1DD5A94F00CEA8C9 /* SAMLoginController.swift in Sources */,
 				1808BD6A1DE1414200D79718 /* LXMProCityList.swift in Sources */,
@@ -671,6 +696,7 @@
 				18C202BA1DD3081A00C0117C /* AppDelegate.swift in Sources */,
 				1849464B1DDE8D6700C2E9E8 /* SAMCustomerAddController.swift in Sources */,
 				18C2034E1DD3143700C0117C /* SAMBaseNavigationController.swift in Sources */,
+				187EA2791DE53295004523A4 /* SAMStockConditionalSearchController.swift in Sources */,
 				18EC9B411DDC026F00E78C7E /* SAMCustomerModel.swift in Sources */,
 				18C2034A1DD30FF800C0117C /* SAMCarViewController.swift in Sources */,
 				18EC9B441DDC06C900E78C7E /* SAMCustomerCollectionCell.swift in Sources */,
@@ -681,8 +707,10 @@
 				18C203941DD4C8F600C0117C /* SAMStockProductCell.swift in Sources */,
 				18C203461DD30FDB00C0117C /* SAMStockViewController.swift in Sources */,
 				18F50F121DD698FF00CEA8C9 /* SAMLoginTextField.swift in Sources */,
+				187EA27E1DE54794004523A4 /* SAMStockStorehouse.swift in Sources */,
 				18D30D9E1DDED07000C1DC67 /* SAMDismissingAnimator.swift in Sources */,
 				18B089D31DD7EC9900CDF36D /* SAMNetWorker.swift in Sources */,
+				187EA28B1DE5BFEC004523A4 /* SAMStockCodeModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

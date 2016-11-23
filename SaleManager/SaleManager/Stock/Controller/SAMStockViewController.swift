@@ -12,6 +12,75 @@ private let productCellReuseIdentifier = "productCellReuseIdentifier"
 
 class SAMStockViewController: UIViewController {
     
+    //MARK: - viewDidLoad
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        //初始化UI
+        setupUI()
+        
+        //设置展示库存的collectionView
+        setupCollectionView()
+    }
+    
+    //MARK: - 初始化UI
+    private func setupUI() {
+        title = "库存查询"
+        view.backgroundColor = UIColor.whiteColor()
+        
+        //设置导航栏右边的所有选项
+        setupRightNavBarItems()
+        
+        //添加搜索框上部间距
+        searchBarTopConstraint.constant = navigationController!.navigationBar.frame.maxY
+    }
+    
+    //MARK: - 设置导航栏右边所有的按钮
+    private func setupRightNavBarItems() {
+        let nameScanBtn = UIButton()
+        nameScanBtn.setImage(UIImage(named: "nameScan_nav"), forState: .Normal)
+        nameScanBtn.sizeToFit()
+        nameScanBtn.addTarget(self, action: #selector(SAMStockViewController.nameScanBtnClick), forControlEvents: .TouchUpInside)
+        let codeScanBtn = UIButton()
+        codeScanBtn.setImage(UIImage(named: "codeScan_nav"), forState: .Normal)
+        codeScanBtn.sizeToFit()
+        codeScanBtn.addTarget(self, action: #selector(SAMStockViewController.codeScanBtnClick), forControlEvents: .TouchUpInside)
+        
+        navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: codeScanBtn), UIBarButtonItem(customView: nameScanBtn)]
+    }
+    
+    //MARK: - 设置collectionView
+    private func setupCollectionView() {
+        //设置内容的下边距
+        collectionView.contentInset = UIEdgeInsetsMake(0, 0, tabBarController!.tabBar.bounds.height, 0)
+        //设置代理，数据源
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        
+        //注册cell
+        collectionView.registerClass(SAMStockProductCell.self, forCellWithReuseIdentifier: productCellReuseIdentifier)
+    }
+    
+    //MARK: - 总库存按钮点击
+    func nameScanBtnClick() {
+//        UIView.animateWithDuration(0.6) {
+//            self.searchBarTopConstraint.constant = self.navigationController!.navigationBar.frame.maxY - self.searchBar.bounds.height
+//            self.stockVTop_searchBar_space.constant = -(self.allStockView.bounds.height)
+//            self.view.layoutIfNeeded()
+//        }
+        presentViewController(conditionalSearchVC, animated: true) { 
+            
+        }
+        
+    }
+    //MARK: - 二维码按钮点击
+    func codeScanBtnClick() {
+        UIView.animateWithDuration(0.6) {
+            self.searchBarTopConstraint.constant = self.navigationController!.navigationBar.frame.maxY
+            self.view.layoutIfNeeded()
+        }
+    }
+    
     ///展示的数据模型
     var productModels: [SAMProductInfo] = {
         let model1 = SAMProductInfo(pictureN: UIImage(named: "saled"), nameN: "H28-02", pishuN: 22.0, mishuN: 2308)
@@ -53,6 +122,14 @@ class SAMStockViewController: UIViewController {
     
     var realHeigts = [240, 180, 240, 360, 240, 240]
     
+    //MARK: - 懒加载属性
+    private lazy var conditionalSearchVC: SAMStockConditionalSearchController = {
+        let vc = SAMStockConditionalSearchController()
+        vc.transitioningDelegate = self
+        vc.modalPresentationStyle = UIModalPresentationStyle.Custom
+        return vc
+    }()
+    
     //MARK: - xib链接约束属性
     ///搜索框顶部与控制View的距离
     @IBOutlet weak var searchBarTopConstraint: NSLayoutConstraint!
@@ -68,82 +145,18 @@ class SAMStockViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var indicaterView: UIView!
     
-    //MARK: - loadView
-    override func loadView() {
-        //从xib加载view
-        view = NSBundle.mainBundle().loadNibNamed("SAMStockViewController", owner: self, options: nil)![0] as! UIView
-    }
     
-    //MARK: - viewDidLoad
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        //初始化UI
-        setupUI()
-        
-        //设置展示库存的collectionView
-        setupCollectionView()
-    }
-
-    //MARK: - 初始化UI
-    private func setupUI() {
-        title = "库存查询"
-        view.backgroundColor = UIColor.whiteColor()
-        
-        //设置导航栏右边的所有选项
-        setupRightNavBarItems()
-        
-        //添加搜索框上部间距
-        searchBarTopConstraint.constant = navigationController!.navigationBar.frame.maxY
-    }
     
-    //MARK: - 设置导航栏右边所有的按钮
-    private func setupRightNavBarItems() {
-        let nameScanBtn = UIButton()
-        nameScanBtn.setImage(UIImage(named: "nameScan_nav"), forState: .Normal)
-        nameScanBtn.sizeToFit()
-        nameScanBtn.addTarget(self, action: #selector(SAMStockViewController.nameScanBtnClick), forControlEvents: .TouchUpInside)
-        let codeScanBtn = UIButton()
-        codeScanBtn.setImage(UIImage(named: "codeScan_nav"), forState: .Normal)
-        codeScanBtn.sizeToFit()
-        codeScanBtn.addTarget(self, action: #selector(SAMStockViewController.codeScanBtnClick), forControlEvents: .TouchUpInside)
-        
-        navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: codeScanBtn), UIBarButtonItem(customView: nameScanBtn)]
-    }
-    
-    //MARK: - 设置collectionView
-    private func setupCollectionView() {
-        //设置内容的下边距
-        collectionView.contentInset = UIEdgeInsetsMake(0, 0, tabBarController!.tabBar.bounds.height, 0)
-        //设置代理，数据源
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        
-        //注册cell
-        collectionView.registerClass(SAMStockProductCell.self, forCellWithReuseIdentifier: productCellReuseIdentifier)
-    }
-    
-    //MARK: - 总库存按钮点击
-    func nameScanBtnClick() {
-        UIView.animateWithDuration(0.6) {
-            self.searchBarTopConstraint.constant = self.navigationController!.navigationBar.frame.maxY - self.searchBar.bounds.height
-            self.stockVTop_searchBar_space.constant = -(self.allStockView.bounds.height)
-            self.view.layoutIfNeeded()
-        }
-        
-    }
-    //MARK: - 二维码按钮点击
-    func codeScanBtnClick() {
-        UIView.animateWithDuration(0.6) {
-            self.searchBarTopConstraint.constant = self.navigationController!.navigationBar.frame.maxY
-            self.view.layoutIfNeeded()
-        }
-    }
     
     //MARK: - 其他方法
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    }
+    
+    //MARK: - loadView
+    override func loadView() {
+        //从xib加载view
+        view = NSBundle.mainBundle().loadNibNamed("SAMStockViewController", owner: self, options: nil)![0] as! UIView
     }
 }
 
@@ -174,5 +187,16 @@ extension SAMStockViewController: UICollectionViewDelegate, UICollectionViewData
         
         return CGSize(width: ScreenW, height: CGFloat(realHeight))
     }
+}
+
+//MARK: - UIViewControllerTransitioningDelegate
+extension SAMStockViewController: UIViewControllerTransitioningDelegate {
     
+    func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return SAMPresentingAnimator()
+    }
+    
+    func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return SAMDismissingAnimator()
+    }
 }

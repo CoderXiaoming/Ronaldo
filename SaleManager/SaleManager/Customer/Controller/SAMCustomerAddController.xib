@@ -192,7 +192,7 @@
                             <rect key="frame" x="62" y="36.5" width="303" height="30"/>
                             <color key="textColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                            <textInputTraits key="textInputTraits" spellCheckingType="no" returnKeyType="done"/>
+                            <textInputTraits key="textInputTraits" spellCheckingType="no" returnKeyType="next"/>
                         </textField>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="地址" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hIv-g8-1rw" customClass="SAMLoginTextField" customModule="SaleManager" customModuleProvider="target">
                             <rect key="frame" x="62" y="67.5" width="303" height="30"/>

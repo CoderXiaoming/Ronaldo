@@ -364,25 +364,29 @@ extension SAMCustomerViewController: UICollectionViewDelegate {
     //MARK: - 点击了某个cell时执行的动画
     func selectCellAnimation(willSelCell: SAMCustomerCollectionCell?, willNorCell: SAMCustomerCollectionCell?) {
         
-        UIView.animateWithDuration(0.2) {
-            
-            //让系统调用DelegateFlowLayout 的 sizeForItemAtIndexPath的方法
-            self.collectionView.performBatchUpdates({
-            }) { (finished) in
-            }
-            
-            //设置背景颜色
-            willSelCell?.containterView.backgroundColor = CellSelectedColor
-            willNorCell?.containterView.backgroundColor = CellNormalColor
-            
-            //恢复左滑形变
-            willNorCell?.containterView.transform = CGAffineTransformIdentity
-            
-            //一个神奇的方法
-            self.view.layoutIfNeeded()
+        UIView.animateWithDuration(0.2, animations: { 
+                //让系统调用DelegateFlowLayout 的 sizeForItemAtIndexPath的方法
+                self.collectionView.performBatchUpdates({
+                }) { (finished) in
+                }
+                
+                //设置背景颜色
+                willSelCell?.containterView.backgroundColor = CellSelectedColor
+                willNorCell?.containterView.backgroundColor = CellNormalColor
+                
+                //恢复左滑形变
+                willNorCell?.containterView.transform = CGAffineTransformIdentity
+                
+                //一个神奇的方法
+                self.view.layoutIfNeeded()
+            }) { (_) in
+                
+                //如果点击了最下面一个cell，则滚至最底部
+                if self.selectedIndexPath?.row == (self.customerModels.count - 1) {
+                    self.collectionView.scrollToItemAtIndexPath(self.selectedIndexPath!, atScrollPosition: .Bottom, animated: true)
+                }
         }
     }
-
 }
 
 extension SAMCustomerViewController: UICollectionViewDelegateFlowLayout {

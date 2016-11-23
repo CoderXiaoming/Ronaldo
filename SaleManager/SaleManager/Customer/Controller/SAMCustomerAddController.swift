@@ -45,9 +45,6 @@ class SAMCustomerAddController: UIViewController {
         provinceTF.inputView = cityPickerView
         cityTF.inputView = cityPickerView
         
-        //监听addTF
-        addTF.addTarget(self, action: #selector(SAMCustomerAddController.addTFChange(_:)), forControlEvents: .EditingChanged)
-        
         //设置初始请求URL
         if requestURLStr == nil {
             requestURLStr = SAMUploadCustomerUrlStr
@@ -239,17 +236,6 @@ class SAMCustomerAddController: UIViewController {
         }
     }
     
-    //MARK: - 监听第一个地址文本框
-    func addTFChange(textField: UITextField) {
-        
-        //判断文本长度是否到达30
-        let flag = textField.text?.lengthOfBytesUsingEncoding(NSUTF8StringEncoding) >= 30
-        if flag && !isAddTFdidReachMax {
-            addTF2.becomeFirstResponder()
-            isAddTFdidReachMax = true
-        }
-    }
-    
     //MARK: - 结束当前textField编辑状态
     func endFirstResponderEditing() {
         if firstResponder != nil {
@@ -331,6 +317,13 @@ class SAMCustomerAddController: UIViewController {
 
 extension SAMCustomerAddController: UITextFieldDelegate {
     func textFieldShouldReturn(textField: UITextField) -> Bool {
+        
+        //如果是第一行地址栏，则跳转第二行地址栏
+        if textField == addTF {
+            addTF2.becomeFirstResponder()
+            return true
+        }
+        
         textField.resignFirstResponder()
         return true
     }
