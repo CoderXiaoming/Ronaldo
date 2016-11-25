@@ -362,7 +362,7 @@ extension SAMCustomerViewController: UICollectionViewDelegate {
     }
     
     //MARK: - 点击了某个cell时执行的动画
-    func selectCellAnimation(willSelCell: SAMCustomerCollectionCell?, willNorCell: SAMCustomerCollectionCell?) {
+    private func selectCellAnimation(willSelCell: SAMCustomerCollectionCell?, willNorCell: SAMCustomerCollectionCell?) {
         
         UIView.animateWithDuration(0.2, animations: { 
                 //让系统调用DelegateFlowLayout 的 sizeForItemAtIndexPath的方法

@@ -6,4 +6,5 @@ target :'SaleManager' do
     pod 'MJExtension'
     pod 'MJRefresh'
     pod 'pop'
+    pod 'SDWebImage'
 end

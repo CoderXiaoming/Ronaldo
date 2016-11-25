@@ -11,7 +11,7 @@ import MBProgressHUD
 import MJRefresh
 
 ///搜索界面转换动画时间
-private let changeSearchAnimationDuration = 0.5
+private let changeSearchAnimationDuration = 0.4
 ///加载所有分类的链接
 private let loadCategoriesURLStr = "getCategoryList.ashx"
 ///加载所有仓库的链接
@@ -19,11 +19,16 @@ private let loadStorehousesURLStr = "getStorehouseList.ashx"
 ///二维码搜索CELL重用标识符
 private let SAMStockCodeCellReuseIdentifier = "SAMStockCodeCellReuseIdentifier"
 ///二维码CELL正常状态下SIZE
-private let SAMStockCodeCellNormalSize = CGSize(width: 70, height: 90)
-///二维码CELL选择状态下SIZE
-private let SAMStockCodeCellSelectedSize = CGSize(width: 100, height: 120)
+private let SAMStockCodeCellNormalSize = CGSize(width: 80, height: 77)
 
 class SAMStockConditionalSearchController: UIViewController {
+    
+    //MARK: - 提供给外界设置点击搜索按钮回调闭包的方法
+    func setCompletionCallback(callback: (([String: AnyObject]?) -> ())) {
+        
+        //赋值回调闭包
+        searchCallback = callback
+    }
     
     //MARK: - viewDidLoad
     override func viewDidLoad() {
@@ -35,12 +40,8 @@ class SAMStockConditionalSearchController: UIViewController {
         //设置collectionView
         setupCollectionView()
         
-        //设置textField的代理
-        let arr = NSArray(array: [categoryTF, numberTF, storehouseTF, stockTF, searchTF])
-        arr.enumerateObjectsUsingBlock { (obj, ind, nil) in
-            let tf = obj as! SAMLoginTextField
-            tf.delegate = self
-        }
+        //设置Textfield
+        setupTextfield()
     }
     
     //MARK: - 初始化UI
@@ -56,7 +57,7 @@ class SAMStockConditionalSearchController: UIViewController {
         //设置搜索按钮外观
         searchCodeBtn.layer.borderWidth = 1
         searchCodeBtn.layer.cornerRadius = 5
-        searchCodeBtn.layer.borderColor = customBlueColor.CGColor
+        searchCodeBtn.layer.borderColor = UIColor.whiteColor().CGColor
         
         //设置searchTF的放大镜
         let imageView = UIImageView(image: UIImage(named: "search_mirro"))
@@ -80,10 +81,25 @@ class SAMStockConditionalSearchController: UIViewController {
         //没有数据自动隐藏footer
         collectionView.mj_footer.automaticallyHidden = true
     }
+    
+    //MARK: - 初始化Textfield
+    private func setupTextfield() {
+        
+        let arr = NSArray(array: [categoryTF, numberTF, storehouseTF, stockTF, searchTF])
+        arr.enumerateObjectsUsingBlock { (obj, ind, nil) in
+            let tf = obj as! SAMLoginTextField
+            
+            //设置textField的代理
+            tf.delegate = self
+        }
+    }
 
     //MARK: - viewWillAppear
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        //加载所有分类、仓库列表
+        loadCategoryStorehouseList()
         
         //清空所有文本框
         let arr = NSArray(array: [categoryTF, numberTF, storehouseTF, stockTF])
@@ -92,10 +108,12 @@ class SAMStockConditionalSearchController: UIViewController {
             tf.text = nil
         }
         
+        //设置退出编辑按钮可用性
+        endEditingBtn.enabled = false
+        
         //重置数据记录
         firstResponder = nil
-        selectedStorehouseModel = nil
-        selectedCategoryModel = nil
+
     }
     
     //MARK: - viewDidAppear
@@ -150,6 +168,7 @@ class SAMStockConditionalSearchController: UIViewController {
     
     //MARK: - 加载数据
     func loadNewInfo() {
+        
         //结束下拉刷新
         collectionView.mj_footer.endRefreshing()
         
@@ -173,7 +192,6 @@ class SAMStockConditionalSearchController: UIViewController {
             
             //清空原先数据
             self.stockCodeModels.removeAllObjects()
-            self.selectedIndexPath = nil
             
             //获取模型数组
             let dictArr = Json!["body"] as? [[String: AnyObject]]
@@ -293,6 +311,40 @@ class SAMStockConditionalSearchController: UIViewController {
     @IBAction func searchBtnClick(sender: AnyObject) {
         //退回编辑状态
         endFirstResponderEditing()
+        
+        //判断分类
+        if !categoryTF.hasText() {
+            SAMHUD.showMessage("请选择分类", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
+            return
+        }
+        
+        //判断编号
+        if !numberTF.hasText() {
+            SAMHUD.showMessage("请选择编号", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
+            return
+        }
+        
+        //判断仓库
+        if !storehouseTF.hasText() {
+            SAMHUD.showMessage("请选择仓库", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
+            return
+        }
+        
+        //判断仓库
+        if !(stockTF.text?.isWholeNumber())! {
+            SAMHUD.showMessage("请填写整数库存", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
+            return
+        }
+        
+        //创建回调参数
+        let productIDName = numberTF.text
+        let minCountM = stockTF.text
+        let parameters = ["productIDName": productIDName!, "storehouseID": storehouseID!, "parentID": parentID!, "minCountM": minCountM!]
+        
+        //执行回调参数
+        if searchCallback != nil {
+            searchCallback!(parameters)
+        }
     }
     
     //MARK: - 点击了编号框按钮
@@ -340,7 +392,7 @@ class SAMStockConditionalSearchController: UIViewController {
     
     
     //MARK: - 结束当前textField编辑状态
-    func endFirstResponderEditing() {
+    private func endFirstResponderEditing() {
         if firstResponder != nil {
             firstResponder?.resignFirstResponder()
         }
@@ -348,13 +400,9 @@ class SAMStockConditionalSearchController: UIViewController {
     
     //MARK: - 懒加载集合
     //分类模型数组
-    private lazy var categories = NSMutableArray()
+    private let categories = NSMutableArray()
     //仓库模型数组
-    private lazy var storehouses = NSMutableArray()
-    //当前选中的分类模型
-    private var selectedCategoryModel: SAMStockCategory?
-    //当前选中的仓库模型
-    private var selectedStorehouseModel: SAMStockStorehouse?
+    private let storehouses = NSMutableArray()
     
     ///当前第一响应textfield
     private var firstResponder: UITextField? {
@@ -380,8 +428,6 @@ class SAMStockConditionalSearchController: UIViewController {
         return pickerView
     }()
     
-    ///当前选中模型index
-    var selectedIndexPath: NSIndexPath?
     
     ///最近一次查询的参数
     private var parameters: [String: AnyObject]?
@@ -394,6 +440,13 @@ class SAMStockConditionalSearchController: UIViewController {
     
     ///二维码模型数组
     var stockCodeModels = NSMutableArray()
+    
+    ///点击搜索后回调的闭包
+    var searchCallback: (([String: AnyObject]?) -> ())?
+    //搜索回调闭包中的分类id参数
+    var parentID: String?
+    //搜索回调闭包中的仓库id参数
+    var storehouseID: String?
     
     //MARK: - xib链接属性
     @IBOutlet weak var codeSearchView: UIView!
@@ -409,6 +462,8 @@ class SAMStockConditionalSearchController: UIViewController {
     @IBOutlet weak var storehouseTF: UITextField!
     @IBOutlet weak var stockTF: UITextField!
     @IBOutlet weak var endEditingBtn: UIButton!
+    @IBOutlet weak var searchBtn: UIButton!
+    
     
     //MARK: - 其他方法
     override func didReceiveMemoryWarning() {
@@ -416,16 +471,13 @@ class SAMStockConditionalSearchController: UIViewController {
     }
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: "SAMStockConditionalSearchController", bundle: nibBundleOrNil)
-        
-        //加载所有分类、仓库列表
-        loadCategoryStorehouseList()
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
-//MARK: - CollectionViewDelegate
+//MARK: - CollectionViewDataSource
 extension SAMStockConditionalSearchController: UICollectionViewDataSource {
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -434,100 +486,86 @@ extension SAMStockConditionalSearchController: UICollectionViewDataSource {
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(SAMStockCodeCellReuseIdentifier, forIndexPath: indexPath) as! SAMStockCodeSearchCell
-//        //设置样式
-//        if indexPath == selectedIndexPath {
-//            cell.containterView.backgroundColor = CellSelectedColor
-//        } else {
-//            cell.containterView.backgroundColor = CellNormalColor
-//        }
-//
+        
         //传递数据模型
         let model = stockCodeModels[indexPath.row] as! SAMStockCodeModel
-        print(model.codeName)
-        print(model.thumbUrl1)
         cell.codeModel = model
         
         return cell
     }
 }
 
+//MARK: - CollectionViewDelegate
 extension SAMStockConditionalSearchController: UICollectionViewDelegate {
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
         //结束搜索框编辑状态
-//        endTextFieldEditing(searchTF)
-//        
-//        selectedCell = collectionView.cellForItemAtIndexPath(indexPath) as? SAMCustomerCollectionCell
-//        
-//        if selectedIndexPath == indexPath { //选中了当前选中的CELL
-//            
-//            //清空记录
-//            selectedIndexPath = nil
-//            
-//            //执行动画
-//            selectCellAnimation(nil, willNorCell: selectedCell)
-//            
-//            //清空记录
-//            selectedCell = nil
-//        } else { //选中了其他的CELL
-//            
-//            var willNorCell: SAMCustomerCollectionCell?
-//            
-//            if selectedIndexPath != nil { //没有选中其他CELL
-//                willNorCell = collectionView.cellForItemAtIndexPath(selectedIndexPath!) as? SAMCustomerCollectionCell
-//            }
-//            
-//            //记录数据
-//            selectedIndexPath = indexPath
-//            
-//            //执行动画
-//            selectCellAnimation(selectedCell, willNorCell: willNorCell)
+        endFirstResponderEditing()
+
+        /************** 动画执行界面切换 ****************/
+        
+        //获取点击CELL对应的图片
+        let  selectedCell = collectionView.cellForItemAtIndexPath(indexPath) as? SAMStockCodeSearchCell
+        let selectedCellImage = selectedCell?.productImage
+        
+        //赋值二维码
+        numberTF.text = selectedCell?.codeModel?.codeName
+        
+        //获取图片对应主窗口的 当前 和 目标 frame
+        let currentKeywindowFrame = selectedCell!.convertRect(selectedCellImage!.frame, toView: KeyWindow)
+        let targetKeywindowFrame = view.convertRect(view.bounds, toView: KeyWindow)
+        
+        //创建动画Image
+        let animationImageView = UIImageView(frame: currentKeywindowFrame)
+        animationImageView.image = selectedCellImage?.image
+        animationImageView.layer.cornerRadius = 15
+        animationImageView.layer.masksToBounds = true
+        
+        //添加到主窗口上
+        KeyWindow!.addSubview(animationImageView)
+        
+        //执行动画
+        UIView.animateWithDuration(changeSearchAnimationDuration, animations: {
+            
+            animationImageView.frame = targetKeywindowFrame
+            }) { (_) in
+                
+                //转变搜索界面
+                self.view.frame.size.height = 195
+                self.conSearchView.alpha = 1
+                self.codeSearchView.alpha = 0.0001
+                self.view.layoutIfNeeded()
+                
+                UIView.animateWithDuration(0.2, animations: {
+                    animationImageView.alpha = 0.0001
+                    }, completion: { (_) in
+                        animationImageView.removeFromSuperview()
+                })
         }
     }
     
-    //MARK: - 点击了某个cell时执行的动画
-    func selectCellAnimation(willSelCell: SAMCustomerCollectionCell?, willNorCell: SAMCustomerCollectionCell?) {
+    func scrollViewDidScroll(scrollView: UIScrollView) {
         
-//        UIView.animateWithDuration(0.2, animations: {
-//            //让系统调用DelegateFlowLayout 的 sizeForItemAtIndexPath的方法
-//            self.collectionView.performBatchUpdates({
-//            }) { (finished) in
-//            }
-//            
-//            //设置背景颜色
-//            willSelCell?.containterView.backgroundColor = CellSelectedColor
-//            willNorCell?.containterView.backgroundColor = CellNormalColor
-//            
-//            //恢复左滑形变
-//            willNorCell?.containterView.transform = CGAffineTransformIdentity
-//            
-//            //一个神奇的方法
-//            self.view.layoutIfNeeded()
-//        }) { (_) in
-//            
-//            //如果点击了最下面一个cell，则滚至最底部
-//            if self.selectedIndexPath?.row == (self.customerModels.count - 1) {
-//                self.collectionView.scrollToItemAtIndexPath(self.selectedIndexPath!, atScrollPosition: .Bottom, animated: true)
-//            }
-//        }
-//    }
+        //结束搜索框编辑状态
+        endFirstResponderEditing()
+    }
 }
 
 //MARK: - collectionView布局代理
 extension SAMStockConditionalSearchController: UICollectionViewDelegateFlowLayout {
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-//        if indexPath == selectedIndexPath {
-//            return CellSelectedSize
-//        }
+        
         return SAMStockCodeCellNormalSize
     }
-//    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
-//        return 0
-//    }
-//    func scrollViewDidScroll(scrollView: UIScrollView) {
-//        //结束搜索框编辑状态
-//        endTextFieldEditing(searchTF)
-//    }
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
+        return 5
+    }
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAtIndex section: Int) -> CGFloat {
+        return 0
+    }
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
+        return UIEdgeInsetsMake(10, 20, 30, 20)
+    }
 }
 
 //MARK: - TextFieldDelegate
@@ -562,6 +600,7 @@ extension SAMStockConditionalSearchController: UITextFieldDelegate {
     }
 }
 
+//MARK: PickerViewDelegate PickerViewDataSource
 extension SAMStockConditionalSearchController: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
         return 1
@@ -596,14 +635,19 @@ extension SAMStockConditionalSearchController: UIPickerViewDelegate, UIPickerVie
         //对pickerView进行判断 然后记录，再赋值
         if pickerView == categoryPickerView {
             
+            //取出对应模型
             let categoryModel = categories[row] as! SAMStockCategory
-            selectedCategoryModel = categoryModel
+            
+            //赋值textfield
             categoryTF.text = categoryModel.categoryName
+            
+            //赋值参数
+            parentID = categoryModel.id
         }else {
             
             let storehouseModel = storehouses[row] as! SAMStockStorehouse
-            selectedStorehouseModel = storehouseModel
             storehouseTF.text = storehouseModel.storehouseName
+            storehouseID = storehouseModel.id
         }
     }
 }

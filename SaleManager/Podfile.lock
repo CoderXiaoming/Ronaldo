@@ -18,6 +18,9 @@ PODS:
   - MJExtension (3.0.11)
   - MJRefresh (3.1.10)
   - pop (1.0.9)
+  - SDWebImage (3.8.1):
+    - SDWebImage/Core (= 3.8.1)
+  - SDWebImage/Core (3.8.1)
 
 DEPENDENCIES:
   - AFNetworking
@@ -25,6 +28,7 @@ DEPENDENCIES:
   - MJExtension
   - MJRefresh
   - pop
+  - SDWebImage
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
@@ -32,7 +36,8 @@ SPEC CHECKSUMS:
   MJExtension: f9ae6ddc0f1c482c3c9af750280ccebd14381958
   MJRefresh: bb72948c985914b0b5cecac573a2c69a8915fb02
   pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
+  SDWebImage: 35f9627a3e44b4f292a8a8ce6a531fa488239b91
 
-PODFILE CHECKSUM: ad4d5c02b6475924ee0963cb10732f01f17e869c
+PODFILE CHECKSUM: 89f34e5b5bac77287fcfec17cc5fb40bf8e065b0
 
 COCOAPODS: 1.0.1
