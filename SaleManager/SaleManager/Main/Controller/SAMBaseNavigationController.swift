@@ -10,22 +10,30 @@ import UIKit
 
 class SAMBaseNavigationController: UINavigationController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupUI()
+    override class func initialize() {
+        
+        let navBar = UINavigationBar.appearance()
+        
+        //设置主标题属性
+        navBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.boldSystemFontOfSize(19)]
+        
+        navBar.setBackgroundImage(UIImage(named: "backgroundImage"), forBarMetrics: .Default)
     }
 
-    //MARK: - 初始化UI
-    private func setupUI() {
-        //统一设置navBar属性
-        let navBar = UINavigationBar.appearance()
-        navBar.barTintColor = mainColor_green
-        navBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.boldSystemFontOfSize(19)]
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    
+    override init(rootViewController: UIViewController) {
+        super.init(rootViewController: rootViewController)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
 }

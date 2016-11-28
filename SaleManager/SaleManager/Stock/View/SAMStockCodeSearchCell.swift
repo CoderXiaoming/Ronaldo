@@ -24,7 +24,6 @@ class SAMStockCodeSearchCell: UICollectionViewCell {
     }
     
     //MARK: - xib链接属性
-    
     @IBOutlet weak var productImage: UIImageView!
     @IBOutlet weak var productName: UILabel!
     override func awakeFromNib() {

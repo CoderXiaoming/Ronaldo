@@ -9,12 +9,6 @@
 import UIKit
 //该类是提供给登录界面使用
 class SAMLoginTextField: UITextField {
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        self .resignFirstResponder()
-        tintColor = textColor
-    }
 
     override func becomeFirstResponder() -> Bool {
         setValue(textColor, forKeyPath: "_placeholderLabel.textColor")

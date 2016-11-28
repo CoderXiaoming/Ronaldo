@@ -19,20 +19,6 @@ private let animationDuration = 0.7
 
 class SAMLoginController: UIViewController {
     
-    //MARK: - 所有属性
-    ///服务器地址
-    private var severAddStr: String?
-    ///用户名
-    private var userNameStr: String?
-    ///密码
-    private var PWDStr: String?
-    ///logoView的原始底部距离
-    private var logoOriBotDis: CGFloat = 0
-    ///logoView的动画底部距离
-    private var logoAnimBotDis: CGFloat = 0
-    ///登录中小绿圈动画Layer
-    private var loginAnimLayer: CAReplicatorLayer?
-    
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,7 +41,7 @@ class SAMLoginController: UIViewController {
         severAddStr = NSUserDefaults.standardUserDefaults().stringForKey(severAddStrKey)
         if severAddStr == nil { //没有服务器地址
             
-            //显示服务器地址界面
+            //修改形变，显示服务器地址填写界面
             loginView.transform = CGAffineTransformMakeTranslation(ScreenW, 0)
             serverView.transform = CGAffineTransformMakeTranslation(ScreenW, 0)
         }else { //有服务器地址
@@ -105,15 +91,18 @@ class SAMLoginController: UIViewController {
     //登录按钮点击
     @IBAction func loginBtnClick(sender: AnyObject) {
         
-        //退出编辑状态
-        endEditing()
-        
         //记录用户名和密码
         userNameStr = userNameTF.text
         PWDStr = PwdTF.text
         
-        //执行动画
-        loginAnim()
+        UIView.animateWithDuration(0.4, animations: {
+            
+                //退出编辑状态
+                self.endEditing()
+            }) { (_) in
+                //执行动画
+                self.loginAnim()
+        }
     }
     
     //点击界面退出编辑状态
@@ -169,7 +158,6 @@ class SAMLoginController: UIViewController {
                 //执行登录成功动画
                 self.loginSuccessAnim()
             }
-            
             }) { (Task, Error) in
                 
                 self.showLoginDefeatInfo("请检查网络")
@@ -318,7 +306,23 @@ class SAMLoginController: UIViewController {
         }
     }
     
+    //MARK: - 属性
+    ///服务器地址
+    private var severAddStr: String?
+    ///用户名
+    private var userNameStr: String?
+    ///密码
+    private var PWDStr: String?
+    
+    ///logoView的原始底部距离
+    private var logoOriBotDis: CGFloat = 0
+    ///logoView的动画底部距离
+    private var logoAnimBotDis: CGFloat = 0
+    ///登录中小绿圈动画Layer
+    private var loginAnimLayer: CAReplicatorLayer?
+    
     //MARK: - xib链接属性
+    
     @IBOutlet weak var loginView: UIView!
     @IBOutlet weak var userNameTF: UITextField!
     @IBOutlet weak var PwdTF: UITextField!
@@ -333,16 +337,18 @@ class SAMLoginController: UIViewController {
     
     @IBOutlet weak var logoView: UIView!
     @IBOutlet weak var logoBotDis: NSLayoutConstraint!
+    
     //MARK: - 其他方法
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
-    override func loadView() { //从XIB加载View,此方法不写在模拟器上正常，但真机调试会出现BUG
+    override func loadView() {
         view = NSBundle.mainBundle().loadNibNamed("SAMLoginController", owner: self, options: nil)![0] as! UIView
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
 }
 

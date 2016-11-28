@@ -11,9 +11,6 @@ import UIKit
 ///用户登录成功发出的通知
 let LoginSuccessNotification = "LoginSuccessNotification"
 
-/// applicationWillEnterForeground
-let ApplicationWillEnterForegroundNotification = "ApplicationWillEnterForegroundNotification"
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -22,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         
         /*
-         设置窗口跟控制器，并显示
+         设置窗口根控制器，并显示
          目前设置的是每次重新启动都要输入密码，所以启动时候的根控制器都是登录控制器。
          */
         window = UIWindow.init(frame: UIScreen.mainScreen().bounds)
@@ -39,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func loginSuccess(notification: NSNotification) {
         let anim = CATransition()
         anim.type = "fade"
-        anim.duration = 0.7;
+        anim.duration = 0.7
         window?.layer.addAnimation(anim, forKey: nil)
         window?.rootViewController = SAMMainTabBarController()
     }

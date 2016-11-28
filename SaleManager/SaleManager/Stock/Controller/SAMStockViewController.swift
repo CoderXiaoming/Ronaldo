@@ -12,9 +12,9 @@ import MJRefresh
 private let SAMStockProductCellReuseIdentifier = "SAMStockProductCellReuseIdentifier"
 
 ///产品cell正常状态size
-private let SAMStockProductCellNormalSize = CGSize(width: ScreenW, height: 76)
+private let SAMStockProductCellNormalSize = CGSize(width: ScreenW, height: 75)
 ///产品cell选中状态size
-private let SAMStockProductCellSelectedSize = CGSize(width: ScreenW, height: 120)
+private let SAMStockProductCellSelectedSize = CGSize(width: ScreenW, height: 126)
 
 class SAMStockViewController: UIViewController {
     
@@ -36,9 +36,6 @@ class SAMStockViewController: UIViewController {
         
         //设置导航栏右边的所有选项
         setupRightNavBarItems()
-        
-        //设置stockView顶部距离
-        allStockViewTopDistance.constant = navigationController!.navigationBar.frame.maxY
         
         //设置collectionView底部距离
         collectionViewBottomDistance.constant = tabBarController!.tabBar.frame.height
@@ -91,6 +88,9 @@ class SAMStockViewController: UIViewController {
             return
         }
         
+        //请求所有数据
+        loadStockStatistic()
+        
         //创建请求参数
         conSearchPageIndex = 1
         let index = String(format: "%d", conSearchPageIndex)
@@ -142,12 +142,12 @@ class SAMStockViewController: UIViewController {
                     }, completion: { (_) in
                         
                         //判断顶部条是否隐藏
-                        if self.allStockViewTopDistance.constant != self.navigationController!.navigationBar.frame.maxY {
+                        if self.allStockViewTopDistance.constant != 0 {
                             
                             //展示顶部条
                             UIView.animateWithDuration(0.5, delay: 0.2, options: .LayoutSubviews, animations: {
                                 //设置stockView顶部距离
-                                self.allStockViewTopDistance.constant = self.navigationController!.navigationBar.frame.maxY
+                                self.allStockViewTopDistance.constant = 0
                                 self.view.layoutIfNeeded()
                                 }, completion: { (_) in
                             })
@@ -158,6 +158,36 @@ class SAMStockViewController: UIViewController {
             //处理上拉
             self.collectionView.mj_header.endRefreshing()
             SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+        }
+    }
+    
+    //MARK: - 加载所有库存数据统计
+    private func loadStockStatistic() {
+        
+        //创建请求参数
+        let productIDName = conSearchParameters!["productIDName"] as! String
+        let staticParameters = ["productIDName": productIDName, "storehouseID": "-1", "parentID": "-1", "minCountM": "0"]
+        
+        //发送请求
+        SAMNetWorker.sharedNetWorker().GET(statisticSearchURLStr, parameters: staticParameters, progress: nil, success: { (Task, Json) in
+            
+            //获取模型数组
+            let dictArr = Json!["body"] as? [[String: AnyObject]]
+            let count = dictArr?.count ?? 0
+            
+            //判断是否有数据
+            if count == 0 { //没有数据
+                
+                self.totalCountPString = "---"
+                self.totalCountMString = "---"
+            }else { //有数据
+                
+                self.totalCountPString = dictArr![0]["totalCountP"] as? String
+                self.totalCountMString = dictArr![0]["totalCountM"] as? String
+            }
+        }) { (Task, Error) in
+            self.totalCountPString = "---"
+            self.totalCountMString = "---"
         }
     }
     
@@ -210,7 +240,6 @@ class SAMStockViewController: UIViewController {
                     self.collectionView.reloadData()
                 })
             }
-            
         }) { (Task, Error) in
             //处理下拉
             self.collectionView.mj_footer.endRefreshing()
@@ -256,16 +285,37 @@ class SAMStockViewController: UIViewController {
     
     ///条件搜索请求URLStr
     private let conSearchURLStr = "getStock.ashx"
+    ///条件搜索请求URLStr
+    private let statisticSearchURLStr = "getStockStatic.ashx"
     ///一次数据请求获取的数据最大条数
     private let conSearchPageSize = 15
     ///当前数据的页码
     private var conSearchPageIndex = 1
     
     ///数据模型数组
-    var stockProductModels = NSMutableArray()
+    let stockProductModels = NSMutableArray()
     
     ///当前选中IndexPath
     private var selectedIndexPath : NSIndexPath?
+    
+    ///总匹数字符串
+    private var totalCountPString: String? {
+        didSet{
+            pishuLabel.text = totalCountPString
+        }
+    }
+    ///总米数字符串
+    private var totalCountMString: String? {
+        didSet{
+            mishuLabel.text = totalCountMString
+        }
+    }
+    
+    ///产品信息展示控制器
+    private lazy var productInfoVC: SAMStockProductInfoController? = {
+        let vc = SAMStockProductInfoController.infoVC()
+        return vc
+    }()
     
     //MARK: - xib链接约束属性
     ///所有库存控件顶部距离
@@ -276,7 +326,6 @@ class SAMStockViewController: UIViewController {
     @IBOutlet weak var allStockView: UIView!
     @IBOutlet weak var pishuLabel: UILabel!
     @IBOutlet weak var mishuLabel: UILabel!
-    @IBOutlet weak var warrningLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var indicaterView: UIView!
     
@@ -301,15 +350,14 @@ extension SAMStockViewController: UICollectionViewDelegate {
         
         if stockProductModels.count != 0 {
             if offsetY > 50 {
-                if allStockViewTopDistance.constant == navigationController!.navigationBar.frame.maxY {
+                if allStockViewTopDistance.constant == 0{
                     UIView.animateWithDuration(0.6, animations: {
-                        self.allStockViewTopDistance.constant = self.allStockViewTopDistance.constant - self.allStockView.bounds.height
+                        self.allStockViewTopDistance.constant = -self.allStockView.bounds.height
                         self.view.layoutIfNeeded()
                     })
                 }
             }
         }
-        
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
@@ -322,6 +370,14 @@ extension SAMStockViewController: UICollectionViewDelegate {
             
             //记录数据
             selectedIndexPath = indexPath
+            
+            //取出cell，刷新数据
+            let selectedCell = collectionView.cellForItemAtIndexPath(indexPath) as! SAMStockProductCell
+            
+            //如果cell没有数据就刷新数据
+            if !selectedCell.hasInfo {
+                selectedCell.reloadCollectionView()
+            }
         }
         
         //让系统调用DelegateFlowLayout 的 sizeForItemAtIndexPath的方法
@@ -348,6 +404,11 @@ extension SAMStockViewController: UICollectionViewDataSource {
         //取出模型
         let model = stockProductModels[indexPath.row] as! SAMStockProductModel
         cell.stockProductModel = model
+        
+        //设置闭包
+        cell.setProductImageClick { (stockProductModel) in
+            self.navigationController?.pushViewController(self.productInfoVC!, animated: true)
+        }
         return cell
     }
 }

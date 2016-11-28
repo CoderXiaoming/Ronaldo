@@ -46,20 +46,20 @@ class SAMHomeViewController: UIViewController {
 
     //MARK: - 点击buttonView上按钮的处理
     func customerBtnClick() {
-        let patameters = ["codeID": 1, "imageIndex": 2]
-        SAMNetWorker.sharedNetWorker().POST("uploadImage.ashx", parameters: patameters, constructingBodyWithBlock: { (formData) in
-                let image = UIImage(named: "123")!
-                let data = UIImageJPEGRepresentation(image, 1.0)!
-                formData.appendPartWithFileData(data, name: "1", fileName: "image.jpg", mimeType: "image/jpg")
-            
-            }, progress: { (progress) in
-                
-            }, success: { (Task, Json) in
-                print(Json)
-            }) { (Task, Error) in
-                print(Error)
-        }
-        print("customerBtnClick")
+//        let patameters = ["codeID": 1, "imageIndex": 2]
+//        SAMNetWorker.sharedNetWorker().POST("uploadImage.ashx", parameters: patameters, constructingBodyWithBlock: { (formData) in
+//                let image = UIImage(named: "123")!
+//                let data = UIImageJPEGRepresentation(image, 1.0)!
+//                formData.appendPartWithFileData(data, name: "1", fileName: "image.jpg", mimeType: "image/jpg")
+//            }, progress: { (progress) in
+//                
+//            }, success: { (Task, Json) in
+//                print(Json)
+//            }) { (Task, Error) in
+//                print(Error)
+//        }
+//        print("customerBtnClick")
+        
         
     }
     func stockBtnClick() {
@@ -86,13 +86,16 @@ class SAMHomeViewController: UIViewController {
         print("visitManagerBtnClick")
     }
     
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return UIStatusBarStyle.LightContent
+    }
+    
     //MARK: - 懒加载集合
     private lazy var buttonView: UIView = {
         //设置frame各属性
-        let y = self.navigationController!.navigationBar.frame.maxY
         let buttonViewW = ScreenW
         let buttonViewH = buttonViewW * 0.7
-        let btnView = UIView(frame: CGRect(x: 0, y: y, width: buttonViewW, height: buttonViewH))
+        let btnView = UIView(frame: CGRect(x: 0, y: 0, width: buttonViewW, height: buttonViewH))
         
         //设置背景色
         btnView.backgroundColor = UIColor.grayColor()

@@ -11,7 +11,14 @@ import UIKit
 class SAMStockProductModel: NSObject {
 
     ///产品编号id
-    var id: String?
+    var id: String? {
+        didSet{
+            //加载库存明细模型
+            if id != "" {
+                loadProductDeatilList()
+            }
+        }
+    }
     
     ///产品编号名称
     var productIDName: String?
@@ -61,7 +68,45 @@ class SAMStockProductModel: NSObject {
     ///大图1
     var imageUrl1: String?
 
+    //MARK: - 加载库存明细数据
+    private func loadProductDeatilList() {
+        
+        let parameters = ["productID": id!, "storehouseID": "-1", "parentID": "-1"]
+        //发送请求
+        SAMNetWorker.sharedNetWorker().GET("getStockDetailList.ashx", parameters: parameters, progress: nil, success: { (Task, Json) in
+            
+            //获取模型数组
+            let dictArr = Json!["body"] as? [[String: AnyObject]]
+            let count = dictArr?.count ?? 0
+            
+            //判断是否有模型数据
+            if count == 0 { //没有模型数据
+                
+            }else {//有数据模型
+                
+                let arr = SAMStockProductDeatil.mj_objectArrayWithKeyValuesArray(dictArr)!
+                
+                self.productDeatilList.addObjectsFromArray(arr as [AnyObject])
+            }
+        }) { (Task, Error) in
+        }
+    }
+    
     //MARK: - 附加属性
     ///缩略图1（主缩略图）链接
     var thumbURL1: NSURL?
+    
+    ///库存明细模型数组
+    let productDeatilList = NSMutableArray()
 }
+
+//产品库存明细模型
+class SAMStockProductDeatil: NSObject {
+    
+    ///该卷布的米数
+    var meter: String?
+    
+    ///该卷布的编号
+    var storePositionName: String?
+}
+

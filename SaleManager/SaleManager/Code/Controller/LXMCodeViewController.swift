@@ -54,13 +54,12 @@ class LXMCodeViewController: UIViewController {
         super.viewDidAppear(animated)
         
         //虚化导航条，底部条
-        UIView.animateWithDuration(0.3, animations: {
+        UIView.animateWithDuration(0.6, animations: {
             
             self.navigationController?.navigationBar.subviews[0].alpha = 0.4
             self.tabBarController?.tabBar.subviews[0].alpha = 0.4
         }) { (_) in
         }
-
     }
     
     //MARK: - viewWillDisappear
@@ -74,9 +73,6 @@ class LXMCodeViewController: UIViewController {
     
     //MARK: - 开始扫描
     private func startScan() {
-        
-        //开始扫描线动画
-        startScanLineAnimation()
         
         //判断是不是第一次扫描
         if session.inputs.count > 0 && session.inputs.count > 0 {
@@ -109,6 +105,9 @@ class LXMCodeViewController: UIViewController {
         
         //添加预览图层
         view.layer.insertSublayer(previewLayer, atIndex: 0)
+        
+        //开始扫描线动画
+        startScanLineAnimation()
         
         //开始扫描
         session.startRunning()
@@ -220,6 +219,8 @@ extension LXMCodeViewController: AVCaptureMetadataOutputObjectsDelegate {
                     self.startScan()
                 }))
                 presentViewController(alert, animated: true, completion: nil)
+                
+                //TODO: - 扫描成功后给个提示音后再跳转界面
                 
             }
         }

@@ -49,8 +49,4 @@ class SAMUserAuth: NSObject{
             return user!
         }
     }
-    
-    override var description: String {
-        return String.init(format: "id = %@ ~~~ employID = %@ ~~~ appPower = %@", arguments: [id!, employeeID!, appPower!])
-    }
 }

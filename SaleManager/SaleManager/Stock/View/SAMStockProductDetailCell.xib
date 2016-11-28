@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11542" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="SAMStockProductDetailCell" customModule="SaleManager" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="102" height="40"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="102" height="40"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r5v-Mh-kAK" userLabel="LeftSeperaterView">
+                        <rect key="frame" x="0.0" y="0.0" width="1" height="40"/>
+                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="1" id="Rzf-r1-dfr"/>
+                        </constraints>
+                    </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="A01-11-01" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XFb-NM-NOh">
+                        <rect key="frame" x="16.5" y="0.0" width="69" height="18"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="124" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VhO-uz-RcX">
+                        <rect key="frame" x="39" y="22" width="25" height="18"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jZM-7s-Wx6" userLabel="RightSeperaterView">
+                        <rect key="frame" x="101" y="0.0" width="1" height="40"/>
+                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="1" id="7Mn-5B-0Bu"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="XFb-NM-NOh" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="17i-Nq-KV3"/>
+                <constraint firstAttribute="bottom" secondItem="r5v-Mh-kAK" secondAttribute="bottom" id="1wH-te-xiu"/>
+                <constraint firstItem="r5v-Mh-kAK" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="2zQ-5v-hJ5"/>
+                <constraint firstAttribute="trailing" secondItem="jZM-7s-Wx6" secondAttribute="trailing" id="C0q-CK-Ay0"/>
+                <constraint firstAttribute="bottom" secondItem="VhO-uz-RcX" secondAttribute="bottom" id="HLS-1x-DyX"/>
+                <constraint firstItem="VhO-uz-RcX" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="RkE-Cb-JsS"/>
+                <constraint firstItem="jZM-7s-Wx6" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="Thj-Cm-pSY"/>
+                <constraint firstItem="XFb-NM-NOh" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="VLR-II-Dd3"/>
+                <constraint firstItem="r5v-Mh-kAK" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="cBN-jA-SoA"/>
+                <constraint firstAttribute="bottom" secondItem="jZM-7s-Wx6" secondAttribute="bottom" id="rB0-G5-gNq"/>
+            </constraints>
+            <size key="customSize" width="102" height="80"/>
+            <connections>
+                <outlet property="meterLabel" destination="VhO-uz-RcX" id="wzl-I4-FrY"/>
+                <outlet property="rightSeperaterView" destination="jZM-7s-Wx6" id="Dd3-eY-Aof"/>
+                <outlet property="storePositionLabel" destination="XFb-NM-NOh" id="S8M-dJ-kEP"/>
+            </connections>
+            <point key="canvasLocation" x="51" y="67"/>
+        </collectionViewCell>
+    </objects>
+</document>

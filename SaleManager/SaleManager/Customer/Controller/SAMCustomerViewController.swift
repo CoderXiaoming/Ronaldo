@@ -13,29 +13,28 @@ import MJRefresh
 ///CustomerCell重用标识符
 private let SAMCustomerCellReuseIdentifier = "SAMCustomerCellReuseIdentifier"
 ///cell正常背景色
-private let CellNormalColor = UIColor.whiteColor()
+private let SAMCustomerCellNormalColor = UIColor.whiteColor()
 ///cell正常size
-private let CellNormalSize = CGSize(width: ScreenW, height: 91)
+private let SAMCustomerCellNormalSize = CGSize(width: ScreenW, height: 91)
 ///cell选中背景色
-private let CellSelectedColor = mainColor_green
+private let SAMCustomerCellSelectedColor = mainColor_green
 ///cell选中size
-private let CellSelectedSize = CGSize(width: ScreenW, height: 160)
+private let SAMCustomerCellSelectedSize = CGSize(width: ScreenW, height: 160)
 
 class SAMCustomerViewController: UIViewController {
     
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         //初始化UI
         setupUI()
-        
-        //初始化collectionView
-        setupCollectionView()
     }
 
     //MARK: - 初始化UI
     private func setupUI() {
+        
+        view.backgroundColor = UIColor.whiteColor()
         
         //设置导航标题
         navigationItem.title = "客户管理"
@@ -66,16 +65,18 @@ class SAMCustomerViewController: UIViewController {
         let imageView = UIImageView(image: UIImage(named: "search_mirro"))
         searchTF.leftView = imageView
         searchTF.leftViewMode = UITextFieldViewMode.Always
-        searchTF.delegate = self
         
-        //设置searchView顶部距离
-        searchViewTopDis.constant = navigationController!.navigationBar.frame.maxY
+        //设置searchTF的代理
+        searchTF.delegate = self
         
         //设置collectionView底部间距
         collectionViewBottomDis.constant = tabBarController!.tabBar.bounds.height
         
         //设置HUDView
         HUDView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(SAMCustomerViewController.endSearchTFEditing)))
+        
+        //初始化collectionView
+        setupCollectionView()
     }
     
     //MARK: - 初始化collectionView
@@ -224,7 +225,6 @@ class SAMCustomerViewController: UIViewController {
                     self.collectionView.reloadData()
                 })
             }
-            
         }) { (Task, Error) in
             //处理下拉
             self.collectionView.mj_footer.endRefreshing()
@@ -290,7 +290,6 @@ class SAMCustomerViewController: UIViewController {
     @IBOutlet weak var searchTF: SAMLoginTextField!
     @IBOutlet weak var searchBtn: UIButton!
     
-    @IBOutlet weak var searchViewTopDis: NSLayoutConstraint!
     @IBOutlet weak var collectionViewBottomDis: NSLayoutConstraint!
     
     @IBOutlet weak var collectionView: UICollectionView!
@@ -313,9 +312,9 @@ extension SAMCustomerViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(SAMCustomerCellReuseIdentifier, forIndexPath: indexPath) as! SAMCustomerCollectionCell
         //设置样式
         if indexPath == selectedIndexPath {
-            cell.containterView.backgroundColor = CellSelectedColor
+            cell.containterView.backgroundColor = SAMCustomerCellSelectedColor
         } else {
-            cell.containterView.backgroundColor = CellNormalColor
+            cell.containterView.backgroundColor = SAMCustomerCellNormalColor
         }
         
         //传递数据模型
@@ -371,8 +370,8 @@ extension SAMCustomerViewController: UICollectionViewDelegate {
                 }
                 
                 //设置背景颜色
-                willSelCell?.containterView.backgroundColor = CellSelectedColor
-                willNorCell?.containterView.backgroundColor = CellNormalColor
+                willSelCell?.containterView.backgroundColor = SAMCustomerCellSelectedColor
+                willNorCell?.containterView.backgroundColor = SAMCustomerCellNormalColor
                 
                 //恢复左滑形变
                 willNorCell?.containterView.transform = CGAffineTransformIdentity
@@ -392,9 +391,9 @@ extension SAMCustomerViewController: UICollectionViewDelegate {
 extension SAMCustomerViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         if indexPath == selectedIndexPath {
-            return CellSelectedSize
+            return SAMCustomerCellSelectedSize
         }
-        return CellNormalSize
+        return SAMCustomerCellNormalSize
     }
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
         return 0
@@ -466,8 +465,17 @@ extension SAMCustomerViewController: SAMCustomerCollectionCellDelegate {
         }
         
         //拨打电话
-        let phoneURLStr = String(format: "telprompt://%@", phoneStr)
-        UIApplication.sharedApplication().openURL(NSURL(string: phoneURLStr)!)
+        let phoneURLStr = String(format: "tel://%@", phoneStr)
+        let titleStr = String(format: "呼叫 %@", selectedCell!.customerLabel.text!)
+        let messageStr = selectedCell!.phoneLabel.text!
+        let alert = UIAlertController(title: titleStr, message: messageStr, preferredStyle: .Alert)
+        alert.addAction(UIAlertAction(title: "确认", style: .Destructive) { (_) in
+            UIApplication.sharedApplication().openURL(NSURL(string: phoneURLStr)!)
+            })
+        alert.addAction(UIAlertAction(title: "取消", style: .Cancel) { (_) in
+            })
+        
+        presentViewController(alert, animated: true, completion: nil)
     }
 }
 
