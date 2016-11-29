@@ -23,6 +23,9 @@ class SAMStockProductModel: NSObject {
     ///产品编号名称
     var productIDName: String?
     
+    ///产品花名
+    var productIDNameHM: String?
+    
     ///是否缺货的提醒，要么为空，要么是"缺货"，缺货的库存是红色显示，其他的是绿色显示
     var msg: String?
     

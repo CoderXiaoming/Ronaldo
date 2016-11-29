@@ -357,12 +357,22 @@ class SAMStockConditionalSearchController: UIViewController {
         firstResponder = nil
         
         //转变到二维码选择界面
+//        UIView.animateWithDuration(changeSearchAnimationDuration, animations: {
+//            self.view.frame.size.height = 400
+//            self.conSearchView.alpha = 0.0001
+//            self.codeSearchView.alpha = 1
+//            self.view.layoutIfNeeded()
+//        })
         UIView.animateWithDuration(changeSearchAnimationDuration, animations: {
             self.view.frame.size.height = 400
             self.conSearchView.alpha = 0.0001
             self.codeSearchView.alpha = 1
             self.view.layoutIfNeeded()
-        })
+            }) { (_) in
+                self.searchTF.becomeFirstResponder()
+                self.firstResponder = self.searchTF
+        }
+        
     }
     
     //MARK: - 二维码搜索按钮点击

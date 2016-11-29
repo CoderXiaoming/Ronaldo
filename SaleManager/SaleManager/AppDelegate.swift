@@ -18,6 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     //MARK: - 程序启动完成后处理的事件
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         
+        NSThread.sleepForTimeInterval(1.0)
+        
         /*
          设置窗口根控制器，并显示
          目前设置的是每次重新启动都要输入密码，所以启动时候的根控制器都是登录控制器。

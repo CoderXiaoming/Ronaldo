@@ -69,9 +69,6 @@ class SAMCustomerViewController: UIViewController {
         //设置searchTF的代理
         searchTF.delegate = self
         
-        //设置collectionView底部间距
-        collectionViewBottomDis.constant = tabBarController!.tabBar.bounds.height
-        
         //设置HUDView
         HUDView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(SAMCustomerViewController.endSearchTFEditing)))
         
@@ -125,6 +122,11 @@ class SAMCustomerViewController: UIViewController {
             return
         }
         
+        //恢复形变CELL
+        if self.selectedCell != nil {
+            self.selectedCell?.rightSwipeCell()
+        }
+        
         //创建请求参数
         pageIndex = 1
         let id = SAMUserAuth.shareUser()?.employeeID
@@ -138,6 +140,7 @@ class SAMCustomerViewController: UIViewController {
             //清空原先数据
             self.customerModels.removeAllObjects()
             self.selectedIndexPath = nil
+            self.selectedCell = nil
             
             //获取模型数组
             let dictArr = Json!["body"] as? [[String: AnyObject]]
@@ -187,6 +190,11 @@ class SAMCustomerViewController: UIViewController {
     func loadMoreInfo() {
         //结束下拉刷新
         collectionView.mj_header.endRefreshing()
+        
+        //恢复形变CELL
+        if self.selectedCell != nil {
+            self.selectedCell?.rightSwipeCell()
+        }
         
         //创建请求参数
         let index = String(format: "%d", pageIndex)
@@ -289,8 +297,6 @@ class SAMCustomerViewController: UIViewController {
     @IBOutlet weak var searchView: UIView!
     @IBOutlet weak var searchTF: SAMLoginTextField!
     @IBOutlet weak var searchBtn: UIButton!
-    
-    @IBOutlet weak var collectionViewBottomDis: NSLayoutConstraint!
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var HUDView: UIView!

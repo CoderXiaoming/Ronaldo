@@ -31,14 +31,11 @@ class SAMStockViewController: UIViewController {
     
     //MARK: - 初始化UI
     private func setupUI() {
-        title = "库存查询"
+        navigationItem.title = "库存查询"
         view.backgroundColor = UIColor.whiteColor()
         
         //设置导航栏右边的所有选项
         setupRightNavBarItems()
-        
-        //设置collectionView底部距离
-        collectionViewBottomDistance.constant = tabBarController!.tabBar.frame.height
     }
     
     //MARK: - 设置导航栏右边所有的按钮
@@ -320,7 +317,6 @@ class SAMStockViewController: UIViewController {
     //MARK: - xib链接约束属性
     ///所有库存控件顶部距离
     @IBOutlet weak var allStockViewTopDistance: NSLayoutConstraint!
-    @IBOutlet weak var collectionViewBottomDistance: NSLayoutConstraint!
     
     //MARK: - xib链接控件
     @IBOutlet weak var allStockView: UIView!
@@ -406,8 +402,9 @@ extension SAMStockViewController: UICollectionViewDataSource {
         cell.stockProductModel = model
         
         //设置闭包
-        cell.setProductImageClick { (stockProductModel) in
-            self.navigationController?.pushViewController(self.productInfoVC!, animated: true)
+        cell.setProductImageClick {[weak self] (stockProductModel) in
+            self!.productInfoVC?.stockProductModel = stockProductModel
+            self!.navigationController?.pushViewController(self!.productInfoVC!, animated: true)
         }
         return cell
     }
@@ -428,10 +425,7 @@ extension SAMStockViewController: UICollectionViewDelegateFlowLayout {
     }
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAtIndex section: Int) -> CGFloat {
         return 0
-    }
-//    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
-//        return UIEdgeInsetsMake(10, 20, 30, 20)
-//    }
+    } 
 }
 
 //MARK: - UIViewControllerTransitioningDelegate

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		1808BD681DE140B800D79718 /* provinces.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1808BD671DE140B800D79718 /* provinces.plist */; };
 		1808BD6A1DE1414200D79718 /* LXMProCityList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1808BD691DE1414200D79718 /* LXMProCityList.swift */; };
+		180CC8A31DEDC692005898FF /* loginImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 180CC8A11DEDC692005898FF /* loginImage@2x.png */; };
+		180CC8A41DEDC692005898FF /* loginImage@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 180CC8A21DEDC692005898FF /* loginImage@3x.png */; };
 		184570D11DE80D3E00F8AAB0 /* SAMStockProductModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184570D01DE80D3E00F8AAB0 /* SAMStockProductModel.swift */; };
 		184570D41DE87E1F00F8AAB0 /* SAMStockProductDetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184570D21DE87E1F00F8AAB0 /* SAMStockProductDetailCell.swift */; };
 		184570D51DE87E1F00F8AAB0 /* SAMStockProductDetailCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 184570D31DE87E1F00F8AAB0 /* SAMStockProductDetailCell.xib */; };
@@ -77,6 +79,8 @@
 /* Begin PBXFileReference section */
 		1808BD671DE140B800D79718 /* provinces.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = provinces.plist; sourceTree = "<group>"; };
 		1808BD691DE1414200D79718 /* LXMProCityList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LXMProCityList.swift; sourceTree = "<group>"; };
+		180CC8A11DEDC692005898FF /* loginImage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "loginImage@2x.png"; sourceTree = "<group>"; };
+		180CC8A21DEDC692005898FF /* loginImage@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "loginImage@3x.png"; sourceTree = "<group>"; };
 		184570D01DE80D3E00F8AAB0 /* SAMStockProductModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMStockProductModel.swift; sourceTree = "<group>"; };
 		184570D21DE87E1F00F8AAB0 /* SAMStockProductDetailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMStockProductDetailCell.swift; sourceTree = "<group>"; };
 		184570D31DE87E1F00F8AAB0 /* SAMStockProductDetailCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMStockProductDetailCell.xib; sourceTree = "<group>"; };
@@ -194,6 +198,8 @@
 				18C202FB1DD30ADE00C0117C /* Other */,
 				18C203001DD30ADE00C0117C /* Tools */,
 				18C202C01DD3081A00C0117C /* Assets.xcassets */,
+				180CC8A11DEDC692005898FF /* loginImage@2x.png */,
+				180CC8A21DEDC692005898FF /* loginImage@3x.png */,
 				18C202C21DD3081A00C0117C /* LaunchScreen.storyboard */,
 				18C202C51DD3081A00C0117C /* Info.plist */,
 			);
@@ -595,6 +601,7 @@
 			files = (
 				18F50F101DD5A94F00CEA8C9 /* SAMLoginController.xib in Resources */,
 				187EA2891DE5AF41004523A4 /* SAMStockCodeSearchCell.xib in Resources */,
+				180CC8A31DEDC692005898FF /* loginImage@2x.png in Resources */,
 				187EA27A1DE53295004523A4 /* SAMStockConditionalSearchController.xib in Resources */,
 				18CDA8B51DEC042100DB4F69 /* SAMStockProductInfoController.storyboard in Resources */,
 				1808BD681DE140B800D79718 /* provinces.plist in Resources */,
@@ -603,6 +610,7 @@
 				18C202C41DD3081A00C0117C /* LaunchScreen.storyboard in Resources */,
 				18EC9B451DDC06C900E78C7E /* SAMCustomerCollectionCell.xib in Resources */,
 				1849464C1DDE8D6700C2E9E8 /* SAMCustomerAddController.xib in Resources */,
+				180CC8A41DEDC692005898FF /* loginImage@3x.png in Resources */,
 				18C202C11DD3081A00C0117C /* Assets.xcassets in Resources */,
 				184570D51DE87E1F00F8AAB0 /* SAMStockProductDetailCell.xib in Resources */,
 				18A63B2F1DE7D5BF00869ABB /* SAMStockProductCell.xib in Resources */,

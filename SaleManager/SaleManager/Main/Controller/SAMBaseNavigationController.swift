@@ -17,11 +17,12 @@ class SAMBaseNavigationController: UINavigationController {
         //设置主标题属性
         navBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.boldSystemFontOfSize(19)]
         
-        navBar.setBackgroundImage(UIImage(named: "backgroundImage"), forBarMetrics: .Default)
+        navBar.setBackgroundImage(UIImage(named: "navbarBackgroundImage"), forBarMetrics: .Default)
     }
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        
     }
     
     override init(rootViewController: UIViewController) {

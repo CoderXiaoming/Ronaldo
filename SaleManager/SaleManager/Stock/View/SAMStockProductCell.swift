@@ -24,9 +24,9 @@ class SAMStockProductCell: UICollectionViewCell {
             
             //设置产品图片
             if stockProductModel?.thumbURL1 != nil {
-                productImageBtn.sd_setBackgroundImageWithURL(stockProductModel?.thumbURL1!, forState: .Normal, placeholderImage: UIImage(named: "temp"))
+                productImageBtn.sd_setBackgroundImageWithURL(stockProductModel?.thumbURL1!, forState: .Normal, placeholderImage: UIImage(named: "photo_loadding"))
             }else {
-                productImageBtn.setBackgroundImage(UIImage(named: "temp"), forState: .Normal)
+                productImageBtn.setBackgroundImage(UIImage(named: "photo_loadding"), forState: .Normal)
             }
             
             //设置产品名称

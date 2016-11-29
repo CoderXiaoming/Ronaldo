@@ -13,7 +13,6 @@
             <connections>
                 <outlet property="HUDView" destination="qcv-5d-VxC" id="UJ6-iG-sAi"/>
                 <outlet property="collectionView" destination="Qcc-Pz-u06" id="yxH-UC-A3s"/>
-                <outlet property="collectionViewBottomDis" destination="Q90-yS-xx5" id="gh9-o8-yVF"/>
                 <outlet property="searchBtn" destination="rGu-ny-e9j" id="uLy-UH-Tix"/>
                 <outlet property="searchTF" destination="wzJ-pu-IaS" id="70q-d2-h0w"/>
                 <outlet property="searchView" destination="Lqh-8w-IDu" id="atl-K9-aXh"/>
@@ -22,28 +21,28 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lqh-8w-IDu" userLabel="SearchView">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="37"/>
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="37"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9p4-bO-LOe" userLabel="TopSeperaterView">
-                            <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
+                            <rect key="frame" x="0.0" y="0.0" width="600" height="1"/>
                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="1" id="ZIc-Xm-7F6"/>
                             </constraints>
                         </view>
                         <textField clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="名称/手机号" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="wzJ-pu-IaS" userLabel="Search Text Field" customClass="SAMLoginTextField" customModule="SaleManager" customModuleProvider="target">
-                            <rect key="frame" x="10" y="4" width="270" height="29"/>
+                            <rect key="frame" x="10" y="4" width="495" height="29"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <color key="textColor" red="0.19607843137254902" green="0.19607843137254902" blue="0.23529411764705882" alpha="1" colorSpace="calibratedRGB"/>
                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done"/>
                         </textField>
                         <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rGu-ny-e9j" userLabel="SearchBtn">
-                            <rect key="frame" x="285" y="4" width="80" height="29"/>
+                            <rect key="frame" x="510" y="4" width="80" height="29"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="80" id="SIR-G6-ygO"/>
@@ -60,7 +59,7 @@
                             </connections>
                         </button>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LcN-2V-p8l" userLabel="BottomSeperaterView">
-                            <rect key="frame" x="0.0" y="36" width="375" height="1"/>
+                            <rect key="frame" x="0.0" y="36" width="600" height="1"/>
                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="1" id="ZkP-qo-K1X"/>
@@ -86,7 +85,7 @@
                     </constraints>
                 </view>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="Qcc-Pz-u06">
-                    <rect key="frame" x="0.0" y="37" width="375" height="630"/>
+                    <rect key="frame" x="0.0" y="37" width="600" height="563"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="n2G-ew-9dc">
                         <size key="itemSize" width="50" height="50"/>
@@ -96,7 +95,7 @@
                     </collectionViewFlowLayout>
                 </collectionView>
                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qcv-5d-VxC" userLabel="HUDView">
-                    <rect key="frame" x="0.0" y="37" width="375" height="630"/>
+                    <rect key="frame" x="0.0" y="37" width="600" height="563"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </view>
             </subviews>

@@ -36,9 +36,6 @@ class LXMCodeViewController: UIViewController {
         
         //设置导航条
         navigationItem.title = "二维码"
-        
-        //设置扫描框顶部距离
-        containerViewTopDis.constant = navigationController!.navigationBar.bounds.maxY + 100
     }
     
     //MARK: - viewWillAppear
@@ -49,30 +46,19 @@ class LXMCodeViewController: UIViewController {
         self.startScan()
     }
     
-    //MARK: - viewDidAppear
-    override func viewDidAppear(animated: Bool) {
+    //MARK: - viewWillDisappear
+    override func viewDidDisappear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        //虚化导航条，底部条
-        UIView.animateWithDuration(0.6, animations: {
-            
-            self.navigationController?.navigationBar.subviews[0].alpha = 0.4
-            self.tabBarController?.tabBar.subviews[0].alpha = 0.4
-        }) { (_) in
-        }
-    }
-    
-    //MARK: - viewWillDisappear
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        self.navigationController?.navigationBar.subviews[0].alpha = 1
-        self.tabBarController?.tabBar.subviews[0].alpha = 1
+        //停止扫描
         self.stopScan()
     }
     
     //MARK: - 开始扫描
     private func startScan() {
+        
+        //开始扫描线动画
+        startScanLineAnimation()
         
         //判断是不是第一次扫描
         if session.inputs.count > 0 && session.inputs.count > 0 {
@@ -105,9 +91,6 @@ class LXMCodeViewController: UIViewController {
         
         //添加预览图层
         view.layer.insertSublayer(previewLayer, atIndex: 0)
-        
-        //开始扫描线动画
-        startScanLineAnimation()
         
         //开始扫描
         session.startRunning()
@@ -174,7 +157,6 @@ class LXMCodeViewController: UIViewController {
     }()
     
     //MARK: - xib连接属性
-    @IBOutlet weak var containerViewTopDis: NSLayoutConstraint!
     @IBOutlet weak var scanLineTopDis: NSLayoutConstraint!
     
     @IBOutlet weak var containerView: UIView!

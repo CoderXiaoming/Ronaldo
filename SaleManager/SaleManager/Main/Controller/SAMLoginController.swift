@@ -175,7 +175,6 @@ class SAMLoginController: UIViewController {
     }
     
     //MARK: - 所有动画集合
-    
     ///进入界面动态恢复log
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)

@@ -13,7 +13,6 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LXMCodeViewController" customModule="SaleManager" customModuleProvider="target">
             <connections>
                 <outlet property="containerView" destination="cdu-vV-ZlO" id="ouA-Jx-CXZ"/>
-                <outlet property="containerViewTopDis" destination="DWg-50-Olc" id="fcv-YO-mlP"/>
                 <outlet property="scanLineImage" destination="DPa-jP-GOv" id="3lL-Ro-8zA"/>
                 <outlet property="scanLineTopDis" destination="UTu-KK-C9s" id="jb9-rS-7hC"/>
                 <outlet property="view" destination="iN0-l3-epB" id="vjv-Gm-mfh"/>

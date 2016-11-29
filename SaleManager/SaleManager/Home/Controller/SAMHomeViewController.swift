@@ -63,6 +63,9 @@ class SAMHomeViewController: UIViewController {
         
     }
     func stockBtnClick() {
+        let btn = UIButton()
+        btn.titleLabel?.backgroundColor = UIColor.whiteColor()
+        btn.titleLabel?.clipsToBounds = true
     }
     func saleBtnClick() {
         print("saleBtnClick")
@@ -123,6 +126,8 @@ class SAMHomeViewController: UIViewController {
             btn.backgroundColor = UIColor.whiteColor()
             btn.setTitle(title, forState: .Normal)
             btn.titleLabel?.font = UIFont.systemFontOfSize(15)
+            btn.titleLabel?.backgroundColor = UIColor.whiteColor()
+            btn.titleLabel?.clipsToBounds = true
             
             //设置普通状态
             btn.setImage(UIImage(named: imgName), forState: .Normal)
