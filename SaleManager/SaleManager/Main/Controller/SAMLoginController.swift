@@ -300,6 +300,9 @@ class SAMLoginController: UIViewController {
             //创建全局使用的netWorker单例
             SAMNetWorker.globalNetWorker(self.severAddStr!)
             
+            //创建全局使用的上传图片netWorker单例
+            SAMNetWorker.globalUnloadImageNetWorker(self.severAddStr!)
+            
             //发出登录成功的通知
             NSNotificationCenter.defaultCenter().postNotificationName(LoginSuccessNotification, object: nil, userInfo: nil)
         }

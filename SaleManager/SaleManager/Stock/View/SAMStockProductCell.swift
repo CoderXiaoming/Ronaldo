@@ -19,6 +19,7 @@ class SAMStockProductCell: UICollectionViewCell {
         productImageBtnClickCallback = block
     }
     
+    ///接收的数据模型
     var stockProductModel: SAMStockProductModel? {
         didSet{
             
@@ -87,9 +88,6 @@ class SAMStockProductCell: UICollectionViewCell {
         contentView.addConstraints(cons)
     }
     
-    ///记录是否有数据
-    var hasInfo = false
-    
     //MARK: - 对外提供方法，主动刷新数据
     func reloadCollectionView() {
         collectionView.reloadData()
@@ -137,9 +135,6 @@ extension SAMStockProductCell: UICollectionViewDataSource {
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let count = stockProductModel?.productDeatilList.count ?? 0
-        
-        //记录数据
-        hasInfo = (count == 0) ? false : true
         
         return count
     }

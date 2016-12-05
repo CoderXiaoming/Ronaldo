@@ -8,6 +8,10 @@
 
 import UIKit
 import MJRefresh
+
+//刚是否成功上传成功图片
+var SAMStockHasUnloadProductImage = false
+
 ///产品cell重用标识符
 private let SAMStockProductCellReuseIdentifier = "SAMStockProductCellReuseIdentifier"
 
@@ -34,12 +38,12 @@ class SAMStockViewController: UIViewController {
         navigationItem.title = "库存查询"
         view.backgroundColor = UIColor.whiteColor()
         
-        //设置导航栏右边的所有选项
-        setupRightNavBarItems()
+        //设置导航栏右边按钮
+        setupRightNavBarItem()
     }
     
-    //MARK: - 设置导航栏右边所有的按钮
-    private func setupRightNavBarItems() {
+    //MARK: - 设置导航栏右边按钮
+    private func setupRightNavBarItem() {
         
         let conSearchBtn = UIButton()
         conSearchBtn.setImage(UIImage(named: "nameScan_nav"), forState: .Normal)
@@ -71,6 +75,19 @@ class SAMStockViewController: UIViewController {
         conditionalSearchVC.view.transform = CGAffineTransformIdentity
         presentViewController(conditionalSearchVC, animated: true) {
         }
+    }
+    
+    //MARK: - viewDidAppear
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        //判断是否刚上传图片成功
+        if SAMStockHasUnloadProductImage {
+            
+            collectionView.mj_header.beginRefreshing()
+            
+        }
+        
     }
     
     //MARK: - 加载数据
@@ -136,6 +153,9 @@ class SAMStockViewController: UIViewController {
                     
                     //刷新数据
                     self.collectionView.reloadData()
+                    
+                    //记录数据
+                    SAMStockHasUnloadProductImage = false
                     }, completion: { (_) in
                         
                         //判断顶部条是否隐藏
@@ -260,16 +280,20 @@ class SAMStockViewController: UIViewController {
     var conSearchParameters: [String: AnyObject]? {
         didSet {
             if conSearchParameters != nil {
+                
                 //计算动画所需数据
                 let originalFrame = conditionalSearchVC.view.convertRect(conditionalSearchVC.view.frame, toView: view)
                 let originalCenterY = (originalFrame.maxY - originalFrame.origin.y) * 0.5
-                let transformY = originalCenterY - collectionView.frame.origin.y
+                let transformY = collectionView.frame.origin.y - originalCenterY - 15
                 
+                //动画隐藏界面
                 UIView.animateWithDuration(0.3, animations: {
                     
                     let transform = CGAffineTransformMakeTranslation(0, transformY)
                     self.conditionalSearchVC.view.transform = CGAffineTransformScale(transform, 0.0001, 0.0001)
                 }) { (_) in
+                    
+                    //恢复界面形变，刷新数据
                     self.conditionalSearchVC.dismissViewControllerAnimated(true, completion: {
                         self.conditionalSearchVC.view.transform = CGAffineTransformIdentity
                         self.conditionalSearchVC.view.layoutIfNeeded()
@@ -370,10 +394,8 @@ extension SAMStockViewController: UICollectionViewDelegate {
             //取出cell，刷新数据
             let selectedCell = collectionView.cellForItemAtIndexPath(indexPath) as! SAMStockProductCell
             
-            //如果cell没有数据就刷新数据
-            if !selectedCell.hasInfo {
-                selectedCell.reloadCollectionView()
-            }
+            //如果cell的collectionView
+            selectedCell.reloadCollectionView()
         }
         
         //让系统调用DelegateFlowLayout 的 sizeForItemAtIndexPath的方法
@@ -400,6 +422,9 @@ extension SAMStockViewController: UICollectionViewDataSource {
         //取出模型
         let model = stockProductModels[indexPath.row] as! SAMStockProductModel
         cell.stockProductModel = model
+        
+        //刷新collectionView
+        cell.reloadCollectionView()
         
         //设置闭包
         cell.setProductImageClick {[weak self] (stockProductModel) in

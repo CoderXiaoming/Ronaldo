@@ -92,13 +92,6 @@ class SAMCustomerCollectionCell: UICollectionViewCell {
         let rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(SAMCustomerCollectionCell.rightSwipeCell))
         rightSwipe.direction = UISwipeGestureRecognizerDirection.Right
         addGestureRecognizer(rightSwipe)
-        
-//        customerLabel.layer.shouldRasterize = true
-//        remarkLabel.layer.shouldRasterize = true
-//        phoneLabel.layer.shouldRasterize = true
-//        addLabel.layer.shouldRasterize = true
-//        faxLabel.layer.shouldRasterize = true
-//        telLabel.layer.shouldRasterize = true
     }
     
     //MARK: - 判断当前是否被选中

@@ -357,12 +357,6 @@ class SAMStockConditionalSearchController: UIViewController {
         firstResponder = nil
         
         //转变到二维码选择界面
-//        UIView.animateWithDuration(changeSearchAnimationDuration, animations: {
-//            self.view.frame.size.height = 400
-//            self.conSearchView.alpha = 0.0001
-//            self.codeSearchView.alpha = 1
-//            self.view.layoutIfNeeded()
-//        })
         UIView.animateWithDuration(changeSearchAnimationDuration, animations: {
             self.view.frame.size.height = 400
             self.conSearchView.alpha = 0.0001
@@ -437,7 +431,6 @@ class SAMStockConditionalSearchController: UIViewController {
         pickerView.dataSource = self
         return pickerView
     }()
-    
     
     ///最近一次查询的参数
     private var parameters: [String: AnyObject]?

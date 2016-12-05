@@ -12,39 +12,41 @@ import SDWebImage
 class SAMStockProductInfoController: UITableViewController {
 
     ///接收的数据模型
-    var stockProductModel: SAMStockProductModel?
+    var stockProductModel: SAMStockProductModel? {
+        didSet{
+            //判断productImageVIew是否已经加载
+            if productImageVIew != nil {
+                productImageVIew.sd_setImageWithURL(stockProductModel!.thumbURL1!, placeholderImage: UIImage(named: "firstLogo")!)
+            }
+        }
+    }
 
-    
+    //MARK: - 对外提供的类工厂方法
     class func infoVC() -> SAMStockProductInfoController? {
         return UIStoryboard(name: "SAMStockProductInfoController", bundle: nil).instantiateInitialViewController() as? SAMStockProductInfoController
     }
     
+    //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
 
         //设置标题
         navigationItem.title = "产品信息"
-        
-        //设置返回按钮
-        let backButton = UIButton()
-        backButton.sizeToFit()
-        backButton.setImage(UIImage(named: "navbarBack"), forState: .Normal)
-        backButton.imageEdgeInsets = UIEdgeInsetsMake(0, -10, 0, 0)
-        
-        backButton.addTarget(self, action: #selector(SAMStockProductInfoController.navbarBackBtnClick), forControlEvents: .TouchUpInside)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
     }
     
+    //MARK: - viewWillAppear
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         //初始化UI
         setupUI()
+        
+        //设置图片控制器的数据模型
+        productImageVC?.stockProductModel = stockProductModel
     }
     
     //MARK: - 初始化UI
     func setupUI() {
-        print(tabBarController?.tabBar.bounds)
         //设置产品图片
         if stockProductModel?.thumbURL1 != nil {
             productImageVIew.sd_setImageWithURL(stockProductModel!.thumbURL1!, placeholderImage: UIImage(named: "firstLogo")!)
@@ -66,7 +68,6 @@ class SAMStockProductInfoController: UITableViewController {
             huaMingLabel.text = "---"
         }
         
-        //TODO: 设置大类
         //设置大类
         if stockProductModel!.parentID != "" {
             categoryLabel.text = stockProductModel!.parentID
@@ -102,11 +103,19 @@ class SAMStockProductInfoController: UITableViewController {
             remarkLabel.text = "---"
         }
     }
-
+    
     //MARK: - 用户点击事件处理
     func navbarBackBtnClick() {
         navigationController?.popViewControllerAnimated(true)
+        
     }
+    
+    //MARK: - 懒加载属性
+    //产品图片展示器
+    private lazy var productImageVC: SAMProductImageController? = {
+        let vc = SAMProductImageController()
+        return vc
+    }()
     
     //MARK: - XIB链接属性
     @IBOutlet weak var productImageVIew: UIImageView!
@@ -131,5 +140,13 @@ extension SAMStockProductInfoController {
     }
     override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0
+    }
+    
+    //点击图片Cell跳转
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let imageIndex = NSIndexPath(forRow: 0, inSection: 0)
+        if indexPath == imageIndex {
+            navigationController!.pushViewController(productImageVC!, animated: true)
+        }
     }
 }

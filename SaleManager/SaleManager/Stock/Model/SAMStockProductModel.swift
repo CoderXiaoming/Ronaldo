@@ -69,7 +69,13 @@ class SAMStockProductModel: NSObject {
     }
     
     ///大图1
-    var imageUrl1: String?
+    var imageUrl1: String? {
+        didSet{
+            if imageUrl1 != "" {
+                imageURL1 = NSURL(string: imageUrl1!)
+            }
+        }
+    }
 
     //MARK: - 加载库存明细数据
     private func loadProductDeatilList() {
@@ -89,6 +95,7 @@ class SAMStockProductModel: NSObject {
                 
                 let arr = SAMStockProductDeatil.mj_objectArrayWithKeyValuesArray(dictArr)!
                 
+                //添加数据模型
                 self.productDeatilList.addObjectsFromArray(arr as [AnyObject])
             }
         }) { (Task, Error) in
@@ -98,6 +105,8 @@ class SAMStockProductModel: NSObject {
     //MARK: - 附加属性
     ///缩略图1（主缩略图）链接
     var thumbURL1: NSURL?
+    ///大图1（主缩略图）链接
+    var imageURL1: NSURL?
     
     ///库存明细模型数组
     let productDeatilList = NSMutableArray()

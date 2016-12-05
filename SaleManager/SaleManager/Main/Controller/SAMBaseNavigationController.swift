@@ -17,6 +17,9 @@ class SAMBaseNavigationController: UINavigationController {
         //设置主标题属性
         navBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.boldSystemFontOfSize(19)]
         
+        //设置返回按钮颜色
+        navBar.tintColor = UIColor.whiteColor()
+        
         navBar.setBackgroundImage(UIImage(named: "navbarBackgroundImage"), forBarMetrics: .Default)
     }
 
