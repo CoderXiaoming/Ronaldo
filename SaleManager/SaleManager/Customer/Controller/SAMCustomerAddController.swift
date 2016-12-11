@@ -77,8 +77,8 @@ class SAMCustomerAddController: UIViewController {
             if editingModel!.CGUnitName!.containsString("公司") { //对字符串进行分割
                 let strArr = editingModel!.CGUnitName?.componentsSeparatedByString("公司")
                 if strArr?.count > 1 {
-                    corporationTF.text = (strArr![0] as String).stringByTrimmingWhitespace()
-                    contactTF.text = (strArr![1] as String).stringByTrimmingWhitespace()
+                    corporationTF.text = (strArr![0] as String).lxm_stringByTrimmingWhitespace()
+                    contactTF.text = (strArr![1] as String).lxm_stringByTrimmingWhitespace()
                 }
             }else {
                 corporationTF.text = editingModel?.CGUnitName
@@ -133,32 +133,32 @@ class SAMCustomerAddController: UIViewController {
         endFirstResponderEditing()
         
         //获取公司名称字符串，并进行判断
-        var customerStr = corporationTF.text!.stringByTrimmingWhitespace()!
+        var customerStr = corporationTF.text!.lxm_stringByTrimmingWhitespace()!
         if customerStr == "" {
             SAMHUD.showMessage("请填写公司", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
             return
         }
         
         //获取联系人名称字符串，并进行判断
-        let contactStr = contactTF.text!.stringByTrimmingWhitespace()!
+        let contactStr = contactTF.text!.lxm_stringByTrimmingWhitespace()!
         if contactStr == "" {
             SAMHUD.showMessage("请填写联系人", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
             return
         }
         
         //获取手机字符串，并进行判断
-        let cellStr = cellTF.text!.stringByTrimmingWhitespace()!
-        if (cellStr != "") && !cellStr.isWholeNumber() {
+        let cellStr = cellTF.text!.lxm_stringByTrimmingWhitespace()!
+        if (cellStr != "") && !cellStr.lxm_stringisWholeNumber() {
             SAMHUD.showMessage("请填写合法手机号", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
             return
         }
         
-        let telStr = telTF.text!.stringByTrimmingWhitespace()!
-        let provinceStr = provinceTF.text!.stringByTrimmingWhitespace()!
-        let cityStr = cityTF.text!.stringByTrimmingWhitespace()!
-        var addStr = addTF.text!.stringByTrimmingWhitespace()!
-        let addStr2 = addTF2.text!.stringByTrimmingWhitespace()!
-        let remarkStr = remarkTF.text!.stringByTrimmingWhitespace()!
+        let telStr = telTF.text!.lxm_stringByTrimmingWhitespace()!
+        let provinceStr = provinceTF.text!.lxm_stringByTrimmingWhitespace()!
+        let cityStr = cityTF.text!.lxm_stringByTrimmingWhitespace()!
+        var addStr = addTF.text!.lxm_stringByTrimmingWhitespace()!
+        let addStr2 = addTF2.text!.lxm_stringByTrimmingWhitespace()!
+        let remarkStr = remarkTF.text!.lxm_stringByTrimmingWhitespace()!
         
         //创建控制器
         let alert = UIAlertController(title: "请确认", message: nil, preferredStyle: .Alert)

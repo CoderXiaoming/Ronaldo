@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11542" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="SAMOrderDetailBigCellReuseIdentifier" id="gTV-IL-0wX" customClass="SAMOrderDetailBigCell" customModule="SaleManager" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="225"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="225"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Gss-Ds-gdp">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="30"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="匹数" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zVh-EY-82M">
+                                <rect key="frame" x="0.0" y="0.0" width="94" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="米数" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xUh-ez-5QY">
+                                <rect key="frame" x="94" y="0.0" width="94" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="单价(元)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wZV-ev-fgw">
+                                <rect key="frame" x="188" y="0.0" width="94" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="总价(元)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t4L-og-0W4">
+                                <rect key="frame" x="282" y="0.0" width="93" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.94509803920000002" green="0.94117647059999998" blue="0.96078431369999995" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="zVh-EY-82M" firstAttribute="width" secondItem="Gss-Ds-gdp" secondAttribute="width" multiplier="0.25" id="55p-su-7uN"/>
+                            <constraint firstItem="xUh-ez-5QY" firstAttribute="top" secondItem="Gss-Ds-gdp" secondAttribute="top" id="5dE-6Q-U8x"/>
+                            <constraint firstItem="xUh-ez-5QY" firstAttribute="leading" secondItem="zVh-EY-82M" secondAttribute="trailing" id="7jx-ul-eD6"/>
+                            <constraint firstItem="wZV-ev-fgw" firstAttribute="top" secondItem="Gss-Ds-gdp" secondAttribute="top" id="Bxo-VE-zT0"/>
+                            <constraint firstItem="zVh-EY-82M" firstAttribute="leading" secondItem="Gss-Ds-gdp" secondAttribute="leading" id="G9x-ls-DPX"/>
+                            <constraint firstAttribute="bottom" secondItem="zVh-EY-82M" secondAttribute="bottom" id="GQh-kd-8BU"/>
+                            <constraint firstItem="wZV-ev-fgw" firstAttribute="width" secondItem="zVh-EY-82M" secondAttribute="width" id="Nft-rb-srm"/>
+                            <constraint firstItem="wZV-ev-fgw" firstAttribute="leading" secondItem="xUh-ez-5QY" secondAttribute="trailing" id="OiD-RR-dSJ"/>
+                            <constraint firstItem="zVh-EY-82M" firstAttribute="top" secondItem="Gss-Ds-gdp" secondAttribute="top" id="Pul-13-ULf"/>
+                            <constraint firstAttribute="bottom" secondItem="xUh-ez-5QY" secondAttribute="bottom" id="RJ6-Bu-J3h"/>
+                            <constraint firstAttribute="height" constant="30" id="U6t-wz-AcS"/>
+                            <constraint firstItem="t4L-og-0W4" firstAttribute="top" secondItem="Gss-Ds-gdp" secondAttribute="top" id="XUP-S3-cG8"/>
+                            <constraint firstAttribute="bottom" secondItem="t4L-og-0W4" secondAttribute="bottom" id="ZNQ-Cr-bTQ"/>
+                            <constraint firstAttribute="trailing" secondItem="t4L-og-0W4" secondAttribute="trailing" id="bfx-0Z-kZF"/>
+                            <constraint firstItem="t4L-og-0W4" firstAttribute="leading" secondItem="wZV-ev-fgw" secondAttribute="trailing" id="gP5-I1-MmD"/>
+                            <constraint firstAttribute="bottom" secondItem="wZV-ev-fgw" secondAttribute="bottom" id="xkb-so-m1Y"/>
+                            <constraint firstItem="xUh-ez-5QY" firstAttribute="width" secondItem="zVh-EY-82M" secondAttribute="width" id="xpQ-Zp-hki"/>
+                        </constraints>
+                    </view>
+                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="Xsm-ag-rOn">
+                        <rect key="frame" x="0.0" y="30" width="375" height="195"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="rMA-qs-WHA">
+                            <size key="itemSize" width="50" height="50"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                    </collectionView>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="Xsm-ag-rOn" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="1Uz-za-ieC"/>
+                <constraint firstAttribute="trailing" secondItem="Gss-Ds-gdp" secondAttribute="trailing" id="41e-zQ-QOJ"/>
+                <constraint firstAttribute="trailing" secondItem="Xsm-ag-rOn" secondAttribute="trailing" id="Fgt-Pw-41D"/>
+                <constraint firstAttribute="bottom" secondItem="Xsm-ag-rOn" secondAttribute="bottom" id="GnH-qj-uUr"/>
+                <constraint firstItem="Xsm-ag-rOn" firstAttribute="top" secondItem="Gss-Ds-gdp" secondAttribute="bottom" id="IUU-ba-HKT"/>
+                <constraint firstItem="Gss-Ds-gdp" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="Iog-wQ-GyW"/>
+                <constraint firstItem="Gss-Ds-gdp" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="p0a-wl-CxE"/>
+            </constraints>
+            <size key="customSize" width="254" height="50"/>
+            <connections>
+                <outlet property="collectionView" destination="Xsm-ag-rOn" id="brH-Ty-x2t"/>
+            </connections>
+            <point key="canvasLocation" x="13.5" y="48.5"/>
+        </collectionViewCell>
+    </objects>
+</document>

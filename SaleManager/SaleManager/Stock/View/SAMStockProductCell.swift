@@ -12,12 +12,17 @@ import SDWebImage
 //库存明细重用标识符
 private let SAMStockProductDetailCellReuseIdentifier = "SAMStockProductDetailCellReuseIdentifier"
 
+//MARK: - 代理方法
+protocol SAMStockProductCellDelegate: NSObjectProtocol {
+    func productCellDidClickShoppingCarButton(stockProductModel: SAMStockProductModel, stockProductImage: UIImage)
+    func productCellDidClickStockWarnningButton(stockProductModel: SAMStockProductModel)
+    func productCellDidClickProductImageButton(stockProductModel: SAMStockProductModel)
+}
+
 class SAMStockProductCell: UICollectionViewCell {
 
-    //MARK: - 对外提供点击产品图片回调的闭包
-    func setProductImageClick(block: ((stockProductModel: SAMStockProductModel?) -> ())) {
-        productImageBtnClickCallback = block
-    }
+    ///代理
+    weak var delegate: SAMStockProductCellDelegate?
     
     ///接收的数据模型
     var stockProductModel: SAMStockProductModel? {
@@ -37,19 +42,11 @@ class SAMStockProductCell: UICollectionViewCell {
                 productNameLabel.text = "---"
             }
             
-            //设置匹数
-            if stockProductModel!.countM != "" {
-                mishuLabel.text = stockProductModel!.countM
-            }else {
-                mishuLabel.text = "---"
-            }
+            //设置米数
+            mishuLabel.text = String(format: "%.1f", stockProductModel!.countM)
             
             //设置匹数
-            if stockProductModel!.countP != "" {
-                pishuLabel.text = stockProductModel!.countP
-            }else {
-                pishuLabel.text = "---"
-            }
+            pishuLabel.text = String(format: "%d", stockProductModel!.countP)
         }
     }
     
@@ -95,14 +92,14 @@ class SAMStockProductCell: UICollectionViewCell {
     
     //MARK: - 用户点击事件处理
     @IBAction func stockWaringBtnClick(sender: AnyObject) {
+        delegate?.productCellDidClickStockWarnningButton(stockProductModel!)
     }
     @IBAction func shoppingCarBtnClick(sender: AnyObject) {
+        delegate?.productCellDidClickShoppingCarButton(stockProductModel!, stockProductImage: productImageBtn.backgroundImageForState(.Normal)!)
     }
     @IBAction func productImageBtnClick(sender: AnyObject) {
         
-        if  productImageBtnClickCallback != nil {
-            productImageBtnClickCallback!(stockProductModel: stockProductModel)
-        }
+        delegate?.productCellDidClickProductImageButton(stockProductModel!)
     }
     
     //MARK: - 属性懒加载
@@ -111,9 +108,6 @@ class SAMStockProductCell: UICollectionViewCell {
         let view = UICollectionView(frame: CGRectZero, collectionViewLayout: SAMStockProductDetailColletionViewFlowlayout())
         return view
     }()
-    
-    ///点击产品图片按钮后回调的闭包
-    var productImageBtnClickCallback: ((stockProductModel: SAMStockProductModel?) -> ())?
     
     //MARK: - XIB链接属性
     @IBOutlet weak var topContentView: UIView!

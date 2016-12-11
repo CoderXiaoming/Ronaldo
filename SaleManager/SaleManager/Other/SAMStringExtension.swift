@@ -11,12 +11,12 @@ import UIKit
 extension String {
     
     //MARK: - 去掉字符串前后空白
-    func stringByTrimmingWhitespace() -> String? {
+    func lxm_stringByTrimmingWhitespace() -> String? {
         return stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
     }
     
     //MARK: - 判断是不是纯数字
-    func isWholeNumber() -> Bool {
+    func lxm_stringisWholeNumber() -> Bool {
         if self == "" {
             return false
         }
@@ -27,4 +27,37 @@ extension String {
         }
         return true
     }
+    
+    //MARK: - 判断最后一个是不是所传字符串，如果是就切掉
+    func lxm_stringByTrimmingLastIfis(lastString: String) ->String {
+    
+        let str = NSString(string: self)
+        let strLength = str.length
+        
+        let lastStr = str.substringFromIndex(strLength - 1)
+        
+        if lastStr == lastString {
+            return str.substringToIndex(strLength - 1)
+        }else {
+            return self
+        }
+        
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

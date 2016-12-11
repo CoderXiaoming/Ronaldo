@@ -33,10 +33,10 @@ class SAMStockProductModel: NSObject {
     var costNoTax: String?
     
     ///总米数
-    var countM: String?
+    var countM: Double = 0.0
     
     ///总匹数
-    var countP: String?
+    var countP: Int = 0
     
     ///仓库ID，暂时无用
     var storehouseID: String?

@@ -101,12 +101,14 @@ class SAMStockConditionalSearchController: UIViewController {
         //加载所有分类、仓库列表
         loadCategoryStorehouseList()
         
-        //清空所有文本框
-        let arr = NSArray(array: [categoryTF, numberTF, storehouseTF, stockTF])
+        //TODO: 这些数据时网上加载的所以暂时午饭提前赋值
+        //赋值文本框
+        let arr = NSArray(array: [categoryTF, numberTF, storehouseTF])
         arr.enumerateObjectsUsingBlock { (obj, ind, nil) in
             let tf = obj as! SAMLoginTextField
             tf.text = nil
         }
+        stockTF.text = "0"
         
         //设置退出编辑按钮可用性
         endEditingBtn.enabled = false
@@ -287,7 +289,7 @@ class SAMStockConditionalSearchController: UIViewController {
     
     //MARK: - 获取搜索字符串
     func searchCon() -> String? {
-        let searchStr = searchTF.text?.stringByTrimmingWhitespace()
+        let searchStr = searchTF.text?.lxm_stringByTrimmingWhitespace()
         if searchStr == "" { //没有内容
             return nil
         }
@@ -331,7 +333,7 @@ class SAMStockConditionalSearchController: UIViewController {
         }
         
         //判断仓库
-        if !(stockTF.text?.isWholeNumber())! {
+        if !(stockTF.text?.lxm_stringisWholeNumber())! {
             SAMHUD.showMessage("请填写整数库存", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
             return
         }

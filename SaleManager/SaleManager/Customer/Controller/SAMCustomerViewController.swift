@@ -179,7 +179,7 @@ class SAMCustomerViewController: UIViewController {
     
     //MARK: - 获取搜索字符串
     func searchCon() -> String? {
-        let searchStr = searchTF.text?.stringByTrimmingWhitespace()
+        let searchStr = searchTF.text?.lxm_stringByTrimmingWhitespace()
         if searchStr == "" { //没有内容
             return nil
         }
@@ -323,11 +323,6 @@ extension SAMCustomerViewController: UICollectionViewDataSource {
             cell.containterView.backgroundColor = SAMCustomerCellNormalColor
         }
         
-        //传递数据模型
-        let model = customerModels[indexPath.row] as! SAMCustomerModel
-        cell.customerModel = model
-        cell.delegate = self
-        
         return cell
     }
 }
@@ -364,6 +359,11 @@ extension SAMCustomerViewController: UICollectionViewDelegate {
             //执行动画
             selectCellAnimation(selectedCell, willNorCell: willNorCell)
         }
+        
+        let cell = collectionView.cellForItemAtIndexPath(indexPath)!
+        let bottom = cell.frame.maxY
+        print(bottom)
+        
     }
     
     //MARK: - 点击了某个cell时执行的动画
@@ -465,7 +465,7 @@ extension SAMCustomerViewController: SAMCustomerCollectionCellDelegate {
         if phoneStr == "" {
             SAMHUD.showMessage("没有手机号码", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
             return
-        }else if !(phoneStr.isWholeNumber()) {
+        }else if !(phoneStr.lxm_stringisWholeNumber()) {
             SAMHUD.showMessage("非法电话", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
             return
         }

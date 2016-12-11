@@ -53,8 +53,10 @@ class SAMHomeViewController: UIViewController {
         btn.titleLabel?.backgroundColor = UIColor.whiteColor()
         btn.titleLabel?.clipsToBounds = true
     }
+    
+    //展示销售历史控制器
     func saleBtnClick() {
-        print("saleBtnClick")
+        navigationController!.pushViewController(salesHistoryVC!, animated: true)
     }
     func orderBtnClick() {
         print("orderBtnClick")
@@ -127,6 +129,12 @@ class SAMHomeViewController: UIViewController {
         }
         
         return btnView
+    }()
+    
+    ///历史订单控制器
+    private lazy var salesHistoryVC: SAMSalesHistoryController? = {
+        let vc = SAMSalesHistoryController()
+        return vc
     }()
     
     //无关紧要的方法
