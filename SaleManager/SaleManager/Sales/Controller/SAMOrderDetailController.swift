@@ -211,6 +211,17 @@ class SAMOrderDetailController: UIViewController {
     @IBOutlet weak var mishuLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
     
+    //MARK: - 其他方法
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    override func loadView() {
+        view = NSBundle.mainBundle().loadNibNamed("SAMOrderDetailController", owner: self, options: nil)![0] as! UIView
+    }
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
 }
 
 //MARK: - UICollectionViewDataSource

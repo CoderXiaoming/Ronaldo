@@ -18,10 +18,15 @@ private let keyboardHidedProductImageWidth: CGFloat = 90
 ///键盘隐藏时购物车控件的高度
 private let keyboardHidedShoppingCarFrame = CGRect(x: 0, y: ScreenH - 350, width: ScreenW, height: 350)
 
+///信息字体小rect
+private let shoppingCarViewLabelSmallFont = UIFont.systemFontOfSize(13)
+///信息字体大font
+private let shoppingCarViewLabelBigFont = UIFont.systemFontOfSize(15)
+
 protocol SAMStockAddShoppingCarViewDelegate: NSObjectProtocol {
     func shoppingCarViewDidClickDismissButton()
     func shoppingCarViewDidClickTextField(textField: UITextField)
-    func shoppingCarViewDidClickEnsureButton()
+    func shoppingCarViewAddProductSuccess(productImage: UIImage)
 }
 
 class SAMStockAddShoppingCarView: UIView {
@@ -60,6 +65,9 @@ class SAMStockAddShoppingCarView: UIView {
             mishuTF.text = "1"
             priceTF.text = "0"
             remarkTF.text = ""
+            
+            //设置字体大小
+            setTitleLabelBiggerOrSmaller(true)
         }
     }
     
@@ -91,8 +99,6 @@ class SAMStockAddShoppingCarView: UIView {
         
         //监听键盘弹出通知
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SAMStockAddShoppingCarView.keyboardWillChangeFrame(_:)), name: UIKeyboardWillChangeFrameNotification, object: nil)
-        
-        //TODO: 设置确定按钮的各种状态照片
     }
     
     //MARK: - 对外提供即将展示控件调用的方法
@@ -233,6 +239,10 @@ class SAMStockAddShoppingCarView: UIView {
                     
                     //设置产品图片的宽度
                     self.productImageWidthConstraint.constant = keyboardHidedProductImageWidth
+                    
+                    //设置字体大小
+                    self.setTitleLabelBiggerOrSmaller(true)
+                    
                     self.layoutIfNeeded()
                     }, completion: { (_) in
                         
@@ -244,31 +254,27 @@ class SAMStockAddShoppingCarView: UIView {
                     
                     //设置产品图片的宽度
                     self.productImageWidthConstraint.constant = keyboardShowingProductImageWidth
-                        self.layoutIfNeeded()
+                    
+                    //设置字体大小
+                    self.setTitleLabelBiggerOrSmaller(false)
+                    
+                    self.layoutIfNeeded()
                     }, completion: { (_) in
                 })
             }
         }
     }
     
-    //MARK: - 发送请求，添加到购物车
-    private func addToShoppingCar() {
+    //MARK: - 设置文字变大或变小
+    private func setTitleLabelBiggerOrSmaller(bigger:Bool) {
         
-        //获取匹数字符串
-        let pishuStr = pishuTF.text
-        
-        //创建请求参数
-        var parameters = ["userID": SAMUserAuth.shareUser()!.id!]
-        parameters["productID"] = stockProductModel!.id!
-        parameters["countP"] = pishuTF.text!
-        parameters["countM"] = mishuTF.text!.lxm_stringByTrimmingLastIfis(".")
-        parameters["price"] = priceTF.text!.lxm_stringByTrimmingLastIfis(".")
-        parameters["memoInfo"] = remarkTF.text!.lxm_stringByTrimmingWhitespace()
-        
-//        SAMNetWorker.sharedNetWorker().POST("CartAdd.ashx", parameters: <#T##AnyObject?#>, progress: <#T##((NSProgress) -> Void)?##((NSProgress) -> Void)?##(NSProgress) -> Void#>, success: <#T##((NSURLSessionDataTask, AnyObject?) -> Void)?##((NSURLSessionDataTask, AnyObject?) -> Void)?##(NSURLSessionDataTask, AnyObject?) -> Void#>, failure: <#T##((NSURLSessionDataTask?, NSError) -> Void)?##((NSURLSessionDataTask?, NSError) -> Void)?##(NSURLSessionDataTask?, NSError) -> Void#>)
+        let labelArr = NSArray(array: [productNumberLabel, pishuTitleLabel, pishuLabel, mishuTitleLabel, mishuLabel])
+        labelArr.enumerateObjectsUsingBlock { (obj, index, _) in
+            let label = obj as! UILabel
+            
+            label.font = bigger ? shoppingCarViewLabelBigFont : shoppingCarViewLabelSmallFont
+        }
     }
-    
-    //
     
     //MARK: - 属性懒加载
     private var firstTF: UITextField?
@@ -287,14 +293,72 @@ class SAMStockAddShoppingCarView: UIView {
         //结束第一响应者编辑状态
         endFirstTextFieldEditing()
         
-        addToShoppingCar()
+        //设置加载hud
+        let hud = SAMHUD.showHUDAddedTo(KeyWindow, animated: true)
+        hud.labelText = NSLocalizedString("正在添加...", comment: "HUD loading title")
+        
+        //创建请求参数
+        var parameters = ["userID": SAMUserAuth.shareUser()!.id!]
+        parameters["productID"] = stockProductModel!.id!
+        parameters["countP"] = pishuTF.text!
+        parameters["countM"] = mishuTF.text!
+        parameters["price"] = priceTF.text!
+        
+        if remarkTF.hasText() {
+            parameters["memoInfo"] = remarkTF.text!
+        }else {
+            parameters["memoInfo"] = ""
+        }
+        
+        //发送服务器请求，添加到购物车
+        SAMNetWorker.sharedNetWorker().POST("CartAdd.ashx", parameters: parameters, progress: nil, success: { (task, Json) in
+            
+            
+            //获取上传状态
+            let dict = Json!["head"] as! [String: String]
+            let status = dict["status"]!
+            
+            if status == "success" { //上传服务器成功
+            
+                //返回主线程
+                dispatch_async(dispatch_get_main_queue(), {
+                    //隐藏HUD
+                    hud.hide(true)
+                    
+                    //告诉代理添加产品成功
+                    self.delegate?.shoppingCarViewAddProductSuccess(self.productImage.image!)
+                })
+            }else { //上传服务器失败
+                
+                //返回主线程
+                dispatch_async(dispatch_get_main_queue(), { 
+                    //隐藏HUD
+                    hud.hide(true)
+                    
+                    //提示用户错误信息
+                    SAMHUD.showMessage("添加失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+                })
+            }
+            
+        }) { (task, error) in
+            
+            //隐藏HUD
+            hud.hide(true)
+            
+            //提示用户错误信息
+            SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+        }
     }
     
     //MARK: - XIB链接属性
     @IBOutlet weak var productImage: UIImageView!
     
     @IBOutlet weak var productNumberLabel: UILabel!
+    
+    @IBOutlet weak var pishuTitleLabel: UILabel!
     @IBOutlet weak var pishuLabel: UILabel!
+    
+    @IBOutlet weak var mishuTitleLabel: UILabel!
     @IBOutlet weak var mishuLabel: UILabel!
     
     @IBOutlet weak var pishuTF: UITextField!
@@ -387,14 +451,18 @@ extension SAMStockAddShoppingCarView: UITextFieldDelegate {
         //截取最后一个小数点
         str = str?.lxm_stringByTrimmingLastIfis(".")
         
-        
+        //如果截取后没有字符，或者为0，则赋值
         if str == "" || str == "0"  {
             if textField == mishuTF {
                 textField.text = "1"
             }else {
                 textField.text = "0"
             }
+            return
         }
+        
+        //赋值文本框
+        textField.text = str
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {

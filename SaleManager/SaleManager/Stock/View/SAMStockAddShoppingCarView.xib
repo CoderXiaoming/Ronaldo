@@ -191,12 +191,15 @@
                 </view>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hEG-7C-uUI">
                     <rect key="frame" x="0.0" y="300" width="375" height="50"/>
-                    <color key="backgroundColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="50" id="BZx-wT-qRk"/>
                     </constraints>
-                    <state key="normal" title="确定">
+                    <state key="normal" title="确定" backgroundImage="dateButtonBGImage">
                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <state key="disabled" backgroundImage="dateButtonBGImage_highlighted">
+                        <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
                         <action selector="ensureButtonClick:" destination="iN0-l3-epB" eventType="touchUpInside" id="375-IF-4mZ"/>
@@ -243,8 +246,13 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6y0-YH-P0h">
-                            <rect key="frame" x="342" y="10" width="23" height="22"/>
-                            <state key="normal" image="dateButtonImage"/>
+                            <rect key="frame" x="335" y="10" width="30" height="30"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="30" id="EqZ-38-g1Y"/>
+                                <constraint firstAttribute="height" constant="30" id="LZf-sA-fJf"/>
+                            </constraints>
+                            <inset key="imageEdgeInsets" minX="3" minY="-3" maxX="0.0" maxY="0.0"/>
+                            <state key="normal" image="cancel"/>
                             <connections>
                                 <action selector="dismissButtonClick:" destination="iN0-l3-epB" eventType="touchUpInside" id="dPh-vB-4ue"/>
                             </connections>
@@ -311,9 +319,11 @@
                 <outlet property="mishuLabel" destination="bLr-Sc-eog" id="dfP-gC-sNA"/>
                 <outlet property="mishuMaxLabel" destination="77G-qS-WtC" id="fq5-HY-5Uq"/>
                 <outlet property="mishuTF" destination="yqO-mS-vYn" id="nKY-ju-Zxp"/>
+                <outlet property="mishuTitleLabel" destination="frY-co-PvZ" id="LVl-HK-dwV"/>
                 <outlet property="pishuLabel" destination="hwo-um-XwG" id="90G-MF-VOe"/>
                 <outlet property="pishuMaxLabel" destination="E4A-kj-JMk" id="XsS-Y1-svV"/>
                 <outlet property="pishuTF" destination="GRO-y7-Mr1" id="Hs7-Pb-xXB"/>
+                <outlet property="pishuTitleLabel" destination="c8t-iV-DER" id="egd-fP-4Ie"/>
                 <outlet property="priceTF" destination="XU8-1m-cHj" id="C5R-L4-hgq"/>
                 <outlet property="productImage" destination="gCT-Bq-1xw" id="KRe-KC-cfm"/>
                 <outlet property="productImageWidthConstraint" destination="9Gt-kb-ceb" id="zMd-ix-RfU"/>
@@ -324,7 +334,9 @@
         </view>
     </objects>
     <resources>
-        <image name="dateButtonImage" width="23" height="22"/>
+        <image name="cancel" width="22" height="22"/>
+        <image name="dateButtonBGImage" width="60" height="35"/>
+        <image name="dateButtonBGImage_highlighted" width="60" height="35"/>
         <image name="temp" width="100" height="99"/>
     </resources>
 </document>

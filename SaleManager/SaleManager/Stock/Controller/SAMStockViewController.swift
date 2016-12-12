@@ -263,6 +263,18 @@ class SAMStockViewController: UIViewController {
             SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
+    
+    //MARK: - 添加到购物车之后的动画方法
+    private func addToShoppingCarSuccess(productImage: UIImage) {
+        
+        //设置用户界面不可交互
+        tabBarController?.view.userInteractionEnabled = false
+        
+        //设置动画layer
+        productAnimlayer!.contents = productImage.CGImage
+        KeyWindow?.layer.addSublayer(productAnimlayer!)
+        productAnimlayer?.addAnimation(groupAnimation, forKey: "group")
+    }
 
     //MARK: - 懒加载属性
     ///条件搜索控制器
@@ -349,10 +361,65 @@ class SAMStockViewController: UIViewController {
         maskView.alpha = 0.0
         
         //添加手势
-        let tap = UITapGestureRecognizer(target: self, action: #selector(SAMStockViewController.hideShoppingCarView))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(SAMStockViewController.hideShoppingCarViewWhenMaskViewDidClick))
         maskView.addGestureRecognizer(tap)
         
         return maskView
+    }()
+    
+    ///添加购物车成功时候的动画layer
+    private lazy var productAnimlayer: CALayer? = {
+        let layer = CALayer()
+        layer.contentsGravity = kCAGravityResizeAspectFill
+        layer.bounds = CGRect(x: 0, y: 0, width: 40, height: 40)
+        layer.cornerRadius = 10
+        layer.masksToBounds = true
+        layer.position = CGPointMake(50, ScreenH)
+        KeyWindow?.layer.addSublayer(layer)
+        return layer
+    }()
+    
+    ///添加购物车成功时，layer执行的组动画
+    private lazy var groupAnimation: CAAnimationGroup = {
+        
+        /******************  layer动画路线  ******************/
+        let pathAnimation = CAKeyframeAnimation(keyPath: "position")
+        //动画路线
+        let path = UIBezierPath()
+        //计算各点
+        let startPoint = CGPoint(x: 30, y: ScreenH)
+        let endPoint = CGPoint(x: ScreenW * (3 / 5) + 23, y: ScreenH - 43)
+        let controlPoint = CGPoint(x: (endPoint.x - startPoint.x) * 0.5, y: (endPoint.y - 250))
+        //连线
+        path.moveToPoint(startPoint)
+        path.addQuadCurveToPoint(endPoint, controlPoint: controlPoint)
+        
+        pathAnimation.path = path.CGPath
+        pathAnimation.rotationMode = kCAAnimationRotateAuto
+        
+        /******************  layer放大动画  ******************/
+        let expandAnimation = CABasicAnimation(keyPath: "transform.scale")
+        expandAnimation.fromValue = 0.5
+        expandAnimation.toValue = 2
+        expandAnimation.duration = 0.4
+        expandAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
+        
+        /******************  layer缩小动画  ******************/
+        let narrowAnimation = CABasicAnimation(keyPath: "transform.scale")
+        narrowAnimation.fromValue = 2
+        narrowAnimation.toValue = 0.4
+        narrowAnimation.beginTime = 0.4
+        narrowAnimation.duration = 0.5
+        expandAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+        
+        let group = CAAnimationGroup()
+        group.animations = [pathAnimation,expandAnimation,narrowAnimation]
+        group.duration = 0.79
+        group.removedOnCompletion = false
+        group.fillMode = kCAFillModeForwards
+        group.delegate = self
+        
+        return group
     }()
     
     //MARK: - xib链接约束属性
@@ -519,7 +586,6 @@ extension SAMStockViewController: SAMStockProductCellDelegate {
                 }, completion: { (_) in
             })
         }
-
     }
     
     //点击了库存警报
@@ -552,8 +618,14 @@ extension SAMStockViewController: SAMStockProductCellDelegate {
         return transform
     }
     
+    //MARK: - 点击maskView隐藏购物车控件
+    func hideShoppingCarViewWhenMaskViewDidClick() {
+    
+        hideShoppingCarView(false, produtImage: nil)
+    }
+    
     //MARK: - 隐藏购物车控件
-    func hideShoppingCarView() {
+    func hideShoppingCarView(didAddProduct: Bool, produtImage: UIImage?) {
     
         //设置购物车目标frame
         var rect = self.shoppingCarView.frame
@@ -571,6 +643,7 @@ extension SAMStockViewController: SAMStockProductCellDelegate {
             self.shoppingCarMaskView.alpha = 0.0
             }) { (_) in
                 
+                //移除蒙板
                 self.shoppingCarMaskView.removeFromSuperview()
                 
                 UIView.animateWithDuration(0.25, animations: {
@@ -578,7 +651,13 @@ extension SAMStockViewController: SAMStockProductCellDelegate {
                     self.tabBarController!.view.layer.transform = CATransform3DIdentity
                     }, completion: { (_) in
                         
+                        //移除购物车
                         self.shoppingCarView.removeFromSuperview()
+                        
+                        //调用成功添加购物车的动画
+                        if didAddProduct {
+                            self.addToShoppingCarSuccess(produtImage!)
+                        }
                 })
         }
     }
@@ -588,14 +667,43 @@ extension SAMStockViewController: SAMStockProductCellDelegate {
 extension SAMStockViewController: SAMStockAddShoppingCarViewDelegate {
 
     func shoppingCarViewDidClickDismissButton() {
-        hideShoppingCarView()
+        
+        //隐藏购物车
+        hideShoppingCarView(false, produtImage: nil)
     }
     
     func shoppingCarViewDidClickTextField(textField: UITextField) {
     
         
     }
-    func shoppingCarViewDidClickEnsureButton() {
     
+    func shoppingCarViewAddProductSuccess(productImage: UIImage) {
+        
+        //隐藏购物车
+        hideShoppingCarView(true, produtImage: productImage)
+    }
+    
+}
+
+//MARK: - CAAnimationDelegate
+extension SAMStockViewController: CAAnimationDelegate {
+    
+    func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+    
+        if anim == productAnimlayer?.animationForKey("group") {
+            
+            //改变shoppingCar控制器的badgeValue
+            SAMCarViewController.sharedInstance().addOrMinusProductCountOne(true)
+            
+            //恢复界面交互状态
+            tabBarController?.view.userInteractionEnabled = true
+            
+            //移除动画
+            productAnimlayer?.removeFromSuperlayer()
+            
+            //移除动画图层
+            productAnimlayer?.removeFromSuperlayer()
+        }
     }
 }
+
