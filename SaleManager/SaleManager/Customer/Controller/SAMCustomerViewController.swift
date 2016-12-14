@@ -323,6 +323,11 @@ extension SAMCustomerViewController: UICollectionViewDataSource {
             cell.containterView.backgroundColor = SAMCustomerCellNormalColor
         }
         
+        //传递数据模型
+        let model = customerModels[indexPath.row] as! SAMCustomerModel
+        cell.customerModel = model
+        cell.delegate = self
+        
         return cell
     }
 }

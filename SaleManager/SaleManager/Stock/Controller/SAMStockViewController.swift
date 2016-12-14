@@ -693,7 +693,7 @@ extension SAMStockViewController: CAAnimationDelegate {
         if anim == productAnimlayer?.animationForKey("group") {
             
             //改变shoppingCar控制器的badgeValue
-            SAMCarViewController.sharedInstance().addOrMinusProductCountOne(true)
+            SAMShoppingCarController.sharedInstance().addOrMinusProductCountOne(true)
             
             //恢复界面交互状态
             tabBarController?.view.userInteractionEnabled = true

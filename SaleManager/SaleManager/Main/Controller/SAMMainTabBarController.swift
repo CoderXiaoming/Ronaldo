@@ -45,7 +45,7 @@ class SAMMainTabBarController: UITabBarController {
         let codeVC = SAMBaseNavigationController(rootViewController: LXMCodeViewController())
         addOnmeController(codeVC, tabImg: UIImage(named: "codeScan")!, selectedImg: UIImage(named: "codeScan_selected")!, tabTile: "扫码")
         
-        let carVC = SAMBaseNavigationController(rootViewController: SAMCarViewController.sharedInstance())
+        let carVC = SAMBaseNavigationController(rootViewController: SAMShoppingCarController.sharedInstance())
         addOnmeController(carVC, tabImg: UIImage(named: "shoppingCar")!, selectedImg: UIImage(named: "shoppingCar_selected")!, tabTile: "购物车")
         
         let customerVC = SAMBaseNavigationController(rootViewController: SAMCustomerViewController())
