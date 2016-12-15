@@ -8,6 +8,11 @@
 
 import UIKit
 
+///添加产品的URL
+private let SAMAddShoppingCarURLStr = "CartAdd.ashx"
+///编辑产品的URL
+private let SAMEditShoppingCarURLStr = "CartEdit.ashx"
+
 ///键盘展示时图片宽度
 private let keyboardShowingProductImageWidth: CGFloat = 60
 ///键盘展示时购物车控件的高度
@@ -25,8 +30,7 @@ private let shoppingCarViewLabelBigFont = UIFont.systemFontOfSize(15)
 
 protocol SAMStockAddShoppingCarViewDelegate: NSObjectProtocol {
     func shoppingCarViewDidClickDismissButton()
-    func shoppingCarViewDidClickTextField(textField: UITextField)
-    func shoppingCarViewAddProductSuccess(productImage: UIImage)
+    func shoppingCarViewAddOrEditProductSuccess(productImage: UIImage)
 }
 
 class SAMStockAddShoppingCarView: UIView {
@@ -34,48 +38,37 @@ class SAMStockAddShoppingCarView: UIView {
     ///代理
     weak var delegate: SAMStockAddShoppingCarViewDelegate?
     
-    ///接收的数据模型
-    var stockProductModel: SAMStockProductModel? {
-        didSet{
-            //设置产品名称
-            if stockProductModel!.productIDName != "" {
-                productNumberLabel.text = stockProductModel!.productIDName
-            }else {
-                productNumberLabel.text = "---"
-            }
-            
-            //设置标题匹数
-            pishuLabel.text = String(format: "%d", stockProductModel!.countP)
-            
-            //设置标题米数
-            mishuLabel.text = String(format: "%.1f", stockProductModel!.countM)
-            
-            //设置最大匹数提醒label
-            pishuMaxLabel.text = String(format: "最大%d匹！", stockProductModel!.countP)
-            pishuMaxLabel.alpha = 0.0001
-            pishuMaxLabel.transform = CGAffineTransformIdentity
-            
-            //设置最大米数提醒label
-            mishuMaxLabel.text = String(format: "最大%.1f米！", stockProductModel!.countM)
-            mishuMaxLabel.alpha = 0.0001
-            mishuMaxLabel.transform = CGAffineTransformIdentity
-            
-            //设置四个文本框
-            pishuTF.text = "0"
-            mishuTF.text = "1"
-            priceTF.text = "0"
-            remarkTF.text = ""
-            
-            //设置字体大小
-            setTitleLabelBiggerOrSmaller(true)
-        }
-    }
+    ///全局单例
+    static let instance = NSBundle.mainBundle().loadNibNamed("SAMStockAddShoppingCarView", owner: nil, options: nil)![0] as! SAMStockAddShoppingCarView
     
-    //MARK: - 对外提供的类方法
-    class func carView() -> SAMStockAddShoppingCarView {
-        let view = NSBundle.mainBundle().loadNibNamed("SAMStockAddShoppingCarView", owner: nil, options: nil)![0] as! SAMStockAddShoppingCarView
-        return view
+    //MARK: - 对外提供的展示控件调用的方法
+    class func shoppingCarViewWillShow(stockProductImage: UIImage, addProductModel: SAMStockProductModel?, editProductModel: SAMShoppingCarListModel?) -> SAMStockAddShoppingCarView {
+        
+        //赋值图片
+        instance.productImage.image = stockProductImage
+        
+        //清楚所有文本框
+        instance.clearAllTextField()
+        
+        //赋值数据模型
+        if addProductModel != nil {
+            instance.addProductModel = addProductModel
+            instance.editProductModel = nil
+            instance.isAddingProduct = true
+        }else {
+            instance.addProductModel = nil
+            instance.editProductModel = editProductModel
+            instance.isAddingProduct = false
+        }
+        
+        //设置确认按钮不可用
+        instance.ensureButton.enabled = false
+        let buttonTitle = instance.isAddingProduct ? "添加" : "修改"
+        instance.ensureButton.setTitle(buttonTitle, forState: .Normal)
+        
+        return instance
     }
+
     
     //MARK: - awakeFromNib
     override func awakeFromNib() {
@@ -101,101 +94,15 @@ class SAMStockAddShoppingCarView: UIView {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SAMStockAddShoppingCarView.keyboardWillChangeFrame(_:)), name: UIKeyboardWillChangeFrameNotification, object: nil)
     }
     
-    //MARK: - 对外提供即将展示控件调用的方法
-    func shoppingCarViewWillShow(stockProductImage: UIImage, productModel: SAMStockProductModel) {
-        
-        //赋值图片
-        productImage.image = stockProductImage
-        
-        //赋值数据模型
-        stockProductModel = productModel
-        
-        //设置确认按钮不可用
-        ensureButton.enabled = false
-    }
     
     //MARK: - textField监听的方法
     func textFieldDidChangeValue(textField: UITextField) {
-        
-        
-        /******************  pishuTF  ******************/
-        //如果当前是匹数textField，而且有值
-        if textField == pishuTF && textField.hasText() {
-            let pishuStr = NSString(string: textField.text!)
-            let pishu = pishuStr.integerValue
-            
-            //如果匹数大于库存，则将文本框设置为最大匹数
-            if pishu > stockProductModel!.countP {
-                
-                //修改文本内容
-                textField.text = String(format: "%d", stockProductModel!.countP)
-                
-                //展示提醒内容
-                showOrHideRemindLabel(true, label: pishuMaxLabel)
-            }else {
-                //隐藏提醒内容
-                showOrHideRemindLabel(false, label: pishuMaxLabel)
-            }
-        }
-        //如果当前是匹数textField，但没有值
-        if textField == pishuTF && !textField.hasText() {
-            
-            //隐藏提醒内容
-            showOrHideRemindLabel(false, label: pishuMaxLabel)
-        }
-        
-        /******************  mishuTF  ******************/
-        //如果当前是米数textField，而且有值
-        if textField == mishuTF && textField.hasText() {
-            let mishuStr = NSString(string: textField.text!)
-            let mishu = mishuStr.doubleValue
-            
-            //如果匹数大于库存，则将文本框设置为最大匹数
-            if mishu > stockProductModel!.countM {
-                
-                //修改文本内容
-                textField.text = String(format: "%.1f", stockProductModel!.countM)
-                
-                //展示提醒内容
-                showOrHideRemindLabel(true, label: mishuMaxLabel)
-            }else {
-                //隐藏提醒内容
-                showOrHideRemindLabel(false, label: mishuMaxLabel)
-            }
-        }
-        //如果当前是匹数textField，但没有值
-        if textField == pishuTF && !textField.hasText() {
-            
-            //隐藏提醒内容
-            showOrHideRemindLabel(false, label: pishuMaxLabel)
-        }
         
         //设置确认按钮可用性
         if pishuTF.hasText() && mishuTF.hasText() && priceTF.hasText() {
             ensureButton.enabled = true
         }else {
             ensureButton.enabled = false
-        }
-    }
-    
-    //MARK: - 展示或隐藏提示文本
-    private func showOrHideRemindLabel(show: Bool, label: UILabel) {
-    
-        //展示label
-        if show {
-            UIView.animateWithDuration(0.5, delay: 0, options: .CurveLinear, animations: {
-                    label.alpha = 1
-                    label.transform = CGAffineTransformMakeTranslation(-label.frame.width, 0)
-                }, completion: { (_) in
-            })
-        }else {
-            
-            //隐藏label
-            UIView.animateWithDuration(0.5, delay: 0, options: .CurveLinear, animations: {
-                label.alpha = 0.00001
-                label.transform = CGAffineTransformIdentity
-                }, completion: { (_) in
-            })
         }
     }
     
@@ -277,7 +184,74 @@ class SAMStockAddShoppingCarView: UIView {
     }
     
     //MARK: - 属性懒加载
+    ///接收的添加产品数据模型
+    private var addProductModel: SAMStockProductModel? {
+        didSet{
+            
+            if addProductModel == nil {
+                return
+            }
+            
+            //设置产品名称
+            if addProductModel!.productIDName != "" {
+                productNumberLabel.text = addProductModel!.productIDName
+            }else {
+                productNumberLabel.text = "---"
+            }
+            
+            //设置标题匹数
+            pishuLabel.text = String(format: "%d", addProductModel!.countP)
+            
+            //设置标题米数
+            mishuLabel.text = String(format: "%.1f", addProductModel!.countM)
+        
+            //设置字体大小
+            setTitleLabelBiggerOrSmaller(true)
+            
+            //设置文本框
+            pishuTF.text = "0"
+            mishuTF.text = "1"
+            priceTF.text = "0"
+            remarkTF.text = ""
+        }
+    }
+
+    ///接收的编辑购物车的数据模型
+    private var editProductModel: SAMShoppingCarListModel? {
+        didSet{
+
+            if editProductModel == nil {
+                return
+            }
+            //设置匹数， 米数，价格
+            pishuTF.text = String(format: "%d", editProductModel!.countP)
+            mishuTF.text = String(format: "%.1f", editProductModel!.countM)
+            priceTF.text = String(format: "%.1f", editProductModel!.price)
+            
+            //赋值备注文本框
+            if editProductModel!.memoInfo != "" {
+                remarkTF.text = editProductModel!.memoInfo
+            }else {
+                remarkTF.text = ""
+            }
+            
+            //设置字体大小
+            setTitleLabelBiggerOrSmaller(true)
+        }
+    }
+
     private var firstTF: UITextField?
+    
+    ///记录当前是 添加商品 还是 编辑商品
+    private var isAddingProduct: Bool = false {
+        didSet{
+            //设置请求路径
+            self.requestURLStr = isAddingProduct ? SAMAddShoppingCarURLStr : SAMEditShoppingCarURLStr
+        }
+    }
+    
+    ///数据请求链接
+    private var requestURLStr: String?
     
     //MARK: - 点击事件处理
     @IBAction func dismissButtonClick(sender: UIButton) {
@@ -295,14 +269,22 @@ class SAMStockAddShoppingCarView: UIView {
         
         //设置加载hud
         let hud = SAMHUD.showHUDAddedTo(KeyWindow, animated: true)
-        hud.labelText = NSLocalizedString("正在添加...", comment: "HUD loading title")
+        hud.labelText = NSLocalizedString("请等待...", comment: "HUD loading title")
         
         //创建请求参数
-        var parameters = ["userID": SAMUserAuth.shareUser()!.id!]
-        parameters["productID"] = stockProductModel!.id!
+        var parameters = [String: AnyObject]()
         parameters["countP"] = pishuTF.text!
         parameters["countM"] = mishuTF.text!
         parameters["price"] = priceTF.text!
+        
+        if isAddingProduct { //添加购物车状态
+            
+            parameters["userID"] = SAMUserAuth.shareUser()!.id!
+            parameters["productID"] = addProductModel!.id!
+        }else { //编辑购物车状态
+            
+            parameters["id"] = editProductModel!.id!
+        }
         
         if remarkTF.hasText() {
             parameters["memoInfo"] = remarkTF.text!
@@ -311,7 +293,7 @@ class SAMStockAddShoppingCarView: UIView {
         }
         
         //发送服务器请求，添加到购物车
-        SAMNetWorker.sharedNetWorker().POST("CartAdd.ashx", parameters: parameters, progress: nil, success: { (task, Json) in
+        SAMNetWorker.sharedNetWorker().POST(requestURLStr!, parameters: parameters, progress: nil, success: { (task, Json) in
             
             
             //获取上传状态
@@ -326,7 +308,7 @@ class SAMStockAddShoppingCarView: UIView {
                     hud.hide(true)
                     
                     //告诉代理添加产品成功
-                    self.delegate?.shoppingCarViewAddProductSuccess(self.productImage.image!)
+                    self.delegate?.shoppingCarViewAddOrEditProductSuccess(self.productImage.image!)
                 })
             }else { //上传服务器失败
                 
@@ -335,11 +317,11 @@ class SAMStockAddShoppingCarView: UIView {
                     //隐藏HUD
                     hud.hide(true)
                     
+                    let hudMessage = self.isAddingProduct ? "添加失败，请重试" : "修改失败，请重试"
                     //提示用户错误信息
-                    SAMHUD.showMessage("添加失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+                    SAMHUD.showMessage(hudMessage, superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                 })
             }
-            
         }) { (task, error) in
             
             //隐藏HUD
@@ -362,10 +344,8 @@ class SAMStockAddShoppingCarView: UIView {
     @IBOutlet weak var mishuLabel: UILabel!
     
     @IBOutlet weak var pishuTF: UITextField!
-    @IBOutlet weak var pishuMaxLabel: UILabel!
     
     @IBOutlet weak var mishuTF: UITextField!
-    @IBOutlet weak var mishuMaxLabel: UILabel!
     
     @IBOutlet weak var priceTF: UITextField!
     @IBOutlet weak var remarkTF: UITextField!

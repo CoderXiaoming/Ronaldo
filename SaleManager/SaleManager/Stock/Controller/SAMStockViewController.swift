@@ -22,6 +22,25 @@ private let SAMStockProductCellSelectedSize = CGSize(width: ScreenW, height: 126
 
 class SAMStockViewController: UIViewController {
     
+    ///单例
+    static let instance = SAMStockViewController()
+    
+    ///对外提供的类工厂方法
+    class func shareInstanc() -> SAMStockViewController {
+        return instance
+    }
+    
+    ///对外提供查询某个字符串相关库存信息的方法
+    class func stockRequest(productName: String) {
+    
+        //赋值
+        instance.productNameSearchStr = productName
+        
+        //设置记录状态
+        instance.isProductNameSearch = true
+        instance.hasOutRequest = true
+    }
+    
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,6 +59,9 @@ class SAMStockViewController: UIViewController {
         
         //设置导航栏右边按钮
         setupRightNavBarItem()
+        
+        //设置textField监听方法
+        productNameTF.addTarget(self, action: #selector(SAMStockViewController.textFieldDidEditChange(_:)), forControlEvents: .EditingChanged)
     }
     
     //MARK: - 设置导航栏右边按钮
@@ -70,10 +92,25 @@ class SAMStockViewController: UIViewController {
         collectionView.mj_footer.automaticallyHidden = true
     }
     
-    //MARK: - 总库存按钮点击
+    //MARK: - 搜索按钮点击
     func conSearchBtnClick() {
-        conditionalSearchVC.view.transform = CGAffineTransformIdentity
-        presentViewController(conditionalSearchVC, animated: true) {
+        
+        //判断当前是产品名搜索状态还是条件搜索状态
+        if isProductNameSearch { //产品名搜索状态
+            
+            //退出编辑
+            endProductNameTFEditing(false)
+            
+            //开始搜索
+            collectionView.mj_header.beginRefreshing()
+        }else { //条件搜索状态
+        
+            //清空产品名文本框，退出编辑
+            endProductNameTFEditing(true)
+            
+            //展示条件搜索界面
+            conditionalSearchVC.view.transform = CGAffineTransformIdentity
+            presentViewController(conditionalSearchVC, animated: true, completion: nil)
         }
     }
     
@@ -81,13 +118,17 @@ class SAMStockViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        //判断是否刚上传图片成功
-        if SAMStockHasUnloadProductImage {
+        //判断是否刚上传图片成功 或者是否有外界请求
+        if SAMStockHasUnloadProductImage || hasOutRequest {
             
             collectionView.mj_header.beginRefreshing()
             
+            if hasOutRequest {
+                
+                //赋值文本框
+                productNameTF.text = productNameSearchStr
+            }
         }
-        
     }
     
     //MARK: - 加载数据
@@ -96,10 +137,19 @@ class SAMStockViewController: UIViewController {
         //结束下拉刷新
         collectionView.mj_footer.endRefreshing()
         
-        //没有请求参数直接返回
-        if conSearchParameters == nil {
+        //记录已经刷新
+        SAMStockHasUnloadProductImage = false
+        hasOutRequest = false
+        
+        //如果当前不是产品名搜索而且没有请求参数直接返回
+        if !isProductNameSearch && (conSearchParameters == nil) {
             collectionView.mj_header.endRefreshing()
             return
+        }
+        
+        //如果是产品名搜索，设置请求参数
+        if isProductNameSearch {
+            conSearchParameters = ["productIDName": productNameSearchStr!, "minCountM": "0", "parentID": "-1", "storehouseID": "-1"]
         }
         
         //请求所有数据
@@ -154,8 +204,6 @@ class SAMStockViewController: UIViewController {
                     //刷新数据
                     self.collectionView.reloadData()
                     
-                    //记录数据
-                    SAMStockHasUnloadProductImage = false
                     }, completion: { (_) in
                         
                         //判断顶部条是否隐藏
@@ -275,6 +323,24 @@ class SAMStockViewController: UIViewController {
         KeyWindow?.layer.addSublayer(productAnimlayer!)
         productAnimlayer?.addAnimation(groupAnimation, forKey: "group")
     }
+    
+    //MARK: - 文本框监听的方法
+    func textFieldDidEditChange(textField: UITextField) {
+        
+        //获取搜索字符串
+        productNameSearchStr = textField.text!.lxm_stringByTrimmingWhitespace()
+        
+        //设置是否产品名称搜索状态
+        isProductNameSearch = (productNameSearchStr != "") ? true : false
+    }
+    
+    //MARK: - 结束产品文本框编辑状态
+    private func endProductNameTFEditing(clear: Bool) {
+        if clear {
+            productNameTF.text = ""
+        }
+        productNameTF.resignFirstResponder()
+    }
 
     //MARK: - 懒加载属性
     ///条件搜索控制器
@@ -291,7 +357,7 @@ class SAMStockViewController: UIViewController {
     ///条件搜索参数字典
     var conSearchParameters: [String: AnyObject]? {
         didSet {
-            if conSearchParameters != nil {
+            if (conSearchParameters != nil) && !isProductNameSearch {
                 
                 //计算动画所需数据
                 let originalFrame = conditionalSearchVC.view.convertRect(conditionalSearchVC.view.frame, toView: view)
@@ -318,12 +384,22 @@ class SAMStockViewController: UIViewController {
     
     ///条件搜索请求URLStr
     private let conSearchURLStr = "getStock.ashx"
-    ///条件搜索请求URLStr
+    ///总库存搜索请求URLStr
     private let statisticSearchURLStr = "getStockStatic.ashx"
     ///一次数据请求获取的数据最大条数
     private let conSearchPageSize = 15
     ///当前数据的页码
     private var conSearchPageIndex = 1
+    
+    ///当前是否有外界查询请求
+    private var hasOutRequest: Bool = false
+    ///外界查询请求产品名称
+    private var outRequestProductName: String?
+    
+    ///当前是否为单独产品名搜索
+    private var isProductNameSearch: Bool = false
+    ///单独产品名搜索字符串
+    private var productNameSearchStr: String?
     
     ///数据模型数组
     let stockProductModels = NSMutableArray()
@@ -345,13 +421,7 @@ class SAMStockViewController: UIViewController {
     }
     
     ///购物车选择控件
-    private lazy var shoppingCarView: SAMStockAddShoppingCarView = {
-        let view = SAMStockAddShoppingCarView.carView()
-        view.delegate = self
-        
-        view.frame = CGRect(x: 0, y: ScreenH, width: ScreenW, height: 350)
-        return view
-    }()
+    private var shoppingCarView: SAMStockAddShoppingCarView?
     
     ///展示购物车时，主界面添加的蒙版
     private lazy var shoppingCarMaskView: UIView = {
@@ -430,25 +500,34 @@ class SAMStockViewController: UIViewController {
     @IBOutlet weak var allStockView: UIView!
     @IBOutlet weak var pishuLabel: UILabel!
     @IBOutlet weak var mishuLabel: UILabel!
+    @IBOutlet weak var productNameTF: SAMLoginTextField!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var indicaterView: UIView!
     
     //MARK: - 其他方法
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
+    private init() { //重写该方法，为单例服务
+        super.init(nibName: nil, bundle: nil)
+    }
+    private override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
-    //MARK: - loadView
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     override func loadView() {
         //从xib加载view
         view = NSBundle.mainBundle().loadNibNamed("SAMStockViewController", owner: self, options: nil)![0] as! UIView
     }
 }
 
-//MARK: - UICollectionViewDelegate
+//MARK: - CollectionView代理UICollectionViewDelegate
 extension SAMStockViewController: UICollectionViewDelegate {
     func scrollViewDidScroll(scrollView: UIScrollView) {
 
+        //退出产品名搜索框编辑状态
+        endProductNameTFEditing(false)
+        
         //监听滚动，达到某一条件的时候让顶部所有库存条上滚消失
         let offsetY = scrollView.contentOffset.y
         
@@ -494,7 +573,7 @@ extension SAMStockViewController: UICollectionViewDelegate {
     }
 }
 
-//MARK: - UICollectionViewDataSource
+//MARK: - CollectionView数据源方法UICollectionViewDataSource
 extension SAMStockViewController: UICollectionViewDataSource {
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -509,9 +588,6 @@ extension SAMStockViewController: UICollectionViewDataSource {
         
         //设置代理
         cell.delegate = self
-        
-        //TODO: 这行暂时注释，点击cell的时候已经主动调取该方法了，此时可能不需要
-        //cell.reloadCollectionView()
         
         return cell
     }
@@ -535,7 +611,7 @@ extension SAMStockViewController: UICollectionViewDelegateFlowLayout {
     } 
 }
 
-//MARK: - UIViewControllerTransitioningDelegate
+//MARK: - 条件搜索控制器的动画代理UIViewControllerTransitioningDelegate
 extension SAMStockViewController: UIViewControllerTransitioningDelegate {
     
     func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
@@ -547,45 +623,14 @@ extension SAMStockViewController: UIViewControllerTransitioningDelegate {
     }
 }
 
-//MARK: - SAMStockProductCellDelegate
+//MARK: - 库存产品CELL的代理SAMStockProductCellDelegate
 extension SAMStockViewController: SAMStockProductCellDelegate {
     
     //点击了购物车
     func productCellDidClickShoppingCarButton(stockProductModel: SAMStockProductModel, stockProductImage: UIImage) {
         
-        //设置购物车控件的目标frame
-        var rect = self.shoppingCarView.frame
-        rect.origin.y = ScreenH - rect.size.height
-        
-        //传递产品图片
-        shoppingCarView.shoppingCarViewWillShow(stockProductImage, productModel: stockProductModel)
-        
-        
-        //添加背景View
-        tabBarController!.view.addSubview(shoppingCarMaskView)
-        KeyWindow?.addSubview(shoppingCarView)
-        
-        //动画展示购物车控件
-        UIView.animateWithDuration(0.5) {
-            self.shoppingCarView.frame = rect
-        }
-        
-        //动画移动背景View
-        UIView.animateWithDuration(0.25, animations: {
-            
-            //执行第一步动画
-            self.shoppingCarMaskView.alpha = 0.5
-            self.tabBarController!.view.layer.transform = self.firstTran()
-            
-        }) { (_) in
-            
-            //执行第二步动画
-            UIView.animateWithDuration(0.25, animations: {
-                self.tabBarController!.view.layer.transform = self.secondTran()
-                
-                }, completion: { (_) in
-            })
-        }
+        //展示购物车
+        showShoppingCar(stockProductImage, productModel: stockProductModel)
     }
     
     //点击了库存警报
@@ -601,69 +646,9 @@ extension SAMStockViewController: SAMStockProductCellDelegate {
         productInfoVC!.stockProductModel = stockProductModel
         navigationController!.pushViewController(productInfoVC!, animated: true)
     }
-    
-    //MARK: - view的第一步动画
-    private func firstTran() -> CATransform3D {
-        var transform = CATransform3DIdentity
-        transform.m24 = -1/2000
-        transform = CATransform3DScale(transform, 0.9, 0.9, 1)
-        return transform
-    }
-    
-    //MARK: - view的第二步动画
-    func secondTran() -> CATransform3D {
-        var transform = CATransform3DIdentity
-        transform = CATransform3DTranslate(transform, 0, self.view.frame.size.height * (-0.08), 0)
-        transform = CATransform3DScale(transform, 0.8, 0.8, 1)
-        return transform
-    }
-    
-    //MARK: - 点击maskView隐藏购物车控件
-    func hideShoppingCarViewWhenMaskViewDidClick() {
-    
-        hideShoppingCarView(false, produtImage: nil)
-    }
-    
-    //MARK: - 隐藏购物车控件
-    func hideShoppingCarView(didAddProduct: Bool, produtImage: UIImage?) {
-    
-        //设置购物车目标frame
-        var rect = self.shoppingCarView.frame
-        rect.origin.y = ScreenH
-        
-        //动画隐藏购物车控件
-        UIView.animateWithDuration(0.5) {
-            self.shoppingCarView.frame = rect
-        }
-        
-        //动画展示主View
-        UIView.animateWithDuration(0.25, animations: {
-            
-            self.tabBarController!.view.layer.transform = self.firstTran()
-            self.shoppingCarMaskView.alpha = 0.0
-            }) { (_) in
-                
-                //移除蒙板
-                self.shoppingCarMaskView.removeFromSuperview()
-                
-                UIView.animateWithDuration(0.25, animations: {
-                    
-                    self.tabBarController!.view.layer.transform = CATransform3DIdentity
-                    }, completion: { (_) in
-                        
-                        //移除购物车
-                        self.shoppingCarView.removeFromSuperview()
-                        
-                        //调用成功添加购物车的动画
-                        if didAddProduct {
-                            self.addToShoppingCarSuccess(produtImage!)
-                        }
-                })
-        }
-    }
 }
 
-//MARK: - SAMStockAddShoppingCarViewDelegate
+//MARK: - 购物车控件代理SAMStockAddShoppingCarViewDelegate
 extension SAMStockViewController: SAMStockAddShoppingCarViewDelegate {
 
     func shoppingCarViewDidClickDismissButton() {
@@ -672,17 +657,107 @@ extension SAMStockViewController: SAMStockAddShoppingCarViewDelegate {
         hideShoppingCarView(false, produtImage: nil)
     }
     
-    func shoppingCarViewDidClickTextField(textField: UITextField) {
-    
-        
-    }
-    
-    func shoppingCarViewAddProductSuccess(productImage: UIImage) {
-        
+    func shoppingCarViewAddOrEditProductSuccess(productImage: UIImage) {
         //隐藏购物车
         hideShoppingCarView(true, produtImage: productImage)
     }
     
+    //MARK: - 购物车相关4各方法
+    //主控制器View展示购物车时的第一步形变
+    private func firstTran() -> CATransform3D {
+        var transform = CATransform3DIdentity
+        transform.m24 = -1/2000
+        transform = CATransform3DScale(transform, 0.9, 0.9, 1)
+        return transform
+    }
+    
+    //主控制器View展示购物车时的第二步形变
+    private func secondTran() -> CATransform3D {
+        var transform = CATransform3DIdentity
+        transform = CATransform3DTranslate(transform, 0, self.view.frame.size.height * (-0.08), 0)
+        transform = CATransform3DScale(transform, 0.8, 0.8, 1)
+        return transform
+    }
+    
+    //展示购物车控件
+    private func showShoppingCar(productImage: UIImage, productModel: SAMStockProductModel) {
+    
+        //设置购物车控件的目标frame
+        shoppingCarView = SAMStockAddShoppingCarView.shoppingCarViewWillShow(productImage, addProductModel: productModel, editProductModel: nil)
+        shoppingCarView!.delegate = self
+        shoppingCarView!.frame = CGRect(x: 0, y: ScreenH, width: ScreenW, height: 350)
+        
+        var rect = shoppingCarView!.frame
+        rect.origin.y = ScreenH - rect.size.height
+        
+        //添加背景View
+        tabBarController!.view.addSubview(shoppingCarMaskView)
+        KeyWindow?.addSubview(shoppingCarView!)
+        
+        //动画展示购物车控件
+        UIView.animateWithDuration(0.5) {
+            self.shoppingCarView!.frame = rect
+        }
+        
+        //动画移动背景View
+        UIView.animateWithDuration(0.25, animations: {
+            
+            //执行第一步动画
+            self.shoppingCarMaskView.alpha = 0.5
+            self.tabBarController!.view.layer.transform = self.firstTran()
+        }) { (_) in
+            
+            //执行第二步动画
+            UIView.animateWithDuration(0.25, animations: {
+                self.tabBarController!.view.layer.transform = self.secondTran()
+                }, completion: { (_) in
+            })
+        }
+    }
+    
+    //点击maskView隐藏购物车控件
+    func hideShoppingCarViewWhenMaskViewDidClick() {
+        
+        hideShoppingCarView(false, produtImage: nil)
+    }
+    
+    //隐藏购物车控件
+    private func hideShoppingCarView(didAddProduct: Bool, produtImage: UIImage?) {
+        
+        //设置购物车目标frame
+        var rect = self.shoppingCarView!.frame
+        rect.origin.y = ScreenH
+        
+        //动画隐藏购物车控件
+        UIView.animateWithDuration(0.5) {
+            self.shoppingCarView!.frame = rect
+        }
+        
+        //动画展示主View
+        UIView.animateWithDuration(0.25, animations: {
+            
+            self.tabBarController!.view.layer.transform = self.firstTran()
+            self.shoppingCarMaskView.alpha = 0.0
+        }) { (_) in
+            
+            //移除蒙板
+            self.shoppingCarMaskView.removeFromSuperview()
+            
+            UIView.animateWithDuration(0.25, animations: {
+                
+                self.tabBarController!.view.layer.transform = CATransform3DIdentity
+                }, completion: { (_) in
+                    
+                    //移除购物车
+                    self.shoppingCarView!.removeFromSuperview()
+                    
+                    //调用成功添加购物车的动画
+                    if didAddProduct {
+                        self.addToShoppingCarSuccess(produtImage!)
+                    }
+            })
+        }
+    }
 }
 
 //MARK: - CAAnimationDelegate
@@ -706,4 +781,20 @@ extension SAMStockViewController: CAAnimationDelegate {
         }
     }
 }
+
+//MARK: - UITextFieldDelegate
+extension SAMStockViewController: UITextFieldDelegate {
+
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        
+        //结束编辑状态
+        endProductNameTFEditing(false)
+        
+        //出发collectionView下拉
+        collectionView.mj_header.beginRefreshing()
+        return true
+    }
+}
+
+
 

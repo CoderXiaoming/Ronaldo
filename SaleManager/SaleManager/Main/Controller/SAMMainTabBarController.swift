@@ -38,8 +38,7 @@ class SAMMainTabBarController: UITabBarController {
         
         let homeVC = SAMBaseNavigationController(rootViewController: SAMHomeViewController())
         addOnmeController(homeVC, tabImg: UIImage(named: "visitManagertabbar")!, selectedImg: UIImage(named: "visitManager_selected")!, tabTile: "首页")
-        
-        let stockVC = SAMBaseNavigationController(rootViewController: SAMStockViewController())
+        let stockVC = SAMBaseNavigationController(rootViewController: SAMStockViewController.shareInstanc())
         addOnmeController(stockVC, tabImg: UIImage(named: "stock")!, selectedImg: UIImage(named: "stock_selected")!, tabTile: "库存")
         
         let codeVC = SAMBaseNavigationController(rootViewController: LXMCodeViewController())

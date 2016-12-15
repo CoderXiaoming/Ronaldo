@@ -18,6 +18,7 @@
                 <outlet property="indicaterView" destination="oxW-lJ-4Kz" id="xTa-GE-qia"/>
                 <outlet property="mishuLabel" destination="d14-dG-U57" id="KAZ-RM-9t8"/>
                 <outlet property="pishuLabel" destination="xpf-8I-gWP" id="vHN-0b-4bt"/>
+                <outlet property="productNameTF" destination="6kT-Mc-3Ek" id="xsB-z4-qcL"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -29,57 +30,73 @@
                     <rect key="frame" x="0.0" y="0.0" width="375" height="40"/>
                     <subviews>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="bottom" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="总匹数" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f1T-WP-wLL">
-                            <rect key="frame" x="0.0" y="1" width="187.5" height="18"/>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <rect key="frame" x="0.0" y="1" width="94" height="18"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
-                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            <color key="textColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="总米数" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TGP-wS-xAE">
-                            <rect key="frame" x="187" y="1" width="187.5" height="18"/>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <rect key="frame" x="93.5" y="1" width="94" height="18"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
-                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            <color key="textColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="M4c-2b-Qyi" userLabel="CenterSeperaterView">
-                            <rect key="frame" x="0.0" y="19.5" width="375" height="1"/>
+                            <rect key="frame" x="0.0" y="19.5" width="187.5" height="1"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="1" id="lmz-O3-ziZ"/>
                             </constraints>
                         </view>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="---" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xpf-8I-gWP" userLabel="匹数数值">
-                            <rect key="frame" x="0.0" y="20.5" width="187.5" height="18"/>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <rect key="frame" x="0.0" y="20.5" width="94" height="18"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                            <color key="textColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="---" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d14-dG-U57" userLabel="米数数值">
-                            <rect key="frame" x="187.5" y="20.5" width="187.5" height="18"/>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <rect key="frame" x="94" y="20.5" width="94" height="18"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
+                            <color key="textColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="产品编号" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="6kT-Mc-3Ek" customClass="SAMLoginTextField" customModule="SaleManager" customModuleProvider="target">
+                            <rect key="frame" x="198" y="5" width="167" height="30"/>
+                            <color key="backgroundColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" returnKeyType="search"/>
+                            <connections>
+                                <outlet property="delegate" destination="-1" id="bTK-wY-5RF"/>
+                            </connections>
+                        </textField>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
-                        <constraint firstItem="xpf-8I-gWP" firstAttribute="width" secondItem="ShM-Wd-vIO" secondAttribute="width" multiplier="0.5" id="447-dW-rkg"/>
+                        <constraint firstItem="6kT-Mc-3Ek" firstAttribute="leading" secondItem="d14-dG-U57" secondAttribute="trailing" constant="10" id="1cV-6f-HIo"/>
+                        <constraint firstItem="d14-dG-U57" firstAttribute="width" secondItem="f1T-WP-wLL" secondAttribute="width" id="5CB-YR-duc"/>
                         <constraint firstItem="M4c-2b-Qyi" firstAttribute="top" secondItem="TGP-wS-xAE" secondAttribute="bottom" id="6BI-sN-5wL"/>
+                        <constraint firstItem="M4c-2b-Qyi" firstAttribute="width" secondItem="ShM-Wd-vIO" secondAttribute="width" multiplier="0.5" id="7pe-iy-wTd"/>
                         <constraint firstItem="xpf-8I-gWP" firstAttribute="leading" secondItem="ShM-Wd-vIO" secondAttribute="leading" id="8uI-vU-gzf"/>
-                        <constraint firstAttribute="trailing" secondItem="d14-dG-U57" secondAttribute="trailing" id="EsX-j1-y2A"/>
                         <constraint firstAttribute="height" constant="40" id="Fhe-y2-vic"/>
-                        <constraint firstAttribute="trailing" secondItem="M4c-2b-Qyi" secondAttribute="trailing" id="Jss-Dg-EHk"/>
                         <constraint firstItem="M4c-2b-Qyi" firstAttribute="top" secondItem="f1T-WP-wLL" secondAttribute="bottom" id="KDS-xK-qSg"/>
                         <constraint firstItem="TGP-wS-xAE" firstAttribute="leading" secondItem="f1T-WP-wLL" secondAttribute="trailing" id="Lxm-z9-VaN"/>
+                        <constraint firstAttribute="trailing" secondItem="6kT-Mc-3Ek" secondAttribute="trailing" constant="10" id="PL6-o0-zKk"/>
                         <constraint firstItem="M4c-2b-Qyi" firstAttribute="leading" secondItem="ShM-Wd-vIO" secondAttribute="leading" id="Q6X-cB-u6f"/>
                         <constraint firstItem="M4c-2b-Qyi" firstAttribute="centerY" secondItem="ShM-Wd-vIO" secondAttribute="centerY" id="R0q-kF-27e"/>
                         <constraint firstItem="f1T-WP-wLL" firstAttribute="leading" secondItem="ShM-Wd-vIO" secondAttribute="leading" id="Vsn-dJ-nbV"/>
                         <constraint firstItem="d14-dG-U57" firstAttribute="leading" secondItem="xpf-8I-gWP" secondAttribute="trailing" id="W5W-La-9kV"/>
-                        <constraint firstItem="f1T-WP-wLL" firstAttribute="width" secondItem="ShM-Wd-vIO" secondAttribute="width" multiplier="0.5" id="WZh-x3-9Uu"/>
+                        <constraint firstItem="f1T-WP-wLL" firstAttribute="width" secondItem="ShM-Wd-vIO" secondAttribute="width" multiplier="0.25" id="WZh-x3-9Uu"/>
                         <constraint firstItem="d14-dG-U57" firstAttribute="top" secondItem="M4c-2b-Qyi" secondAttribute="bottom" id="WxS-OW-rhE"/>
-                        <constraint firstAttribute="trailing" secondItem="TGP-wS-xAE" secondAttribute="trailing" id="dkn-Ow-tYx"/>
+                        <constraint firstItem="TGP-wS-xAE" firstAttribute="width" secondItem="f1T-WP-wLL" secondAttribute="width" id="ZZW-IF-S5s"/>
                         <constraint firstItem="xpf-8I-gWP" firstAttribute="top" secondItem="M4c-2b-Qyi" secondAttribute="bottom" id="dlY-sJ-ZB5"/>
+                        <constraint firstItem="xpf-8I-gWP" firstAttribute="width" secondItem="f1T-WP-wLL" secondAttribute="width" id="ntE-oM-e4b"/>
+                        <constraint firstItem="6kT-Mc-3Ek" firstAttribute="centerY" secondItem="ShM-Wd-vIO" secondAttribute="centerY" id="q7a-Ri-BwT"/>
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oxW-lJ-4Kz" userLabel="IndicaterView">

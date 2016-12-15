@@ -63,8 +63,10 @@ class SAMShoppingCarController: UIViewController {
     //MARK: - 加载新数据
     func loadNewInfo() {
         
-        //停止搜索框编辑状态
-        searchBar.endEditing(true)
+        //处理搜索框的状态
+        if searchBar.showsCancelButton {
+            searchBarCancelButtonClicked(searchBar)
+        }
         
         //创建请求参数
         let userIDStr = SAMUserAuth.shareUser()!.id!
@@ -84,6 +86,7 @@ class SAMShoppingCarController: UIViewController {
             let count = dictArr?.count ?? 0
             if count == 0 { //没有模型数据
                 
+                //提示用户
                 SAMHUD.showMessage("暂无订单", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
             }else { //有数据模型
                 
@@ -93,22 +96,25 @@ class SAMShoppingCarController: UIViewController {
             
             //回到主线程
             dispatch_async(dispatch_get_main_queue(), {
+                
                 //结束上拉
                 self.tableView.mj_header.endRefreshing()
                 //刷新数据
                 self.tableView.reloadData()
             })
         }) { (Task, Error) in
+            
             //处理上拉
             self.tableView.mj_header.endRefreshing()
+            //提示用户
             SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     
-    //MARK: - 清楚过期数据
+    //MARK: - 清除过期数据
     private func clearExpiredInfo() {
         listModels.removeAllObjects()
-        selectedIndexs.removeAllObjects()
+        selectedModels.removeAllObjects()
     }
     
     //MARK: - 对外提供的设置购物车数量的方法
@@ -125,7 +131,36 @@ class SAMShoppingCarController: UIViewController {
     }
     
     //MARK: - 修改结算，删除按钮的文字
-    //TODO: 明天继续
+    private func checkAllButtonsState() {
+        
+        //获取数组数量
+        let selectedCount = selectedModels.count
+        
+        //设置按钮文字
+        let deleateStr = String(format: "删除(%d)", selectedCount)
+        let orderStr = String(format: "下单(%d)", selectedCount)
+        deleateButton.setTitle(deleateStr, forState: .Normal)
+        orderButton.setTitle(orderStr, forState: .Normal)
+        
+        //根据 选中数量 和 是否在搜索状态 设置按钮状态
+        if selectedCount != 0 && !isSearch {
+            deleateButton.enabled = true
+            orderButton.enabled = true
+        }else {
+            deleateButton.enabled = false
+            orderButton.enabled = false
+        }
+        
+        //根据源数组总数设置全选按钮状态
+        let allCount = listModels.count
+        if allCount != 0 && !isSearch {
+            
+            allSelectedButton.enabled = true
+        }else {
+            
+            allSelectedButton.enabled = false
+        }
+    }
     
     //MARK: - 键盘弹出调用的方法
     func keyboardWillChangeFrame(notification: NSNotification) {
@@ -170,22 +205,41 @@ class SAMShoppingCarController: UIViewController {
         }
     }
     
-    ///模型数组
+    ///源模型数组
     private var listModels = NSMutableArray()
     
-    ///选中的cell IndexPath数组
-    private var selectedIndexs = NSMutableArray()
+    ///选中的模型数组
+    private var selectedModels = NSMutableArray()
     
     ///记录当前是否在搜索
-    private var isSearch: Bool = false
-    
+    private var isSearch: Bool = false {
+        didSet{
+            self.allSelectedButton.enabled = !isSearch
+        }
+    }
     ///符合搜索结果模型数组
     private var searchResultModels = NSMutableArray()
     
     ///添加产品的动画layer数组
     private lazy var addProductAnimLayers = [CALayer]()
     
-    //MARK: - 点击事件处理
+    ///购物车选择控件
+    private var shoppingCarView: SAMStockAddShoppingCarView?
+    ///展示购物车时，主界面添加的蒙版
+    private lazy var shoppingCarMaskView: UIView = {
+        
+        let maskView = UIView(frame: UIScreen.mainScreen().bounds)
+        maskView.backgroundColor = UIColor.blackColor()
+        maskView.alpha = 0.0
+        
+        //添加手势
+        let tap = UITapGestureRecognizer(target: self, action: #selector(SAMShoppingCarController.hideShoppingCarViewWhenMaskViewDidClick))
+        maskView.addGestureRecognizer(tap)
+        
+        return maskView
+    }()
+
+    //MARK: - XIB链接点击事件处理
     @IBAction func allSelectedBtnClick(sender: UIButton) {
         
         //获取更改后的选中状态
@@ -195,7 +249,7 @@ class SAMShoppingCarController: UIViewController {
         sender.selected = selected
         
         //移除所有记录数据
-        selectedIndexs.removeAllObjects()
+        selectedModels.removeAllObjects()
         
         //更改所有模型状态
         if isSearch { //正在搜索状态
@@ -206,8 +260,7 @@ class SAMShoppingCarController: UIViewController {
                 
                 //如果为选中状态，当前模型对应源数组的序号添加到记录数组中
                 if selected {
-                    let index = listModels.indexOfObject(model)
-                    selectedIndexs.addObject(index)
+                    selectedModels.addObject(model)
                 }
             }
         }else { //不是在搜索状态
@@ -218,7 +271,7 @@ class SAMShoppingCarController: UIViewController {
                 
                 //如果为选中状态，创建indexPath添加到数组中
                 if selected {
-                    selectedIndexs.addObject(index)
+                    selectedModels.addObject(model)
                 }
             }
         }
@@ -227,19 +280,56 @@ class SAMShoppingCarController: UIViewController {
         tableView.reloadData()
     }
     
+    @IBAction func deleteBtnClick(sender: UIButton) {
+        
+        //设置全选按钮状态
+        allSelectedButton.selected = false
+        
+        let deleateArr = selectedModels.mutableCopy()
+        
+        //从 源模型数组 和 选中数组 中删除选中模型
+        selectedModels.removeAllObjects()
+        
+        //遍历删除数组
+        deleateArr.enumerateObjectsUsingBlock { (obj, index, _) in
+            
+            //获取模型 和 源数组中对应的编号
+            let model = obj as! SAMShoppingCarListModel
+            let orignalIndex = listModels.indexOfObject(model)
+            
+            //从源数组中删除对应模型
+            listModels.removeObjectAtIndex(orignalIndex)
+            //动画删除对应组
+            tableView.deleteSections(NSIndexSet.init(index: orignalIndex), withRowAnimation: .Left)
+            
+            //异步发送删除请求
+            let parameters = ["id": model.id!]
+            SAMNetWorker.sharedNetWorker().POST("CartDelete.ashx", parameters: parameters, progress: nil, success: { (task, Json) in
+                }, failure: { (task, error) in
+            })
+        }
+    }
+    
+    @IBAction func orderBtnClick(sender: UIButton) {
+    }
+    
     //MARK: - XIB链接属性
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var bottomToolBar: UIView!
     @IBOutlet weak var allSelectedButton: UIButton!
     @IBOutlet weak var orderButton: UIButton!
+    @IBOutlet weak var deleateButton: UIButton!
     
     //MARK: - 其他方法
     //MARK: - 对外提供的提供单例
     class func sharedInstance() -> SAMShoppingCarController {
         return carViewVC
     }
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    private init() {
+        super.init(nibName: nil, bundle: nil)
+    }
+    private override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     override func loadView() {
@@ -253,23 +343,21 @@ class SAMShoppingCarController: UIViewController {
     }
 }
 
+//MARK: - tableView数据源方法 UITableViewDataSource
 extension SAMShoppingCarController: UITableViewDataSource {
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        //获取总数组数值
+        
+        //检查所有按钮的状态
+        checkAllButtonsState()
+        
+        //获取总数组数值，赋值badgeValue
         let count = listModels.count ?? 0
-        //赋值badgeValue
         badgeCount = count
         
-        if isSearch {
-            
-            //获取搜索结果数组数值
-            let searchCount = searchResultModels.count ?? 0
-            return searchCount
-        }else {
-            
-            return count
-        }
+        //根据是否是搜索状态返回不同的数据
+        let sourceArr = isSearch ? searchResultModels : listModels
+        return sourceArr.count
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -277,22 +365,19 @@ extension SAMShoppingCarController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
+        //获取重用Cell
         let cell = tableView.dequeueReusableCellWithIdentifier(SAMShoppingCarListCellReuseIdentifier) as! SAMShoppingCarListCell
         
-        //取出模型, 传递模型
-        var listModel: SAMShoppingCarListModel
-        if isSearch {
-            
-            listModel = searchResultModels[indexPath.section] as! SAMShoppingCarListModel
-        }else {
-            listModel = listModels[indexPath.section] as! SAMShoppingCarListModel
-        }
-        cell.listModel = listModel
+        //根据是否是搜索状态返回不同的数据
+        let sourceArr = isSearch ? searchResultModels : listModels
+        cell.listModel = sourceArr[indexPath.section] as? SAMShoppingCarListModel
         
         return cell
     }
 }
 
+//MARK: - tableView代理 UITableViewDelegate
 extension SAMShoppingCarController: UITableViewDelegate {
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -322,16 +407,18 @@ extension SAMShoppingCarController: UITableViewDelegate {
         //更改模型记录数据
         model.selected = !model.selected
         
-        //取出模型在源数组中的记号,记录或者删除
-        let index = listModels.indexOfObject(model)
-        if model.selected {
-            selectedIndexs.addObject(index)
+        if model.selected { //添加数据模型的情况下
+            
+            //添加到选中数组中
+            selectedModels.addObject(model)
             
             //执行添加动画
             let productImageViewConvertFrame = cell.convertRect(cell.productImageView.frame, toView: view)
             addProductAnim(cell.productImageView.image!, ImageFrame: productImageViewConvertFrame)
-        }else {
-            selectedIndexs.removeObject(index)
+        }else { //删除数据模型的情况下
+            
+            //从选中数组中删除
+            selectedModels.removeObject(model)
         }
         
         //刷新数据
@@ -404,11 +491,66 @@ extension SAMShoppingCarController: UITableViewDelegate {
             return 5
         }
     }
+    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+        
+        //取出cell
+        let cell = tableView.cellForRowAtIndexPath(indexPath) as! SAMShoppingCarListCell
+        
+        //取出对应模型
+        let model = cell.listModel!
+        
+        /*******************  查询按钮  ********************/
+        let equiryAction = UITableViewRowAction(style: .Normal, title: "查询") { (action, indexPath) in
+            SAMStockViewController.stockRequest(model.productIDName!)
+            self.tabBarController!.selectedIndex = 1
+        }
+        equiryAction.backgroundColor = mainColor_green
+        
+        /*******************  编辑按钮  ********************/
+        let editAction = UITableViewRowAction(style: .Destructive, title: "编辑") { (action, indexPath) in
+            self.showShoppingCar(cell.productImageView.image!, editModel: model)
+        }
+        editAction.backgroundColor = customBlueColor
+        
+        /*******************  删除按钮  ********************/
+//        let deleteAction = UITableViewRowAction(style: .Destructive, title: "删除") { (action, indexPath) in
+//            
+//            //从源数组中删除
+//            self.listModels.removeObject(model)
+//            
+//            //如果当前是编辑状态
+//            if self.isSearch {
+//            
+//                //从选择数组中删除
+//                self.searchResultModels.removeObject(model)
+//            }
+//            
+//            //动画删除该行CELL
+//            tableView.deleteSections(NSIndexSet.init(index: indexPath.section), withRowAnimation: .Left)
+//            
+//            //检查按钮状态
+//            self.checkAllButtonsState()
+//            
+//            //异步发送删除请求
+//            let parameters = ["id": model.id!]
+//            SAMNetWorker.sharedNetWorker().POST("CartDelete.ashx", parameters: parameters, progress: nil, success: { (task, Json) in
+//                }, failure: { (task, error) in
+//            })
+//        }
+        
+        //操作数组
+        return[editAction, equiryAction]
+    }
 }
 
+//MARK: - 搜索框代理UISearchBarDelegate
 extension SAMShoppingCarController: UISearchBarDelegate {
 
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        //取消全选按钮选中状态
+        allSelectedButton.selected = false
+        
         //清空搜索结果数组,并赋值
         searchResultModels.removeAllObjects()
         searchResultModels.addObjectsFromArray(listModels as [AnyObject])
@@ -462,6 +604,13 @@ extension SAMShoppingCarController: UISearchBarDelegate {
     
     func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
         
+        //取消全选按钮选中状态
+        allSelectedButton.selected = false
+        
+        //设置删除，下单按钮不可用
+        deleateButton.enabled = false
+        orderButton.enabled = false
+        
         //执行准备动画
         UIView.animateWithDuration(0.3, animations: {
             
@@ -493,13 +642,22 @@ extension SAMShoppingCarController: UISearchBarDelegate {
                 //结束搜索状态
                 self.isSearch = false
                 
+                //设置删除，下单按钮可用
+                self.deleateButton.enabled = true
+                self.orderButton.enabled = true
+                
                 //刷新数据
                 self.tableView.reloadData()
         }
     }
+    
+    //MARK: - 点击键盘搜索按钮调用
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        searchBarCancelButtonClicked(searchBar)
+    }
 }
 
-//MARK: - CAAnimationDelegate
+//MARK: - 动画代理CAAnimationDelegate
 extension SAMShoppingCarController: CAAnimationDelegate {
     
     func animationDidStop(anim: CAAnimation, finished flag: Bool) {
@@ -514,7 +672,129 @@ extension SAMShoppingCarController: CAAnimationDelegate {
             //移除动画图层
             layer.removeFromSuperlayer()
             
+            //从图层数组中移除
             addProductAnimLayers.removeAtIndex(0)
+        }
+    }
+}
+
+//MARK: - 购物车代理SAMStockAddShoppingCarViewDelegate
+extension SAMShoppingCarController: SAMStockAddShoppingCarViewDelegate {
+    
+    func shoppingCarViewDidClickDismissButton() {
+        
+        //隐藏购物车
+        hideShoppingCarView(false)
+    }
+    
+    func shoppingCarViewAddOrEditProductSuccess(productImage: UIImage) {
+        //隐藏购物车
+        hideShoppingCarView(true)
+    }
+}
+
+//MARK: - 购物车相关方法
+extension SAMShoppingCarController {
+    
+    //view的第一步动画
+    private func firstTran() -> CATransform3D {
+        var transform = CATransform3DIdentity
+        transform.m24 = -1/2000
+        transform = CATransform3DScale(transform, 0.9, 0.9, 1)
+        return transform
+    }
+    
+    //view的第二步动画
+    private func secondTran() -> CATransform3D {
+        var transform = CATransform3DIdentity
+        transform = CATransform3DTranslate(transform, 0, self.view.frame.size.height * (-0.08), 0)
+        transform = CATransform3DScale(transform, 0.8, 0.8, 1)
+        return transform
+    }
+    
+    //点击maskView隐藏购物车控件
+    func hideShoppingCarViewWhenMaskViewDidClick() {
+        
+        hideShoppingCarView(false)
+    }
+    
+    //展示购物车
+    func showShoppingCar(productImage: UIImage, editModel: SAMShoppingCarListModel) {
+    
+        //设置购物车控件的目标frame
+        self.shoppingCarView = SAMStockAddShoppingCarView.shoppingCarViewWillShow(productImage, addProductModel: nil, editProductModel: editModel)
+        self.shoppingCarView!.delegate = self
+        self.shoppingCarView!.frame = CGRect(x: 0, y: ScreenH, width: ScreenW, height: 350)
+        
+        var rect = self.shoppingCarView!.frame
+        rect.origin.y = ScreenH - rect.size.height
+        
+        //添加背景View
+        self.tabBarController!.view.addSubview(self.shoppingCarMaskView)
+        KeyWindow?.addSubview(self.shoppingCarView!)
+        
+        //动画展示购物车控件
+        UIView.animateWithDuration(0.5) {
+            self.shoppingCarView!.frame = rect
+        }
+        
+        //动画移动背景View
+        UIView.animateWithDuration(0.25, animations: {
+            
+            //执行第一步动画
+            self.shoppingCarMaskView.alpha = 0.5
+            self.tabBarController!.view.layer.transform = self.firstTran()
+        }) { (_) in
+            
+            //执行第二步动画
+            UIView.animateWithDuration(0.25, animations: {
+                self.tabBarController!.view.layer.transform = self.secondTran()
+                }, completion: { (_) in
+            })
+        }
+    }
+    
+    //隐藏购物车控件
+    func hideShoppingCarView(editSuccess: Bool) {
+        
+        //结束 tableView 编辑状态
+        self.tableView.editing = false
+        
+        //设置购物车目标frame
+        var rect = self.shoppingCarView!.frame
+        rect.origin.y = ScreenH
+        
+        //动画隐藏购物车控件
+        UIView.animateWithDuration(0.5) {
+            
+            self.shoppingCarView!.frame = rect
+        }
+        
+        //动画展示主View
+        UIView.animateWithDuration(0.25, animations: {
+            
+            self.tabBarController!.view.layer.transform = self.firstTran()
+            
+            self.shoppingCarMaskView.alpha = 0.0
+        }) { (_) in
+            
+            //移除蒙板
+            self.shoppingCarMaskView.removeFromSuperview()
+            
+            UIView.animateWithDuration(0.25, animations: {
+                
+                self.tabBarController!.view.layer.transform = CATransform3DIdentity
+                
+                }, completion: { (_) in
+                    
+                    //移除购物车
+                    self.shoppingCarView!.removeFromSuperview()
+                    
+                    //调用成功添加购物车的动画
+                    if editSuccess {
+                        self.tableView.mj_header.beginRefreshing()
+                    }
+            })
         }
     }
 }

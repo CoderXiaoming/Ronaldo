@@ -110,7 +110,7 @@
 		180CC8A21DEDC692005898FF /* loginImage@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "loginImage@3x.png"; sourceTree = "<group>"; };
 		180F9B201E00D799004FCBEA /* SAMShoppingCarController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMShoppingCarController.xib; sourceTree = "<group>"; };
 		180F9B241E00DCFB004FCBEA /* SAMShoppingCarListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMShoppingCarListCell.swift; sourceTree = "<group>"; };
-		180F9B251E00DCFB004FCBEA /* SAMShoppingCarListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMShoppingCarListCell.xib; sourceTree = "<group>"; };
+		180F9B251E00DCFB004FCBEA /* SAMShoppingCarListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = SAMShoppingCarListCell.xib; path = ../Car/View/SAMShoppingCarListCell.xib; sourceTree = "<group>"; };
 		184570D01DE80D3E00F8AAB0 /* SAMStockProductModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMStockProductModel.swift; sourceTree = "<group>"; };
 		184570D21DE87E1F00F8AAB0 /* SAMStockProductDetailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMStockProductDetailCell.swift; sourceTree = "<group>"; };
 		184570D31DE87E1F00F8AAB0 /* SAMStockProductDetailCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMStockProductDetailCell.xib; sourceTree = "<group>"; };
@@ -294,8 +294,8 @@
 				18C202F71DD30ADE00C0117C /* Main */,
 				18C202F31DD30ADE00C0117C /* Home */,
 				18C202FC1DD30ADE00C0117C /* Stock */,
-				18C202EB1DD30ADE00C0117C /* Code */,
 				18C202E71DD30ADE00C0117C /* Car */,
+				18C202EB1DD30ADE00C0117C /* Code */,
 				18C202EF1DD30ADE00C0117C /* Customer */,
 				185429261DF65150005BDAA6 /* Sales */,
 				18C202FB1DD30ADE00C0117C /* Other */,
@@ -350,7 +350,6 @@
 			isa = PBXGroup;
 			children = (
 				180F9B241E00DCFB004FCBEA /* SAMShoppingCarListCell.swift */,
-				180F9B251E00DCFB004FCBEA /* SAMShoppingCarListCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -391,6 +390,7 @@
 		18C202EF1DD30ADE00C0117C /* Customer */ = {
 			isa = PBXGroup;
 			children = (
+				180F9B251E00DCFB004FCBEA /* SAMShoppingCarListCell.xib */,
 				18C202F01DD30ADE00C0117C /* Controller */,
 				18C202F11DD30ADE00C0117C /* Model */,
 				18C202F21DD30ADE00C0117C /* View */,
