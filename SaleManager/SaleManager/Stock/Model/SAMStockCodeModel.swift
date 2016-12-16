@@ -16,12 +16,12 @@ class SAMStockCodeModel: NSObject {
     var thumbUrl1: String? {
         didSet{
             if thumbUrl1 != "" {
-                thumbURL = NSURL(string: thumbUrl1!)
+                thumbURL = URL(string: thumbUrl1!)
             }
         }
     }
     
-    var thumbURL: NSURL?
+    var thumbURL: URL?
     
     ///大图1的地址
     var imageUrl1: String?

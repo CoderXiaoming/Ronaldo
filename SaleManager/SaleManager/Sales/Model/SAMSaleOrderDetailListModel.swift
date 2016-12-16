@@ -32,12 +32,12 @@ class SAMSaleOrderDetailListModel: NSObject {
             let listStr = meterList?.lxm_stringByTrimmingWhitespace()
             if listStr != "" { //字符串有内容
                 
-                if listStr!.containsString("，") { //逗号分隔
+                if listStr!.contains("，") { //逗号分隔
                     
-                    meterArr = (listStr?.componentsSeparatedByString("，"))!
-                }else if listStr!.containsString("|") { // |分隔
+                    meterArr = (listStr?.components(separatedBy: "，"))!
+                }else if listStr!.contains("|") { // |分隔
                     
-                    meterArr = (listStr?.componentsSeparatedByString("|"))!
+                    meterArr = (listStr?.components(separatedBy: "|"))!
                 }else { //只有一个数字
                     meterArr = [listStr!]
                 }

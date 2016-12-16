@@ -56,7 +56,7 @@ class SAMOrderDetailListCell: UICollectionViewCell {
     }
     
     //MARK: - 设置collectionView
-    private func setupCollectionView() {
+    fileprivate func setupCollectionView() {
         
         //设置数据源、代理
         collectionView.dataSource = self
@@ -66,7 +66,7 @@ class SAMOrderDetailListCell: UICollectionViewCell {
         collectionView.backgroundColor = customBlueColor
         
         //注册cell
-        collectionView.registerNib(UINib(nibName: "SAMOrderMishuCell", bundle: nil), forCellWithReuseIdentifier: SAMOrderMishuCellReuseIdentifier)
+        collectionView.register(UINib(nibName: "SAMOrderMishuCell", bundle: nil), forCellWithReuseIdentifier: SAMOrderMishuCellReuseIdentifier)
         
         //添加collectionView
         contentView.addSubview(collectionView)
@@ -77,16 +77,16 @@ class SAMOrderDetailListCell: UICollectionViewCell {
         var cons = [NSLayoutConstraint]()
         let dict = ["collectionView" : collectionView, "remarkLabel":remarkLabel] as [String : AnyObject]
         
-        cons += NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[collectionView]-0-|", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
-        cons += NSLayoutConstraint.constraintsWithVisualFormat("V:[remarkLabel]-5-[collectionView(28)]", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
+        cons += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[collectionView]-0-|", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
+        cons += NSLayoutConstraint.constraints(withVisualFormat: "V:[remarkLabel]-5-[collectionView(28)]", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
         
         contentView.addConstraints(cons)
     }
 
     //MARK: - 属性懒加载
     //collectionView
-    private lazy var collectionView: UICollectionView = {
-        let view = UICollectionView(frame: CGRectZero, collectionViewLayout: SAMSOrderDetailListColletionViewFlowlayout())
+    fileprivate lazy var collectionView: UICollectionView = {
+        let view = UICollectionView(frame: CGRect.zero, collectionViewLayout: SAMSOrderDetailListColletionViewFlowlayout())
         return view
     }()
     
@@ -107,14 +107,14 @@ extension SAMOrderDetailListCell: UICollectionViewDelegate {
 //MARK: - UICollectionViewDataSource
 extension SAMOrderDetailListCell: UICollectionViewDataSource {
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let count = orderDetailListModel?.meterArr.count ?? 0
 
         return count
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(SAMOrderMishuCellReuseIdentifier, forIndexPath: indexPath) as! SAMOrderMishuCell
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SAMOrderMishuCellReuseIdentifier, for: indexPath) as! SAMOrderMishuCell
         
         //取出米数字符串并赋值
         cell.miText = orderDetailListModel?.meterArr[indexPath.row]
@@ -125,10 +125,10 @@ extension SAMOrderDetailListCell: UICollectionViewDataSource {
 //MARK: - 产品详情布局里用到的FlowLayout
 private class SAMSOrderDetailListColletionViewFlowlayout: UICollectionViewFlowLayout {
     
-    override func prepareLayout() {
-        super.prepareLayout()
+    override func prepare() {
+        super.prepare()
         minimumLineSpacing = 0
-        scrollDirection = UICollectionViewScrollDirection.Horizontal
+        scrollDirection = UICollectionViewScrollDirection.horizontal
         collectionView?.showsHorizontalScrollIndicator = false
         itemSize = CGSize(width: 80, height: 18)
         sectionInset = UIEdgeInsetsMake(0, 5, 0, 5)

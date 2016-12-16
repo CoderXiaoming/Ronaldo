@@ -15,15 +15,15 @@ class SAMBaseNavigationController: UINavigationController {
         let navBar = UINavigationBar.appearance()
         
         //设置主标题属性
-        navBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: UIFont.boldSystemFontOfSize(19)]
+        navBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white, NSFontAttributeName: UIFont.boldSystemFont(ofSize: 19)]
         
         //设置返回按钮颜色
-        navBar.tintColor = UIColor.whiteColor()
+        navBar.tintColor = UIColor.white
         
-        navBar.setBackgroundImage(UIImage(named: "navbarBackgroundImage"), forBarMetrics: .Default)
+        navBar.setBackgroundImage(UIImage(named: "navbarBackgroundImage"), for: .default)
     }
 
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         
     }

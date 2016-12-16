@@ -20,7 +20,7 @@ class SAMProductImageController: UIViewController {
         didSet{
             //加载产品图片控制器的大图
             if stockProductModel?.imageURL1 != nil {
-                productImage?.sd_setImageWithURL(stockProductModel?.imageURL1!, placeholderImage: nil)
+                productImage?.sd_setImage(with: stockProductModel?.imageURL1! as URL!, placeholderImage: nil)
             }else {
                 //TODO: 没有图片展示提示图片
             }
@@ -41,7 +41,7 @@ class SAMProductImageController: UIViewController {
     }
 
     //MARK: - 初始化UI
-    private func setupUI() {
+    fileprivate func setupUI() {
         
         //设置主标题
         navigationItem.title = "产品图片"
@@ -53,24 +53,24 @@ class SAMProductImageController: UIViewController {
         
         //设置产品图片尺寸
         let y = (scrollView!.bounds.height - ScreenW) * 0.5
-        productImage?.frame = CGRectMake(0, y, ScreenW, ScreenW)
+        productImage?.frame = CGRect(x: 0, y: y, width: ScreenW, height: ScreenW)
         
         //添加产品图片到scrollView
         scrollView?.addSubview(productImage!)
     }
     
     //MARK: - 添加右上角按钮
-    private func setupRightItem() {
+    fileprivate func setupRightItem() {
         let btn = UIButton()
-        btn.addTarget(self, action: #selector(SAMProductImageController.moreInfoBtnClick), forControlEvents: .TouchUpInside)
-        btn.setTitle("更多操作", forState: .Normal)
+        btn.addTarget(self, action: #selector(SAMProductImageController.moreInfoBtnClick), for: .touchUpInside)
+        btn.setTitle("更多操作", for: UIControlState())
         btn.sizeToFit()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: btn)
     }
     
     //MARK: - viewWillAppear
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if hasTP_SZ_Auth {
@@ -85,7 +85,7 @@ class SAMProductImageController: UIViewController {
     
     
     //MARK: - 初始化设置HUDView
-    private func setupHUDView() {
+    fileprivate func setupHUDView() {
         
         //添加到主窗口上
         hudView = UIView()
@@ -93,7 +93,7 @@ class SAMProductImageController: UIViewController {
         KeyWindow!.addSubview(hudView!)
         
         //设置frame
-        hudView?.frame = UIScreen.mainScreen().bounds
+        hudView?.frame = UIScreen.main.bounds
         
         hudView?.alpha = 0.00001
         
@@ -102,7 +102,7 @@ class SAMProductImageController: UIViewController {
     }
     
     //MARK: - 初始化设置OperationView
-    private func setupOperationView() {
+    fileprivate func setupOperationView() {
         
         //添加operationView
         operationView = SAMProductImageOpetationView.instacne()
@@ -114,7 +114,7 @@ class SAMProductImageController: UIViewController {
         operationView?.frame = CGRect(x: 0, y: y, width: ScreenW, height: OperationViewHeight)
         
         //设置初始隐藏transform
-        operationView?.transform = CGAffineTransformMakeTranslation(0, OperationViewHeight)
+        operationView?.transform = CGAffineTransform(translationX: 0, y: OperationViewHeight)
     }
     
     //MARK: - 导航栏右上角按钮点击事件
@@ -126,112 +126,112 @@ class SAMProductImageController: UIViewController {
     
     //MARK: - 展示operationView
     func showOperationView() {
-        UIView.animateWithDuration(OperationViewShowHideAnimationDuration, animations: {
-            self.operationView?.transform = CGAffineTransformIdentity
+        UIView.animate(withDuration: OperationViewShowHideAnimationDuration, animations: {
+            self.operationView?.transform = CGAffineTransform.identity
             self.hudView?.alpha = 1
-        }) { (_) in
-        }
+        }, completion: { (_) in
+        }) 
     }
     
     //MARK: - 隐藏operationView
     func hideOperationView() {
-        UIView.animateWithDuration(OperationViewShowHideAnimationDuration, animations: {
-            self.operationView?.transform = CGAffineTransformMakeTranslation(0, OperationViewHeight)
+        UIView.animate(withDuration: OperationViewShowHideAnimationDuration, animations: {
+            self.operationView?.transform = CGAffineTransform(translationX: 0, y: OperationViewHeight)
             self.hudView?.alpha = 0.0001
-        }) { (_) in
-        }
+        }, completion: { (_) in
+        }) 
     }
     
     //MARK: - 展示图片选择界面
-    private func showImagePickerController(type: UIImagePickerControllerSourceType) {
+    fileprivate func showImagePickerController(_ type: UIImagePickerControllerSourceType) {
         if UIImagePickerController.isSourceTypeAvailable(type) {
             //设置类型
             imagePickerController?.sourceType = type
             
             //展示界面
-            navigationController!.presentViewController(imagePickerController!, animated: true, completion: {
+            navigationController!.present(imagePickerController!, animated: true, completion: {
             })
         }
     }
     
     //MARK: - 保存照片后的回调方法
-    func didFinishSaveImageWithError(image: UIImage?, error: NSError?, contextInfo: AnyObject) {
+    func didFinishSaveImageWithError(_ image: UIImage?, error: NSError?, contextInfo: AnyObject) {
         if error == nil {
-            SAMHUD.showMessage("保存成功", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("保存成功", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
         }else {
-            SAMHUD.showMessage("保存失败", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("保存失败", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     
     //MARK: - 上传图片
-    private func unloadProductImage(image: UIImage) {
+    fileprivate func unloadProductImage(_ image: UIImage) {
         
         //展示提示信息
-        let hud = SAMHUD.showHUDAddedTo(view, animated: true)
+        let hud = SAMHUD.showAdded(to: view, animated: true)!
         hud.labelText = NSLocalizedString("正在上传头像", comment: "HUD loading title")
         
         //创建请求参数
-        let patameters = ["codeID": stockProductModel!.codeID!, "imageIndex": 1]
+        let patameters = ["codeID": stockProductModel!.codeID!, "imageIndex": 1] as [String : Any]
         
         //子线程发送上传请求
-        dispatch_async(dispatch_get_global_queue(0, 0)) {
-            SAMNetWorker.sharedUnloadImageNetWorker().POST("uploadImage.ashx", parameters: patameters, constructingBodyWithBlock: { (formData) in
+        SAMNetWorker.sharedUnloadImageNetWorker().post("uploadImage.ashx", parameters: patameters, constructingBodyWith: { (formData) in
+            
+            //获取图片数据
+            let data = UIImageJPEGRepresentation(image, 1.0)!
+            formData.appendPart(withFileData: data, name: "1", fileName: "image.jpg", mimeType: "image/jpg")
+            
+            }, progress: { (progress) in
                 
-                //获取图片数据
-                let data = UIImageJPEGRepresentation(image, 1.0)!
-                formData.appendPartWithFileData(data, name: "1", fileName: "image.jpg", mimeType: "image/jpg")
+            }, success: {[weak self] (Task, json) in
                 
-                }, progress: { (progress) in
+                let Json = json as! [String: AnyObject]
+                
+                //回到主线程
+                DispatchQueue.main.async(execute: {
                     
-                }, success: {[weak self] (Task, Json) in
+                    //获取返回信息
+                    let messageDict = Json["head"] as! [String: String]
                     
-                    //回到主线程
-                    dispatch_async(dispatch_get_main_queue(), {
+                    if messageDict["status"] == "success" { //上传成功
                         
-                        //获取返回信息
-                        let messageDict = Json!["head"] as! [String: String]
+                        //重新设置数据模型
+                        let urlDict = Json["body"] as! [[String: String]]
                         
-                        if messageDict["status"] == "success" { //上传成功
-                            
-                            //重新设置数据模型
-                            let urlDict = Json!["body"] as! [[String: String]]
-                            
-                            let model = self!.stockProductModel
-                            model?.thumbUrl1 = urlDict[0]["thumbUrl"]
-                            model?.imageUrl1 = urlDict[0]["imageUrl"]
-                            
-                            self!.stockProductModel = model
-                            
-                            //隐藏loadingHUD
-                            hud.hide(true)
-                            
-                            //提示用户上传成功
-                            SAMHUD.showMessage("上传成功", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
-                            
-                            //记录上传状态
-                            SAMStockHasUnloadProductImage = true
-                        }else { //上传失败
-                            
-                            //隐藏loadingHUD
-                            hud.hide(true)
-                            
-                            SAMHUD.showMessage("上传失败", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
-                        }
-                    })
-            }) { (Task, Error) in
-                
-                //隐藏loadingHUD,展示提示信息
-                dispatch_async(dispatch_get_main_queue(), {
-                    
-                    hud.hide(true)
-                    SAMHUD.showMessage("网络错误", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                        let model = self!.stockProductModel
+                        model?.thumbUrl1 = urlDict[0]["thumbUrl"]
+                        model?.imageUrl1 = urlDict[0]["imageUrl"]
+                        
+                        self!.stockProductModel = model
+                        
+                        //隐藏loadingHUD
+                        hud.hide(true)
+                        
+                        //提示用户上传成功
+                        let _ = SAMHUD.showMessage("上传成功", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                        
+                        //记录上传状态
+                        SAMStockHasUnloadProductImage = true
+                    }else { //上传失败
+                        
+                        //隐藏loadingHUD
+                        hud.hide(true)
+                        
+                        let _ = SAMHUD.showMessage("上传失败", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                    }
                 })
-            }
+        }) { (Task, Error) in
+            
+            //隐藏loadingHUD,展示提示信息
+            DispatchQueue.main.async(execute: {
+                
+                hud.hide(true)
+                let _ = SAMHUD.showMessage("网络错误", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            })
         }
     }
     
     //MARK: - viewDidDisappear
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
         //恢复scrollView的缩放
@@ -248,10 +248,10 @@ class SAMProductImageController: UIViewController {
     
     //MARK: - 懒加载属性
     ///背景scrollview
-    private lazy var scrollView: UIScrollView? = {
+    fileprivate lazy var scrollView: UIScrollView? = {
         let scrollView = UIScrollView()
         
-        scrollView.backgroundColor = UIColor.blackColor()
+        scrollView.backgroundColor = UIColor.black
         
         //设置缩放比例
         scrollView.maximumZoomScale = 2.0
@@ -264,19 +264,19 @@ class SAMProductImageController: UIViewController {
     }()
     
     ///展示的大图
-    private lazy var productImage: UIImageView? = UIImageView()
+    fileprivate lazy var productImage: UIImageView? = UIImageView()
     
     ///新增图片权限
-    private lazy var hasTP_SZ_Auth: Bool = SAMUserAuth.checkAuth(["TP_SZ_APP"])
+    fileprivate lazy var hasTP_SZ_Auth: Bool = SAMUserAuth.checkAuth(["TP_SZ_APP"])
     
     ///oprationView
-    private var operationView: SAMProductImageOpetationView?
+    fileprivate var operationView: SAMProductImageOpetationView?
     
     ///HUDView
-    private var hudView: UIView?
+    fileprivate var hudView: UIView?
     
     ///图片选择器
-    private lazy var imagePickerController: UIImagePickerController? = {
+    fileprivate lazy var imagePickerController: UIImagePickerController? = {
         let imageVC = UIImagePickerController()
         imageVC.allowsEditing = true
         imageVC.delegate = self
@@ -284,7 +284,7 @@ class SAMProductImageController: UIViewController {
     }()
 
     //MARK: - 其他方法
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
@@ -295,12 +295,12 @@ class SAMProductImageController: UIViewController {
 
 //MARK: - UIScrollViewDelegate
 extension SAMProductImageController: UIScrollViewDelegate {
-    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return productImage
     }
     
     //确保 productImage 在 scrollView的中间
-    func scrollViewDidZoom(scrollView: UIScrollView) {
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
         var centerX = scrollView.center.x
         var centerY = scrollView.center.y
         
@@ -319,7 +319,7 @@ extension SAMProductImageController: SAMProductImageOpetationViewDelegate {
         hideOperationView()
         
         //展示控制器界面
-        showImagePickerController(UIImagePickerControllerSourceType.Camera)
+        showImagePickerController(UIImagePickerControllerSourceType.camera)
     }
     func opetationViewDidClickSelectBtn() {
         
@@ -327,7 +327,7 @@ extension SAMProductImageController: SAMProductImageOpetationViewDelegate {
         hideOperationView()
         
         //展示控制器界面
-        showImagePickerController(UIImagePickerControllerSourceType.PhotoLibrary)
+        showImagePickerController(UIImagePickerControllerSourceType.photoLibrary)
     }
     func opetationViewDidClickSaveBtn() {
         
@@ -346,13 +346,13 @@ extension SAMProductImageController: SAMProductImageOpetationViewDelegate {
 
 //MARK: - UIImagePickerControllerDelegate
 extension SAMProductImageController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
         //获取图片
         let selectedImage = info["UIImagePickerControllerEditedImage"] as? UIImage
         
         //退出图片选择控制器控制器
-        picker.dismissViewControllerAnimated(true) {
+        picker.dismiss(animated: true) {
         }
         
         //如果图片不为空，上传图片

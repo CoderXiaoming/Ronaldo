@@ -10,37 +10,37 @@ import UIKit
 import pop
 
 class SAMDismissingAnimator: NSObject, UIViewControllerAnimatedTransitioning {
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval{
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval{
         return 0.5
     }
-    func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-        let toView = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)!.view
-        toView.tintAdjustmentMode = UIViewTintAdjustmentMode.Normal
-        toView.userInteractionEnabled = true
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        let toView = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to)!.view
+        toView?.tintAdjustmentMode = UIViewTintAdjustmentMode.normal
+        toView?.isUserInteractionEnabled = true
         
-        let fromView = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)!.view
+        let fromView = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from)!.view!
         
-        let subViews = transitionContext.containerView().subviews as NSArray
+        let subViews = transitionContext.containerView.subviews as NSArray
         
         var dimmingView: UIView?
-        subViews.enumerateObjectsUsingBlock { (obj, idx, stop) in
+        subViews.enumerateObjects({ (obj, idx, stop) in
             let view = obj as! UIView
             if view.layer.opacity < 1 {
                 dimmingView = view
                 return
             }
-        
-        let opacityAnimation = POPBasicAnimation(propertyNamed: kPOPLayerOpacity)
-        opacityAnimation.toValue = 0.0
-        
-        let offscreenAnimation = POPBasicAnimation(propertyNamed: kPOPLayerPositionY)
-        offscreenAnimation.toValue = -fromView.layer.position.y
-        offscreenAnimation.completionBlock = {(anim: POPAnimation!, finished: Bool) in
-            transitionContext.completeTransition(true)
-        }
-        
-        fromView.layer.pop_addAnimation(offscreenAnimation, forKey: "offscreenAnimation")
-        dimmingView!.layer.pop_addAnimation(opacityAnimation, forKey: "opacityAnimation")
-    }
+            
+            let opacityAnimation = POPBasicAnimation(propertyNamed: kPOPLayerOpacity)!
+            opacityAnimation.toValue = 0.0
+            
+            let offscreenAnimation = POPBasicAnimation(propertyNamed: kPOPLayerPositionY)!
+            offscreenAnimation.toValue = -fromView.layer.position.y
+            offscreenAnimation.completionBlock = {(anim: POPAnimation?, finished: Bool) in
+                transitionContext.completeTransition(true)
+            }
+            
+            fromView.layer.pop_add(offscreenAnimation, forKey: "offscreenAnimation")
+            dimmingView!.layer.pop_add(opacityAnimation, forKey: "opacityAnimation")
+        })
 }
 }

@@ -12,7 +12,7 @@ extension String {
     
     //MARK: - 去掉字符串前后空白
     func lxm_stringByTrimmingWhitespace() -> String? {
-        return stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+        return trimmingCharacters(in: CharacterSet.whitespaces)
     }
     
     //MARK: - 判断是不是纯数字
@@ -20,7 +20,7 @@ extension String {
         if self == "" {
             return false
         }
-        let str = stringByTrimmingCharactersInSet(NSCharacterSet.decimalDigitCharacterSet())
+        let str = trimmingCharacters(in: CharacterSet.decimalDigits)
         let nsStr = NSString(string: str)
         if nsStr.length > 0 {
             return false
@@ -29,15 +29,15 @@ extension String {
     }
     
     //MARK: - 判断最后一个是不是所传字符串，如果是就切掉
-    func lxm_stringByTrimmingLastIfis(lastString: String) ->String {
+    func lxm_stringByTrimmingLastIfis(_ lastString: String) ->String {
     
         let str = NSString(string: self)
         let strLength = str.length
         
-        let lastStr = str.substringFromIndex(strLength - 1)
+        let lastStr = str.substring(from: strLength - 1)
         
         if lastStr == lastString {
-            return str.substringToIndex(strLength - 1)
+            return str.substring(to: strLength - 1)
         }else {
             return self
         }

@@ -8,22 +8,22 @@
 
 import UIKit
 
-extension NSDate {
+extension Date {
     
     ///n天前后 前传true 后穿false
-    func beforeOrAfter(days: Double, before: Bool) -> NSDate {
+    func beforeOrAfter(_ days: Double, before: Bool) -> Date {
         
         //获取时间差
         var timeInterval = 60 * 60 * 24 * days
         timeInterval = before ? (-timeInterval) : timeInterval
         
-        return NSDate(timeInterval: timeInterval, sinceDate: self)
+        return Date(timeInterval: timeInterval, since: self)
     }
     
     ///获取yyyy-MM-dd字符串
     func yyyyMMddStr() -> String {
-        let dateFormatter = NSDateFormatter()
+        let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
-        return dateFormatter.stringFromDate(self)
+        return dateFormatter.string(from: self)
     }
 }

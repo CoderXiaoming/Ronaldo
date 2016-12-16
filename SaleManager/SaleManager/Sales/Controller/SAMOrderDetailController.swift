@@ -31,7 +31,7 @@ class SAMOrderDetailController: UIViewController {
     }
 
     //MARK: - 初始化orderDetailCollectionView
-    private func setupCollectionView() {
+    fileprivate func setupCollectionView() {
         
         //设置内容边距
         collectionView.contentInset = UIEdgeInsets(top: 5, left: 0, bottom: 10, right: 0)
@@ -41,14 +41,14 @@ class SAMOrderDetailController: UIViewController {
         collectionView.dataSource = self
         
         //注册大cell
-        collectionView.registerNib(UINib(nibName: "SAMOrderDetailBigCell", bundle: nil), forCellWithReuseIdentifier: SAMOrderDetailBigCellReuseIdentifier)
+        collectionView.register(UINib(nibName: "SAMOrderDetailBigCell", bundle: nil), forCellWithReuseIdentifier: SAMOrderDetailBigCellReuseIdentifier)
         
         //注册小cell
-        collectionView.registerNib(UINib(nibName: "SAMOrderDetailSmallCell", bundle: nil), forCellWithReuseIdentifier: SAMOrderDetailSmallCellReuseIdentifier)
+        collectionView.register(UINib(nibName: "SAMOrderDetailSmallCell", bundle: nil), forCellWithReuseIdentifier: SAMOrderDetailSmallCellReuseIdentifier)
     }
     
     //MARK: - viewWillAppear
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         //设置标题
@@ -92,16 +92,17 @@ class SAMOrderDetailController: UIViewController {
     }
 
     //MARK: - 对外提供加载订单详情的方法
-    func loadOrderDetailModel(success: ()->(), noData: ()->(), error: ()->()) {
+    func loadOrderDetailModel(_ success: @escaping ()->(), noData: @escaping ()->(), error: @escaping ()->()) {
         
         //创建请求参数
         let parameters = ["billNumber": orderInfoModel!.billNumber!]
         
         //发送请求
-        SAMNetWorker.sharedNetWorker().GET("getSellMainDataByBillNumber.ashx", parameters: parameters, progress: nil, success: { (Task, Json) in
+        SAMNetWorker.sharedNetWorker().get("getSellMainDataByBillNumber.ashx", parameters: parameters, progress: nil, success: { (Task, json) in
             
             //获取模型数组
-            let dictArr = Json!["body"] as? [[String: AnyObject]]
+            let Json = json as! [String: AnyObject]
+            let dictArr = Json["body"] as? [[String: AnyObject]]
             let count = dictArr?.count ?? 0
             
             //判断是否有模型数据
@@ -110,7 +111,7 @@ class SAMOrderDetailController: UIViewController {
                noData()
             }else { //有数据模型
                 
-                let arr = SAMSaleOrderDetailModel.mj_objectArrayWithKeyValuesArray(dictArr)!
+                let arr = SAMSaleOrderDetailModel.mj_objectArray(withKeyValuesArray: dictArr)!
                 self.orderDetailModel = (arr[0] as! SAMSaleOrderDetailModel)
                 success()
             }
@@ -130,17 +131,18 @@ class SAMOrderDetailController: UIViewController {
         let parameters = ["billNumber": orderInfoModel!.billNumber!]
         
         //发送请求
-        SAMNetWorker.sharedNetWorker().GET("getSellDetailDataByBillNumber.ashx", parameters: parameters, progress: nil, success: { (Task, Json) in
+        SAMNetWorker.sharedNetWorker().get("getSellDetailDataByBillNumber.ashx", parameters: parameters, progress: nil, success: { (Task, json) in
             
             //获取模型数组
-            let dictArr = Json!["body"] as? [[String: AnyObject]]
+            let Json = json as! [String: AnyObject]
+            let dictArr = Json["body"] as? [[String: AnyObject]]
             let count = dictArr?.count ?? 0
             
             //判断是否有模型数据
             if count != 0 {
                 
-                let arr = SAMSaleOrderDetailListModel.mj_objectArrayWithKeyValuesArray(dictArr)!
-                self.orderDetailListModels.addObjectsFromArray(arr as [AnyObject])
+                let arr = SAMSaleOrderDetailListModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                self.orderDetailListModels.addObjects(from: arr as [AnyObject])
             }
         }) { (Task, Error) in
         }
@@ -148,13 +150,13 @@ class SAMOrderDetailController: UIViewController {
     
     //MARK: - 属性懒加载
     ///左边标题数组
-    private let titles = [["仓库：", "备注："], ["运费金额：", "其他金额：", "应收金额：", "本单毛利："], ["本次收款：", "收款账户："], ["应收余额："], ["货运公司：", "快递单号：", "业务员：", "拼包地址："]]
+    fileprivate let titles = [["仓库：", "备注："], ["运费金额：", "其他金额：", "应收金额：", "本单毛利："], ["本次收款：", "收款账户："], ["应收余额："], ["货运公司：", "快递单号：", "业务员：", "拼包地址："]]
     
     ///右边文字内容数组
-    private var titleContents: [[String]]?
+    fileprivate var titleContents: [[String]]?
     
     ///数据模型
-    private var orderDetailModel: SAMSaleOrderDetailModel? {
+    fileprivate var orderDetailModel: SAMSaleOrderDetailModel? {
         didSet{
             //仓库字符串
             let storehouseNameStr = orderDetailModel!.storehouseName != "" ? orderDetailModel!.storehouseName : "---"
@@ -201,7 +203,7 @@ class SAMOrderDetailController: UIViewController {
     }
     
     ///订单列表详情模型数组
-    private var orderDetailListModels = NSMutableArray()
+    fileprivate var orderDetailListModels = NSMutableArray()
     
     //MARK: - XIB链接属性
     @IBOutlet weak var customerLabel: UILabel!
@@ -212,11 +214,11 @@ class SAMOrderDetailController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     
     //MARK: - 其他方法
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     override func loadView() {
-        view = NSBundle.mainBundle().loadNibNamed("SAMOrderDetailController", owner: self, options: nil)![0] as! UIView
+        view = Bundle.main.loadNibNamed("SAMOrderDetailController", owner: self, options: nil)![0] as! UIView
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -227,13 +229,13 @@ class SAMOrderDetailController: UIViewController {
 //MARK: - UICollectionViewDataSource
 extension SAMOrderDetailController: UICollectionViewDataSource {
     
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int
+    func numberOfSections(in collectionView: UICollectionView) -> Int
     {
         let count = titleContents?.count ?? 0
         return count + 1
     }
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         if section == 0 {
             return 1
@@ -242,16 +244,16 @@ extension SAMOrderDetailController: UICollectionViewDataSource {
         }
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         if indexPath.section == 0 {
-            let bigCell = collectionView.dequeueReusableCellWithReuseIdentifier(SAMOrderDetailBigCellReuseIdentifier, forIndexPath: indexPath) as! SAMOrderDetailBigCell
+            let bigCell = collectionView.dequeueReusableCell(withReuseIdentifier: SAMOrderDetailBigCellReuseIdentifier, for: indexPath) as! SAMOrderDetailBigCell
             
             //传递数据模型数组
             bigCell.orderDetailListModelArr = orderDetailListModels
             return bigCell
         }else {
-            let cell = collectionView.dequeueReusableCellWithReuseIdentifier(SAMOrderDetailSmallCellReuseIdentifier, forIndexPath: indexPath) as! SAMOrderDetailSmallCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SAMOrderDetailSmallCellReuseIdentifier, for: indexPath) as! SAMOrderDetailSmallCell
             
             //赋值
             cell.titleLabel.text = titles[indexPath.section - 1][indexPath.item]
@@ -264,7 +266,7 @@ extension SAMOrderDetailController: UICollectionViewDataSource {
 
 //MARK: - collectionView布局代理
 extension SAMOrderDetailController: UICollectionViewDelegateFlowLayout {
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         if indexPath.section == 0 {
             return SAMOrderDetailBigCellSize
@@ -273,18 +275,18 @@ extension SAMOrderDetailController: UICollectionViewDelegateFlowLayout {
         }
     }
     
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
     
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAtIndex section: Int) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
     
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize
     {
         if section == 0 {
-            return CGSizeZero
+            return CGSize.zero
         }else {
             return CGSize(width: ScreenW, height: 20)
         }

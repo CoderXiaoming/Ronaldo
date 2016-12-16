@@ -13,7 +13,7 @@ import MJRefresh
 ///CustomerCell重用标识符
 private let SAMCustomerCellReuseIdentifier = "SAMCustomerCellReuseIdentifier"
 ///cell正常背景色
-private let SAMCustomerCellNormalColor = UIColor.whiteColor()
+private let SAMCustomerCellNormalColor = UIColor.white
 ///cell正常size
 private let SAMCustomerCellNormalSize = CGSize(width: ScreenW, height: 91)
 ///cell选中背景色
@@ -32,9 +32,9 @@ class SAMCustomerViewController: UIViewController {
     }
 
     //MARK: - 初始化UI
-    private func setupUI() {
+    fileprivate func setupUI() {
         
-        view.backgroundColor = UIColor.whiteColor()
+        view.backgroundColor = UIColor.white
         
         //设置导航标题
         navigationItem.title = "客户管理"
@@ -47,9 +47,9 @@ class SAMCustomerViewController: UIViewController {
         
         //检查新增权限
         if hasXZAuth {
-            let addBtn = UIButton(type: .Custom)
-            addBtn.setBackgroundImage(UIImage(named: "addButtton"), forState: .Normal)
-            addBtn.addTarget(self, action: #selector(SAMCustomerViewController.addCustomer), forControlEvents: .TouchUpInside)
+            let addBtn = UIButton(type: .custom)
+            addBtn.setBackgroundImage(UIImage(named: "addButtton"), for: UIControlState())
+            addBtn.addTarget(self, action: #selector(SAMCustomerViewController.addCustomer), for: .touchUpInside)
             addBtn.sizeToFit()
             
             let addItem = UIBarButtonItem(customView: addBtn)
@@ -59,12 +59,12 @@ class SAMCustomerViewController: UIViewController {
         //设置搜索按钮外观
         searchBtn.layer.borderWidth = 1
         searchBtn.layer.cornerRadius = 5
-        searchBtn.layer.borderColor = UIColor.lightGrayColor().CGColor
+        searchBtn.layer.borderColor = UIColor.lightGray.cgColor
         
         //设置searchTF的放大镜
         let imageView = UIImageView(image: UIImage(named: "search_mirro"))
         searchTF.leftView = imageView
-        searchTF.leftViewMode = UITextFieldViewMode.Always
+        searchTF.leftViewMode = UITextFieldViewMode.always
         
         //设置searchTF的代理
         searchTF.delegate = self
@@ -77,24 +77,24 @@ class SAMCustomerViewController: UIViewController {
     }
     
     //MARK: - 初始化collectionView
-    private func setupCollectionView() {
+    fileprivate func setupCollectionView() {
         
         //设置代理数据源
         collectionView.delegate = self
         collectionView.dataSource = self
         
         //注册cell
-        collectionView.registerNib(UINib(nibName: "SAMCustomerCollectionCell", bundle: nil), forCellWithReuseIdentifier: SAMCustomerCellReuseIdentifier)
+        collectionView.register(UINib(nibName: "SAMCustomerCollectionCell", bundle: nil), forCellWithReuseIdentifier: SAMCustomerCellReuseIdentifier)
         
         //设置上拉下拉
         collectionView.mj_header = MJRefreshNormalHeader.init(refreshingTarget: self, refreshingAction: #selector(SAMCustomerViewController.loadNewInfo))
         collectionView.mj_footer = MJRefreshBackNormalFooter(refreshingTarget: self, refreshingAction: #selector(SAMCustomerViewController.loadMoreInfo))
         //没有数据自动隐藏footer
-        collectionView.mj_footer.automaticallyHidden = true
+        collectionView.mj_footer.isAutomaticallyHidden = true
     }
     
     //MARK: - 搜索按钮点击
-    @IBAction func searchBtnClick(sender: AnyObject) {
+    @IBAction func searchBtnClick(_ sender: AnyObject) {
         
         //结束搜索框编辑状态
         endTextFieldEditing(searchTF)
@@ -105,7 +105,7 @@ class SAMCustomerViewController: UIViewController {
     
     //MARK: - 添加客户按钮点击
     func addCustomer() {
-        presentViewController(customerAddVC, animated: true, completion: nil)
+        present(customerAddVC, animated: true, completion: nil)
     }
     
     //MARK: - 加载新数据
@@ -117,7 +117,7 @@ class SAMCustomerViewController: UIViewController {
         //判断搜索条件，如果没有搜索条件，提示用户并返回
         let searchStr = searchCon()
         if searchStr == nil {
-            SAMHUD.showMessage("请输入客户", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("请输入客户", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
             collectionView.mj_header.endRefreshing()
             return
         }
@@ -135,7 +135,7 @@ class SAMCustomerViewController: UIViewController {
         let patametersNew = ["employeeID": id!, "con": searchStr!, "pageSize": size, "pageIndex": index]
         
         //发送请求
-        SAMNetWorker.sharedNetWorker().GET(URLStr, parameters: patametersNew, progress: nil, success: { (Task, Json) in
+        SAMNetWorker.sharedNetWorker().get(URLStr, parameters: patametersNew, progress: nil, success: { (Task, json) in
             
             //清空原先数据
             self.customerModels.removeAllObjects()
@@ -143,14 +143,15 @@ class SAMCustomerViewController: UIViewController {
             self.selectedCell = nil
             
             //获取模型数组
-            let dictArr = Json!["body"] as? [[String: AnyObject]]
+            let Json = json as! [String: AnyObject]
+            let dictArr = Json["body"] as? [[String: AnyObject]]
             let count = dictArr?.count ?? 0
             if count == 0 { //没有模型数据
                 
-                SAMHUD.showMessage("没有该客户", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("没有该客户", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
             }else { //有数据模型
                 
-                let arr = SAMCustomerModel.mj_objectArrayWithKeyValuesArray(dictArr)!
+                let arr = SAMCustomerModel.mj_objectArray(withKeyValuesArray: dictArr)!
                 if arr.count < self.pageSize { //设置footer状态，提示用户没有更多信息
                     
                     self.collectionView.mj_footer.endRefreshingWithNoMoreData()
@@ -158,22 +159,22 @@ class SAMCustomerViewController: UIViewController {
                     
                     self.pageIndex += 1
                 }
-                self.parameters = patametersNew
-                self.customerModels.addObjectsFromArray(arr as [AnyObject])
+                self.parameters = patametersNew as [String : AnyObject]?
+                self.customerModels.addObjects(from: arr as [AnyObject])
             }
             
             //结束上拉
             self.collectionView.mj_header.endRefreshing()
             
             //刷新数据
-            dispatch_async(dispatch_get_main_queue(), {
+            DispatchQueue.main.async(execute: {
                 self.collectionView.reloadData()
             })
             
             }) { (Task, Error) in
                 //处理上拉
                 self.collectionView.mj_header.endRefreshing()
-                SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     
@@ -183,7 +184,7 @@ class SAMCustomerViewController: UIViewController {
         if searchStr == "" { //没有内容
             return nil
         }
-        return searchStr?.componentsSeparatedByString(" ")[0]
+        return searchStr?.components(separatedBy: " ")[0]
     }
     
     //MARK: - 加载更多数据
@@ -198,21 +199,22 @@ class SAMCustomerViewController: UIViewController {
         
         //创建请求参数
         let index = String(format: "%d", pageIndex)
-        parameters!["pageIndex"] = index
+        parameters!["pageIndex"] = index as AnyObject?
         //发送请求
-        SAMNetWorker.sharedNetWorker().GET(URLStr, parameters: parameters!, progress: nil, success: { (Task, Json) in
+        SAMNetWorker.sharedNetWorker().get(URLStr, parameters: parameters!, progress: nil, success: { (Task, json) in
             
             //获取模型数组
-            let dictArr = Json!["body"] as? [[String: AnyObject]]
+            let Json = json as! [String: AnyObject]
+            let dictArr = Json["body"] as? [[String: AnyObject]]
             if dictArr?.count == 0 { //没有模型数据
                 
                 //提示用户
-                SAMHUD.showMessage("没有更多客户", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("没有更多客户", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
                 //设置footer
                 self.collectionView.mj_footer.endRefreshingWithNoMoreData()
             }else {//有数据模型
                 
-                let arr = SAMCustomerModel.mj_objectArrayWithKeyValuesArray(dictArr)!
+                let arr = SAMCustomerModel.mj_objectArray(withKeyValuesArray: dictArr)!
                 
                 if arr.count < self.pageSize {
                     
@@ -226,23 +228,23 @@ class SAMCustomerViewController: UIViewController {
                     //处理下拉
                     self.collectionView.mj_footer.endRefreshing()
                 }
-                self.customerModels.addObjectsFromArray(arr as [AnyObject])
+                self.customerModels.addObjects(from: arr as [AnyObject])
                 
                 //刷新数据
-                dispatch_async(dispatch_get_main_queue(), {
+                DispatchQueue.main.async(execute: {
                     self.collectionView.reloadData()
                 })
             }
         }) { (Task, Error) in
             //处理下拉
             self.collectionView.mj_footer.endRefreshing()
-            SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     
     //MARK: - 结束textField编辑状态
-    private func endTextFieldEditing(textField: UITextField) {
-        if textField.isFirstResponder() {
+    fileprivate func endTextFieldEditing(_ textField: UITextField) {
+        if textField.isFirstResponder {
             textField.resignFirstResponder()
         }
     }
@@ -251,29 +253,29 @@ class SAMCustomerViewController: UIViewController {
     }
     //MARK: - 懒加载集合
     ///请求URLStr
-    private let URLStr = "getCustomerList.ashx"
+    fileprivate let URLStr = "getCustomerList.ashx"
     ///一次数据请求获取的数据最大条数
-    private let pageSize = 15
+    fileprivate let pageSize = 15
     ///当前数据的页码
-    private var pageIndex = 1
+    fileprivate var pageIndex = 1
     ///最近一次查询的参数
-    private var parameters: [String: AnyObject]?
+    fileprivate var parameters: [String: AnyObject]?
     
     ///当前选中IndexPath
-    private var selectedIndexPath : NSIndexPath?
-    private var selectedCell: SAMCustomerCollectionCell?
+    fileprivate var selectedIndexPath : IndexPath?
+    fileprivate var selectedCell: SAMCustomerCollectionCell?
     
     ///查询权限
-    private lazy var hasCXAuth: Bool = SAMUserAuth.checkAuth(["KH_CX_APP"])
+    fileprivate lazy var hasCXAuth: Bool = SAMUserAuth.checkAuth(["KH_CX_APP"])
     ///新增权限
-    private lazy var hasXZAuth: Bool = SAMUserAuth.checkAuth(["KH_XZ_APP"])
+    fileprivate lazy var hasXZAuth: Bool = SAMUserAuth.checkAuth(["KH_XZ_APP"])
     ///修改权限
-    private lazy var hasXGAuth: Bool = SAMUserAuth.checkAuth(["KH_XG_APP"])
+    fileprivate lazy var hasXGAuth: Bool = SAMUserAuth.checkAuth(["KH_XG_APP"])
     ///禁用权限
-    private lazy var hasJYAuth: Bool = SAMUserAuth.checkAuth(["KH_JY_APP"])
+    fileprivate lazy var hasJYAuth: Bool = SAMUserAuth.checkAuth(["KH_JY_APP"])
     
     ///查询权限遮挡View
-    private lazy var CXAuthView: UIView = {
+    fileprivate lazy var CXAuthView: UIView = {
         let view = UIView(frame: self.view.bounds)
         view.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
         let imageView = UIImageView(image: UIImage(named: "cxAuthImage"))
@@ -283,10 +285,10 @@ class SAMCustomerViewController: UIViewController {
     }()
     
     ///添加用户的控制器
-    private lazy var customerAddVC: SAMCustomerAddController = {
+    fileprivate lazy var customerAddVC: SAMCustomerAddController = {
         let vc = SAMCustomerAddController()
         vc.transitioningDelegate = self
-        vc.modalPresentationStyle = UIModalPresentationStyle.Custom
+        vc.modalPresentationStyle = UIModalPresentationStyle.custom
         return vc
     }()
     
@@ -303,19 +305,19 @@ class SAMCustomerViewController: UIViewController {
     
     //MARK: - 其他方法
     override func loadView() {
-        view = NSBundle.mainBundle().loadNibNamed("SAMCustomerViewController", owner: self, options: nil)![0] as! UIView
+        view = Bundle.main.loadNibNamed("SAMCustomerViewController", owner: self, options: nil)![0] as! UIView
     }
 }
 
 //MARK: - CollectionViewDelegate
 extension SAMCustomerViewController: UICollectionViewDataSource {
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return customerModels.count
     }
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(SAMCustomerCellReuseIdentifier, forIndexPath: indexPath) as! SAMCustomerCollectionCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SAMCustomerCellReuseIdentifier, for: indexPath) as! SAMCustomerCollectionCell
         //设置样式
         if indexPath == selectedIndexPath {
             cell.containterView.backgroundColor = SAMCustomerCellSelectedColor
@@ -333,12 +335,12 @@ extension SAMCustomerViewController: UICollectionViewDataSource {
 }
 
 extension SAMCustomerViewController: UICollectionViewDelegate {
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         //结束搜索框编辑状态
         endTextFieldEditing(searchTF)
         
-        selectedCell = collectionView.cellForItemAtIndexPath(indexPath) as? SAMCustomerCollectionCell
+        selectedCell = collectionView.cellForItem(at: indexPath) as? SAMCustomerCollectionCell
         
         if selectedIndexPath == indexPath { //选中了当前选中的CELL
             
@@ -355,7 +357,7 @@ extension SAMCustomerViewController: UICollectionViewDelegate {
             var willNorCell: SAMCustomerCollectionCell?
             
             if selectedIndexPath != nil { //没有选中其他CELL
-                willNorCell = collectionView.cellForItemAtIndexPath(selectedIndexPath!) as? SAMCustomerCollectionCell
+                willNorCell = collectionView.cellForItem(at: selectedIndexPath!) as? SAMCustomerCollectionCell
             }
             
             //记录数据
@@ -365,16 +367,16 @@ extension SAMCustomerViewController: UICollectionViewDelegate {
             selectCellAnimation(selectedCell, willNorCell: willNorCell)
         }
         
-        let cell = collectionView.cellForItemAtIndexPath(indexPath)!
+        let cell = collectionView.cellForItem(at: indexPath)!
         let bottom = cell.frame.maxY
         print(bottom)
         
     }
     
     //MARK: - 点击了某个cell时执行的动画
-    private func selectCellAnimation(willSelCell: SAMCustomerCollectionCell?, willNorCell: SAMCustomerCollectionCell?) {
+    fileprivate func selectCellAnimation(_ willSelCell: SAMCustomerCollectionCell?, willNorCell: SAMCustomerCollectionCell?) {
         
-        UIView.animateWithDuration(0.2, animations: { 
+        UIView.animate(withDuration: 0.2, animations: { 
                 //让系统调用DelegateFlowLayout 的 sizeForItemAtIndexPath的方法
                 self.collectionView.performBatchUpdates({
                 }) { (finished) in
@@ -385,31 +387,31 @@ extension SAMCustomerViewController: UICollectionViewDelegate {
                 willNorCell?.containterView.backgroundColor = SAMCustomerCellNormalColor
                 
                 //恢复左滑形变
-                willNorCell?.containterView.transform = CGAffineTransformIdentity
+                willNorCell?.containterView.transform = CGAffineTransform.identity
                 
                 //一个神奇的方法
                 self.view.layoutIfNeeded()
-            }) { (_) in
+            }, completion: { (_) in
                 
                 //如果点击了最下面一个cell，则滚至最底部
                 if self.selectedIndexPath?.row == (self.customerModels.count - 1) {
-                    self.collectionView.scrollToItemAtIndexPath(self.selectedIndexPath!, atScrollPosition: .Bottom, animated: true)
+                    self.collectionView.scrollToItem(at: self.selectedIndexPath!, at: .bottom, animated: true)
                 }
-        }
+        }) 
     }
 }
 
 extension SAMCustomerViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath == selectedIndexPath {
             return SAMCustomerCellSelectedSize
         }
         return SAMCustomerCellNormalSize
     }
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
-    func scrollViewDidScroll(scrollView: UIScrollView) {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
         //结束搜索框编辑状态
         endTextFieldEditing(searchTF)
     }
@@ -417,18 +419,18 @@ extension SAMCustomerViewController: UICollectionViewDelegateFlowLayout {
 
 //MARK: - UITextFieldDelegate
 extension SAMCustomerViewController: UITextFieldDelegate {
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
     
     //HUDView上添加了点击事件，点击时退出搜索框编辑状态
-    func textFieldDidBeginEditing(textField: UITextField) {
-        HUDView.hidden = false
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        HUDView.isHidden = false
     }
     
-    func textFieldShouldEndEditing(textField: UITextField) -> Bool {
-        HUDView.hidden = true
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        HUDView.isHidden = true
         return true
     }
 }
@@ -436,11 +438,11 @@ extension SAMCustomerViewController: UITextFieldDelegate {
 //MARK: - UIViewControllerTransitioningDelegate
 extension SAMCustomerViewController: UIViewControllerTransitioningDelegate {
     
-    func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return SAMPresentingAnimator()
     }
     
-    func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return SAMDismissingAnimator()
     }
 }
@@ -455,7 +457,7 @@ extension SAMCustomerViewController: SAMCustomerCollectionCellDelegate {
         customerAddVC.editingModel = customerModel
         
         //展示控制器
-        presentViewController(customerAddVC, animated: true, completion: nil)
+        present(customerAddVC, animated: true, completion: nil)
     }
     func customerCellDidClickVisit() {
         selectedCell!.rightSwipeCell()
@@ -468,10 +470,10 @@ extension SAMCustomerViewController: SAMCustomerCollectionCellDelegate {
         let customerModel = self.customerModels[selectedIndexPath!.row] as! SAMCustomerModel
         let phoneStr = customerModel.mobilePhone!
         if phoneStr == "" {
-            SAMHUD.showMessage("没有手机号码", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("没有手机号码", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
             return
         }else if !(phoneStr.lxm_stringisWholeNumber()) {
-            SAMHUD.showMessage("非法电话", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("非法电话", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
             return
         }
         
@@ -479,14 +481,14 @@ extension SAMCustomerViewController: SAMCustomerCollectionCellDelegate {
         let phoneURLStr = String(format: "tel://%@", phoneStr)
         let titleStr = String(format: "呼叫 %@", selectedCell!.customerLabel.text!)
         let messageStr = selectedCell!.phoneLabel.text!
-        let alert = UIAlertController(title: titleStr, message: messageStr, preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "确认", style: .Destructive) { (_) in
-            UIApplication.sharedApplication().openURL(NSURL(string: phoneURLStr)!)
+        let alert = UIAlertController(title: titleStr, message: messageStr, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "确认", style: .destructive) { (_) in
+            UIApplication.shared.openURL(URL(string: phoneURLStr)!)
             })
-        alert.addAction(UIAlertAction(title: "取消", style: .Cancel) { (_) in
+        alert.addAction(UIAlertAction(title: "取消", style: .cancel) { (_) in
             })
         
-        presentViewController(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
     }
 }
 

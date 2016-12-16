@@ -85,18 +85,18 @@ class SAMCustomerCollectionCell: UICollectionViewCell {
         
         //添加左滑动手势
         let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(SAMCustomerCollectionCell.leftSwipeCell))
-        leftSwipe.direction = UISwipeGestureRecognizerDirection.Left
+        leftSwipe.direction = UISwipeGestureRecognizerDirection.left
         addGestureRecognizer(leftSwipe)
         
         //添加右滑动手势
         let rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(SAMCustomerCollectionCell.rightSwipeCell))
-        rightSwipe.direction = UISwipeGestureRecognizerDirection.Right
+        rightSwipe.direction = UISwipeGestureRecognizerDirection.right
         addGestureRecognizer(rightSwipe)
     }
     
     //MARK: - 判断当前是否被选中
     func hasSelected() -> Bool {
-        if CGColorEqualToColor(containterView.backgroundColor!.CGColor, UIColor.whiteColor().CGColor) {
+        if containterView.backgroundColor!.cgColor == UIColor.white.cgColor {
             return false
         }
         return true
@@ -108,29 +108,29 @@ class SAMCustomerCollectionCell: UICollectionViewCell {
         if  hasSelected() == false {
             return
         }
-        UIView.animateWithDuration(0.2) {
-            self.containterView.transform = CGAffineTransformMakeTranslation(-60, 0)
-        }
+        UIView.animate(withDuration: 0.2, animations: {
+            self.containterView.transform = CGAffineTransform(translationX: -60, y: 0)
+        }) 
     }
     func rightSwipeCell() {
         //当前未被选中，返回
         if  hasSelected() == false {
             return
         }
-        UIView.animateWithDuration(0.2) {
-            self.containterView.transform = CGAffineTransformIdentity
-        }
+        UIView.animate(withDuration: 0.2, animations: {
+            self.containterView.transform = CGAffineTransform.identity
+        }) 
     }
     
     
     //MARK: - 点击事件处理
-    @IBAction func editBtnClick(sender: AnyObject) {
+    @IBAction func editBtnClick(_ sender: AnyObject) {
         delegate?.customerCellDidClickEdit()
     }
-    @IBAction func visitBtnClick(sender: AnyObject) {
+    @IBAction func visitBtnClick(_ sender: AnyObject) {
         delegate?.customerCellDidClickVisit()
     }
-    @IBAction func phoneBtnClick(sender: AnyObject) {
+    @IBAction func phoneBtnClick(_ sender: AnyObject) {
         delegate?.customerCellDidClickPhone()
     }
     

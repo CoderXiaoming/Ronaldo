@@ -21,13 +21,13 @@ class SAMHomeButton: UIButton {
         imageView?.frame.origin.y = 0
         imageView?.frame.size.height = frame.height * imgHeightScale
         imageView?.frame.size.width = frame.width
-        imageView?.contentMode = UIViewContentMode.Center
+        imageView?.contentMode = UIViewContentMode.center
         
         //布局titleLabel
         titleLabel?.frame.origin.x = 0
         titleLabel?.frame.origin.y = imageView!.frame.maxY
         titleLabel?.frame.size.width = frame.width
-        titleLabel?.textAlignment = NSTextAlignment.Center
+        titleLabel?.textAlignment = NSTextAlignment.center
     }
 
 }

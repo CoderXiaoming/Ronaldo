@@ -27,7 +27,7 @@ class SAMUserAuth: NSObject{
     }
     
     //MARK: - 对外提供判断权限的方法
-    class func checkAuth(authArr: [String]) -> Bool {
+    class func checkAuth(_ authArr: [String]) -> Bool {
         for authStr in authArr {
             if !((user!.appPower!.contains(authStr))) {
                 return false
@@ -37,14 +37,14 @@ class SAMUserAuth: NSObject{
     }
     
     //MARK: - 对外提供的类工厂方法
-    class func auth(id: String?, employeeID: String?, appPower: String?, deptID: String?) -> SAMUserAuth {
+    class func auth(_ id: String?, employeeID: String?, appPower: String?, deptID: String?) -> SAMUserAuth {
         if user != nil {
             return user!
         }else {
             user = SAMUserAuth()
             user!.id = id
             user!.employeeID = employeeID
-            user!.appPower = appPower?.componentsSeparatedByString("|")
+            user!.appPower = appPower?.components(separatedBy: "|")
             user!.deptID = deptID
             return user!
         }

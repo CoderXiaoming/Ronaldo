@@ -16,9 +16,9 @@ class LXMProCityList: NSObject {
     var cities: [String]?
     
     //MARK: - 对外提供的类方法
-    class func listWithDict(dict: [String: String]) -> LXMProCityList {
+    class func listWithDict(_ dict: [String: String]) -> LXMProCityList {
         let list = LXMProCityList()
-        list.setValuesForKeysWithDictionary(dict)
+        list.setValuesForKeys(dict)
         return list
     }
     

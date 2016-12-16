@@ -22,7 +22,7 @@ class SAMShoppingCarListCell: UITableViewCell {
             
             //设置产品图片
             if listModel?.thumbURL != nil {
-                productImageView.sd_setImageWithURL(listModel?.thumbURL!, placeholderImage: UIImage(named: "photo_loadding"))
+                productImageView.sd_setImage(with: listModel?.thumbURL!, placeholderImage: UIImage(named: "photo_loadding"))
             }else {
                 productImageView.image = UIImage(named: "photo_loadding")
             }

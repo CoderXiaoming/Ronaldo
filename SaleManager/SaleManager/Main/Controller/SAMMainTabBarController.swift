@@ -22,19 +22,19 @@ class SAMMainTabBarController: UITabBarController {
     }
     
     //MARK: - 初始化UI
-    private func setupUI() {
+    fileprivate func setupUI() {
         
         let navbar = UITabBar.appearance()
         
         navbar.backgroundImage = UIImage(named: "tabbarBackgroundcolorImage")
         
         //初始化设置所有tabBarItem正常状态和选中时的颜色
-        UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: mainColor_green], forState: .Selected)
-        UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.blackColor()], forState: .Normal)
+        UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: mainColor_green], for: .selected)
+        UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.black], for: UIControlState())
     }
     
     //MARK: - 添加所有控制器
-    private func addAllControllers() {
+    fileprivate func addAllControllers() {
         
         let homeVC = SAMBaseNavigationController(rootViewController: SAMHomeViewController())
         addOnmeController(homeVC, tabImg: UIImage(named: "visitManagertabbar")!, selectedImg: UIImage(named: "visitManager_selected")!, tabTile: "首页")
@@ -52,7 +52,7 @@ class SAMMainTabBarController: UITabBarController {
     }
     
     //MARK: - 单独添加一个控制器
-    private func addOnmeController(controller: UIViewController, tabImg: UIImage, selectedImg: UIImage, tabTile: String) {
+    fileprivate func addOnmeController(_ controller: UIViewController, tabImg: UIImage, selectedImg: UIImage, tabTile: String) {
         addChildViewController(controller)
         controller.tabBarItem = UITabBarItem(title: tabTile, image: tabImg, selectedImage: selectedImg)
     }
@@ -63,7 +63,7 @@ class SAMMainTabBarController: UITabBarController {
     }
     
     //MARK: - 其他方法
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     required init?(coder aDecoder: NSCoder) {

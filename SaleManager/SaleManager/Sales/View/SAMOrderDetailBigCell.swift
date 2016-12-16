@@ -27,14 +27,14 @@ class SAMOrderDetailBigCell: UICollectionViewCell {
     }
 
     //MARK: - 初始化collectionView
-    private func setupCollectionView() {
+    fileprivate func setupCollectionView() {
         
         //设置代理数据源
         collectionView.delegate = self
         collectionView.dataSource = self
         
         //注册cell
-        collectionView.registerNib(UINib(nibName: "SAMOrderDetailListCell", bundle: nil), forCellWithReuseIdentifier: SAMOrderDetailListCellReuseIdentifier)
+        collectionView.register(UINib(nibName: "SAMOrderDetailListCell", bundle: nil), forCellWithReuseIdentifier: SAMOrderDetailListCellReuseIdentifier)
     }
 
     //MARK: - 懒加载集合
@@ -47,7 +47,7 @@ class SAMOrderDetailBigCell: UICollectionViewCell {
     }
     
     ///当前选中IndexPath
-    private var selectedIndexPath : NSIndexPath?
+    fileprivate var selectedIndexPath : IndexPath?
     
     //MARK: - XIB链接属性
     @IBOutlet weak var collectionView: UICollectionView!
@@ -56,7 +56,7 @@ class SAMOrderDetailBigCell: UICollectionViewCell {
 //MARK: - UICollectionViewDelegate
 extension SAMOrderDetailBigCell: UICollectionViewDelegate {
     
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         if selectedIndexPath == indexPath { //选中了当前选中的CELL
             
@@ -74,7 +74,7 @@ extension SAMOrderDetailBigCell: UICollectionViewDelegate {
             
             //如果点击了最下面一个cell，则滚至最底部
             if self.selectedIndexPath?.row == (self.orderDetailListModelArr!.count - 1) {
-                self.collectionView.scrollToItemAtIndexPath(self.selectedIndexPath!, atScrollPosition: .Bottom, animated: true)
+                self.collectionView.scrollToItem(at: self.selectedIndexPath!, at: .bottom, animated: true)
             }
         }
     }
@@ -83,15 +83,15 @@ extension SAMOrderDetailBigCell: UICollectionViewDelegate {
 //MARK: - UICollectionViewDataSource
 extension SAMOrderDetailBigCell: UICollectionViewDataSource {
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if orderDetailListModelArr == nil {
             return 0
         }else {
             return orderDetailListModelArr!.count
         }
     }
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(SAMOrderDetailListCellReuseIdentifier, forIndexPath: indexPath) as! SAMOrderDetailListCell
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SAMOrderDetailListCellReuseIdentifier, for: indexPath) as! SAMOrderDetailListCell
         
         //取出模型
         let model = orderDetailListModelArr![indexPath.row] as! SAMSaleOrderDetailListModel
@@ -102,7 +102,7 @@ extension SAMOrderDetailBigCell: UICollectionViewDataSource {
 
 //MARK: - collectionView布局代理
 extension SAMOrderDetailBigCell: UICollectionViewDelegateFlowLayout {
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         if indexPath == selectedIndexPath {
             return SAMOrderDetailListCellSelectedSize
@@ -110,10 +110,10 @@ extension SAMOrderDetailBigCell: UICollectionViewDelegateFlowLayout {
         
         return SAMOrderDetailListCellNormalSize
     }
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAtIndex section: Int) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
 }

@@ -63,7 +63,7 @@ class SAMStockProductModel: NSObject {
     var thumbUrl1: String? {
         didSet{
             if thumbUrl1 != "" {
-                thumbURL1 = NSURL(string: thumbUrl1!)
+                thumbURL1 = URL(string: thumbUrl1!)
             }
         }
     }
@@ -72,20 +72,21 @@ class SAMStockProductModel: NSObject {
     var imageUrl1: String? {
         didSet{
             if imageUrl1 != "" {
-                imageURL1 = NSURL(string: imageUrl1!)
+                imageURL1 = URL(string: imageUrl1!)
             }
         }
     }
 
     //MARK: - 加载库存明细数据
-    private func loadProductDeatilList() {
+    fileprivate func loadProductDeatilList() {
         
         let parameters = ["productID": id!, "storehouseID": "-1", "parentID": "-1"]
         //发送请求
-        SAMNetWorker.sharedNetWorker().GET("getStockDetailList.ashx", parameters: parameters, progress: nil, success: { (Task, Json) in
+        SAMNetWorker.sharedNetWorker().get("getStockDetailList.ashx", parameters: parameters, progress: nil, success: { (Task, json) in
             
             //获取模型数组
-            let dictArr = Json!["body"] as? [[String: AnyObject]]
+            let Json = json as! [String: AnyObject]
+            let dictArr = Json["body"] as? [[String: AnyObject]]
             let count = dictArr?.count ?? 0
             
             //判断是否有模型数据
@@ -93,10 +94,10 @@ class SAMStockProductModel: NSObject {
                 
             }else {//有数据模型
                 
-                let arr = SAMStockProductDeatil.mj_objectArrayWithKeyValuesArray(dictArr)!
+                let arr = SAMStockProductDeatil.mj_objectArray(withKeyValuesArray: dictArr)!
                 
                 //添加数据模型
-                self.productDeatilList.addObjectsFromArray(arr as [AnyObject])
+                self.productDeatilList.addObjects(from: arr as [AnyObject])
             }
         }) { (Task, Error) in
         }
@@ -104,9 +105,9 @@ class SAMStockProductModel: NSObject {
     
     //MARK: - 附加属性
     ///缩略图1（主缩略图）链接
-    var thumbURL1: NSURL?
+    var thumbURL1: URL?
     ///大图1（主缩略图）链接
-    var imageURL1: NSURL?
+    var imageURL1: URL?
     
     ///库存明细模型数组
     let productDeatilList = NSMutableArray()

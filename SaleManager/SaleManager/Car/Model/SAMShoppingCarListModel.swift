@@ -31,17 +31,22 @@ class SAMShoppingCarListModel: NSObject {
     ///二维码缩略图url
     var thumbUrl: String? {
         didSet{
-            if thumbURL != "" {
-                thumbURL = NSURL(string: thumbUrl!)
+            if thumbUrl != "" {
+                thumbURL = URL(string: thumbUrl!)
             }
         }
     }
     
     //MARK: - 附加属性
     ///缩略图1（主缩略图）链接
-    var thumbURL: NSURL?
+    var thumbURL: URL?
     
     ///记录当前数据是否被选中
     var selected: Bool = false
+    
+    ///库存匹数
+    var stockCountP: Int = 0
+    ///库存米数
+    var stockCountM: Double = 0.0
     
 }

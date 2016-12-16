@@ -14,7 +14,7 @@ import AFNetworking
 class SAMNetWorker: AFHTTPSessionManager {
     
     ///全局使用的netWorker单例
-    private static var netWorker: SAMNetWorker?
+    fileprivate static var netWorker: SAMNetWorker?
     
     //MARK: - 对外提供全局使用的单例的类方法
     class func sharedNetWorker() -> SAMNetWorker {
@@ -22,13 +22,13 @@ class SAMNetWorker: AFHTTPSessionManager {
     }
     
     //MARK: - 创建全局使用单例的类方法
-    class func globalNetWorker(baseURLStr: String) -> SAMNetWorker{
+    class func globalNetWorker(_ baseURLStr: String) -> SAMNetWorker{
         if netWorker != nil {
             return netWorker!
         }else {
             let URLStr = String(format: "http://%@", baseURLStr)
-            let URL = NSURL(string: URLStr)
-            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+            let URL = Foundation.URL(string: URLStr)
+            let configuration = URLSessionConfiguration.default
             configuration.timeoutIntervalForResource = 5.0
             configuration.timeoutIntervalForRequest = 5.0
             netWorker = SAMNetWorker(baseURL: URL!, sessionConfiguration: configuration)
@@ -37,8 +37,8 @@ class SAMNetWorker: AFHTTPSessionManager {
     }
     
     ///登录界面用的netWorker
-    private static var loginNetWorker: SAMNetWorker = {
-        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+    fileprivate static var loginNetWorker: SAMNetWorker = {
+        let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForResource = 5.0
         configuration.timeoutIntervalForRequest = 5.0
         return SAMNetWorker(sessionConfiguration: configuration)
@@ -50,7 +50,7 @@ class SAMNetWorker: AFHTTPSessionManager {
     }
     
     ///全局使用的上传图片netWorker单例
-    private static var unloadImageNetWorker: SAMNetWorker?
+    fileprivate static var unloadImageNetWorker: SAMNetWorker?
     
     //MARK: - 对外提供全局使用的上传图片netWorker单例的类方法
     class func sharedUnloadImageNetWorker() -> SAMNetWorker {
@@ -58,13 +58,13 @@ class SAMNetWorker: AFHTTPSessionManager {
     }
     
     //MARK: - 创建全局使用上传图片netWorker单例的类方法
-    class func globalUnloadImageNetWorker(baseURLStr: String) -> SAMNetWorker{
+    class func globalUnloadImageNetWorker(_ baseURLStr: String) -> SAMNetWorker{
         if unloadImageNetWorker != nil {
             return unloadImageNetWorker!
         }else {
             let URLStr = String(format: "http://%@", baseURLStr)
-            let URL = NSURL(string: URLStr)
-            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+            let URL = Foundation.URL(string: URLStr)
+            let configuration = URLSessionConfiguration.default
             configuration.timeoutIntervalForResource = 10.0
             configuration.timeoutIntervalForRequest = 10.0
             unloadImageNetWorker = SAMNetWorker(baseURL: URL!, sessionConfiguration: configuration)

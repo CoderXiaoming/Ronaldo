@@ -16,13 +16,13 @@ class SAMLoginTextField: UITextField {
     }
     
     override func resignFirstResponder() -> Bool {
-        setValue(UIColor.lightGrayColor(), forKeyPath: "_placeholderLabel.textColor")
+        setValue(UIColor.lightGray, forKeyPath: "_placeholderLabel.textColor")
         return super.resignFirstResponder()
     }
     
     //MARK: - 设置leftView左边距
-    override func leftViewRectForBounds(bounds: CGRect) -> CGRect {
-        var frame = super.leftViewRectForBounds(bounds)
+    override func leftViewRect(forBounds bounds: CGRect) -> CGRect {
+        var frame = super.leftViewRect(forBounds: bounds)
         frame.origin.x = 5
         return frame
     }

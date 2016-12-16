@@ -24,7 +24,7 @@ class SAMHomeViewController: UIViewController {
                     ]
     
     //MARK: - 重写init方法
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
@@ -38,10 +38,10 @@ class SAMHomeViewController: UIViewController {
         view.addSubview(buttonView)
     }
     
-    private func setupUI() {
+    fileprivate func setupUI() {
         //设置导航栏标题
         title = "首页"
-        view.backgroundColor = UIColor.whiteColor()
+        view.backgroundColor = UIColor.white
     }
 
     //MARK: - 点击buttonView上按钮的处理
@@ -50,7 +50,7 @@ class SAMHomeViewController: UIViewController {
     }
     func stockBtnClick() {
         let btn = UIButton()
-        btn.titleLabel?.backgroundColor = UIColor.whiteColor()
+        btn.titleLabel?.backgroundColor = UIColor.white
         btn.titleLabel?.clipsToBounds = true
     }
     
@@ -77,19 +77,19 @@ class SAMHomeViewController: UIViewController {
         print("visitManagerBtnClick")
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return UIStatusBarStyle.lightContent
     }
     
     //MARK: - 懒加载集合
-    private lazy var buttonView: UIView = {
+    fileprivate lazy var buttonView: UIView = {
         //设置frame各属性
         let buttonViewW = ScreenW
         let buttonViewH = buttonViewW * 0.7
         let btnView = UIView(frame: CGRect(x: 0, y: 0, width: buttonViewW, height: buttonViewH))
         
         //设置背景色
-        btnView.backgroundColor = UIColor.grayColor()
+        btnView.backgroundColor = UIColor.gray
         
         //添加所有按钮 
         //先初始化所有属性
@@ -107,24 +107,24 @@ class SAMHomeViewController: UIViewController {
             let selector = Selector.init(dict["selector"] as! String)
             let title = dict["title"] as! String
             
-            let x = (btnW + margin) * (CGFloat(i) % rows) + margin
+            let x = (btnW + margin) * (CGFloat(i).truncatingRemainder(dividingBy: rows)) + margin
             let y = (btnH + margin) * CGFloat(Int(i / Int(rows))) + margin
             
             let btn = SAMHomeButton(frame: CGRect(x: x, y: y, width: btnW, height: btnH))
-            btn.backgroundColor = UIColor.whiteColor()
-            btn.setTitle(title, forState: .Normal)
-            btn.titleLabel?.font = UIFont.systemFontOfSize(15)
-            btn.titleLabel?.backgroundColor = UIColor.whiteColor()
+            btn.backgroundColor = UIColor.white
+            btn.setTitle(title, for: UIControlState())
+            btn.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+            btn.titleLabel?.backgroundColor = UIColor.white
             btn.titleLabel?.clipsToBounds = true
             
             //设置普通状态
-            btn.setImage(UIImage(named: imgName), forState: .Normal)
-            btn.setTitleColor(UIColor.blackColor(), forState: .Normal)
+            btn.setImage(UIImage(named: imgName), for: UIControlState())
+            btn.setTitleColor(UIColor.black, for: UIControlState())
             //设置高亮状态
-            btn.setImage(UIImage(named: selImgName), forState: .Highlighted)
-            btn.setTitleColor(mainColor_green, forState: .Highlighted)
+            btn.setImage(UIImage(named: selImgName), for: .highlighted)
+            btn.setTitleColor(mainColor_green, for: .highlighted)
             //设置点击事件
-            btn.addTarget(self, action: selector, forControlEvents: .TouchUpInside)
+            btn.addTarget(self, action: selector, for: .touchUpInside)
             btnView.addSubview(btn)
         }
         
@@ -132,7 +132,7 @@ class SAMHomeViewController: UIViewController {
     }()
     
     ///历史订单控制器
-    private lazy var salesHistoryVC: SAMSalesHistoryController? = {
+    fileprivate lazy var salesHistoryVC: SAMSalesHistoryController? = {
         let vc = SAMSalesHistoryController()
         return vc
     }()

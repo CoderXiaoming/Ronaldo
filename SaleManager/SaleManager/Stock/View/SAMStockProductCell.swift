@@ -14,9 +14,9 @@ private let SAMStockProductDetailCellReuseIdentifier = "SAMStockProductDetailCel
 
 //MARK: - 代理方法
 protocol SAMStockProductCellDelegate: NSObjectProtocol {
-    func productCellDidClickShoppingCarButton(stockProductModel: SAMStockProductModel, stockProductImage: UIImage)
-    func productCellDidClickStockWarnningButton(stockProductModel: SAMStockProductModel)
-    func productCellDidClickProductImageButton(stockProductModel: SAMStockProductModel)
+    func productCellDidClickShoppingCarButton(_ stockProductModel: SAMStockProductModel, stockProductImage: UIImage)
+    func productCellDidClickStockWarnningButton(_ stockProductModel: SAMStockProductModel)
+    func productCellDidClickProductImageButton(_ stockProductModel: SAMStockProductModel)
 }
 
 class SAMStockProductCell: UICollectionViewCell {
@@ -30,9 +30,9 @@ class SAMStockProductCell: UICollectionViewCell {
             
             //设置产品图片
             if stockProductModel?.thumbURL1 != nil {
-                productImageBtn.sd_setBackgroundImageWithURL(stockProductModel?.thumbURL1!, forState: .Normal, placeholderImage: UIImage(named: "photo_loadding"))
+                productImageBtn.sd_setBackgroundImage(with: stockProductModel?.thumbURL1!, for: UIControlState(), placeholderImage: UIImage(named: "photo_loadding"))
             }else {
-                productImageBtn.setBackgroundImage(UIImage(named: "photo_loadding"), forState: .Normal)
+                productImageBtn.setBackgroundImage(UIImage(named: "photo_loadding"), for: UIControlState())
             }
             
             //设置产品名称
@@ -58,7 +58,7 @@ class SAMStockProductCell: UICollectionViewCell {
     }
     
     //MARK: - 设置collectionView
-    private func setupCollectionView() {
+    fileprivate func setupCollectionView() {
         
         //设置数据源、代理
         collectionView.dataSource = self
@@ -68,7 +68,7 @@ class SAMStockProductCell: UICollectionViewCell {
         collectionView.backgroundColor = customBlueColor
         
         //注册cell
-        collectionView.registerNib(UINib(nibName: "SAMStockProductDetailCell", bundle: nil), forCellWithReuseIdentifier: SAMStockProductDetailCellReuseIdentifier)
+        collectionView.register(UINib(nibName: "SAMStockProductDetailCell", bundle: nil), forCellWithReuseIdentifier: SAMStockProductDetailCellReuseIdentifier)
         
         //添加collectionView
         contentView.addSubview(collectionView)
@@ -79,8 +79,8 @@ class SAMStockProductCell: UICollectionViewCell {
         var cons = [NSLayoutConstraint]()
         let dict = ["collectionView" : collectionView, "topContentView":topContentView] as [String : AnyObject]
         
-        cons += NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[collectionView]-0-|", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
-        cons += NSLayoutConstraint.constraintsWithVisualFormat("V:[topContentView]-0-[collectionView(50)]", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
+        cons += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[collectionView]-0-|", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
+        cons += NSLayoutConstraint.constraints(withVisualFormat: "V:[topContentView]-0-[collectionView(50)]", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
         
         contentView.addConstraints(cons)
     }
@@ -91,21 +91,21 @@ class SAMStockProductCell: UICollectionViewCell {
     }
     
     //MARK: - 用户点击事件处理
-    @IBAction func stockWaringBtnClick(sender: AnyObject) {
+    @IBAction func stockWaringBtnClick(_ sender: AnyObject) {
         delegate?.productCellDidClickStockWarnningButton(stockProductModel!)
     }
-    @IBAction func shoppingCarBtnClick(sender: AnyObject) {
-        delegate?.productCellDidClickShoppingCarButton(stockProductModel!, stockProductImage: productImageBtn.backgroundImageForState(.Normal)!)
+    @IBAction func shoppingCarBtnClick(_ sender: AnyObject) {
+        delegate?.productCellDidClickShoppingCarButton(stockProductModel!, stockProductImage: productImageBtn.backgroundImage(for: UIControlState())!)
     }
-    @IBAction func productImageBtnClick(sender: AnyObject) {
+    @IBAction func productImageBtnClick(_ sender: AnyObject) {
         
         delegate?.productCellDidClickProductImageButton(stockProductModel!)
     }
     
     //MARK: - 属性懒加载
     //collectionView
-    private lazy var collectionView: UICollectionView = {
-        let view = UICollectionView(frame: CGRectZero, collectionViewLayout: SAMStockProductDetailColletionViewFlowlayout())
+    fileprivate lazy var collectionView: UICollectionView = {
+        let view = UICollectionView(frame: CGRect.zero, collectionViewLayout: SAMStockProductDetailColletionViewFlowlayout())
         return view
     }()
     
@@ -127,14 +127,14 @@ extension SAMStockProductCell: UICollectionViewDelegate {
 //MARK: - UICollectionViewDataSource
 extension SAMStockProductCell: UICollectionViewDataSource {
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let count = stockProductModel?.productDeatilList.count ?? 0
         
         return count
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(SAMStockProductDetailCellReuseIdentifier, forIndexPath: indexPath) as! SAMStockProductDetailCell
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SAMStockProductDetailCellReuseIdentifier, for: indexPath) as! SAMStockProductDetailCell
 
         //取出模型
         let model = stockProductModel?.productDeatilList[indexPath.row] as! SAMStockProductDeatil
@@ -146,10 +146,10 @@ extension SAMStockProductCell: UICollectionViewDataSource {
 //MARK: - 产品详情布局里用到的FlowLayout
 private class SAMStockProductDetailColletionViewFlowlayout: UICollectionViewFlowLayout {
     
-    override func prepareLayout() {
-        super.prepareLayout()
+    override func prepare() {
+        super.prepare()
         minimumLineSpacing = 0
-        scrollDirection = UICollectionViewScrollDirection.Horizontal
+        scrollDirection = UICollectionViewScrollDirection.horizontal
         collectionView?.showsHorizontalScrollIndicator = false
         itemSize = CGSize(width: 100, height: 40)
         sectionInset = UIEdgeInsetsMake(0, 10, 0, 10)

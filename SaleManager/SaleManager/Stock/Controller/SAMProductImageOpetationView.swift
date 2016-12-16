@@ -21,21 +21,21 @@ class SAMProductImageOpetationView: UIView {
     
     //对外提供类方法实例化对象
     class func instacne() -> SAMProductImageOpetationView? {
-       let view = NSBundle.mainBundle().loadNibNamed("SAMProductImageOpetationView", owner: nil, options: nil)![0] as! SAMProductImageOpetationView
+       let view = Bundle.main.loadNibNamed("SAMProductImageOpetationView", owner: nil, options: nil)![0] as! SAMProductImageOpetationView
         return view
     }
     
     //MARK: - 点击事件
-    @IBAction func cameraBtnClick(sender: AnyObject) {
+    @IBAction func cameraBtnClick(_ sender: AnyObject) {
         delegate?.opetationViewDidClickCameraBtn()
     }
-    @IBAction func selectBtnClick(sender: AnyObject) {
+    @IBAction func selectBtnClick(_ sender: AnyObject) {
         delegate?.opetationViewDidClickSelectBtn()
     }
-    @IBAction func saveBtnClick(sender: AnyObject) {
+    @IBAction func saveBtnClick(_ sender: AnyObject) {
         delegate?.opetationViewDidClickSaveBtn()
     }
-    @IBAction func cancelBtnClick(sender: AnyObject) {
+    @IBAction func cancelBtnClick(_ sender: AnyObject) {
         delegate?.opetationViewDidClickCancelBtn()
     }
 }

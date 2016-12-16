@@ -16,7 +16,7 @@ class SAMStockProductInfoController: UITableViewController {
         didSet{
             //判断productImageVIew是否已经加载
             if productImageVIew != nil {
-                productImageVIew.sd_setImageWithURL(stockProductModel!.thumbURL1!, placeholderImage: UIImage(named: "firstLogo")!)
+                productImageVIew.sd_setImage(with: stockProductModel!.thumbURL1! as URL, placeholderImage: UIImage(named: "firstLogo")!)
             }
         }
     }
@@ -35,7 +35,7 @@ class SAMStockProductInfoController: UITableViewController {
     }
     
     //MARK: - viewWillAppear
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         //初始化UI
@@ -49,7 +49,7 @@ class SAMStockProductInfoController: UITableViewController {
     func setupUI() {
         //设置产品图片
         if stockProductModel?.thumbURL1 != nil {
-            productImageVIew.sd_setImageWithURL(stockProductModel!.thumbURL1!, placeholderImage: UIImage(named: "firstLogo")!)
+            productImageVIew.sd_setImage(with: stockProductModel!.thumbURL1! as URL, placeholderImage: UIImage(named: "firstLogo")!)
         }else {
             productImageVIew.image = UIImage(named: "temp")
         }
@@ -106,13 +106,13 @@ class SAMStockProductInfoController: UITableViewController {
     
     //MARK: - 用户点击事件处理
     func navbarBackBtnClick() {
-        navigationController?.popViewControllerAnimated(true)
+        let _ = navigationController?.popViewController(animated: true)
         
     }
     
     //MARK: - 懒加载属性
     //产品图片展示器
-    private lazy var productImageVC: SAMProductImageController? = {
+    fileprivate lazy var productImageVC: SAMProductImageController? = {
         let vc = SAMProductImageController()
         return vc
     }()
@@ -131,20 +131,20 @@ class SAMStockProductInfoController: UITableViewController {
 
 //MARK: - 代理方法
 extension SAMStockProductInfoController {
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {
             return 20
         }else {
             return 10
         }
     }
-    override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0
     }
     
     //点击图片Cell跳转
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let imageIndex = NSIndexPath(forRow: 0, inSection: 0)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let imageIndex = IndexPath(row: 0, section: 0)
         if indexPath == imageIndex {
             navigationController!.pushViewController(productImageVC!, animated: true)
         }
