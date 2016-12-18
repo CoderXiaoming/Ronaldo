@@ -8,8 +8,7 @@
 
 import UIKit
 
-///用户登录成功发出的通知
-let LoginSuccessNotification = "LoginSuccessNotification"
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

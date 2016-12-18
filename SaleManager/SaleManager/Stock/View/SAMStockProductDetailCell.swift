@@ -10,6 +10,7 @@ import UIKit
 
 class SAMStockProductDetailCell: UICollectionViewCell {
 
+    //接收的数据模型
     var productDetailModel: SAMStockProductDeatil? {
         didSet{
             
@@ -28,14 +29,9 @@ class SAMStockProductDetailCell: UICollectionViewCell {
             }
         }
     }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
 
     //MARK: - XIB链接属性
     @IBOutlet weak var storePositionLabel: UILabel!
     @IBOutlet weak var meterLabel: UILabel!
-    
     @IBOutlet weak var rightSeperaterView: UIView!
 }

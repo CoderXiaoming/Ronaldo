@@ -82,7 +82,6 @@ class SAMLoginController: UIViewController {
     }
     
     //MARK: - 界面交互点击事件处理
-    
     //记住名字按钮点击
     @IBAction func remNameBtnClick(_ sender: AnyObject) {
         remNameBtn.isSelected = !remNameBtn.isSelected
@@ -104,16 +103,14 @@ class SAMLoginController: UIViewController {
                 self.loginAnim()
         }) 
     }
-    
     //点击界面退出编辑状态
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         endEditing()
     }
-    
     //服务器地址确认按钮点击 和 返回服务器设置界面按钮点击 处理在下面动画项中
     
     //MARK: - 结束界面编辑状态
-    func endEditing() {
+    fileprivate func endEditing() {
         view.endEditing(false)
     }
     
@@ -345,7 +342,6 @@ class SAMLoginController: UIViewController {
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
-    
     override func loadView() {
         view = Bundle.main.loadNibNamed("SAMLoginController", owner: self, options: nil)![0] as! UIView
     }

@@ -9,6 +9,7 @@
 import UIKit
 
 class SAMUserAuth: NSObject{
+    
     ///登录名
     var id: String?
     ///对应员工ID

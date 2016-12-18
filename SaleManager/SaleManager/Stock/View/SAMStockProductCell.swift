@@ -119,11 +119,6 @@ class SAMStockProductCell: UICollectionViewCell {
     @IBOutlet weak var shoppingCarBtn: UIButton!
 }
 
-//MARK: - UICollectionViewDelegate
-extension SAMStockProductCell: UICollectionViewDelegate {
-    
-}
-
 //MARK: - UICollectionViewDataSource
 extension SAMStockProductCell: UICollectionViewDataSource {
     
@@ -135,12 +130,16 @@ extension SAMStockProductCell: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SAMStockProductDetailCellReuseIdentifier, for: indexPath) as! SAMStockProductDetailCell
-
+        
         //取出模型
         let model = stockProductModel?.productDeatilList[indexPath.row] as! SAMStockProductDeatil
         cell.productDetailModel = model
         return cell
     }
+}
+
+//MARK: - UICollectionViewDelegate
+extension SAMStockProductCell: UICollectionViewDelegate {
 }
 
 //MARK: - 产品详情布局里用到的FlowLayout
@@ -154,5 +153,4 @@ private class SAMStockProductDetailColletionViewFlowlayout: UICollectionViewFlow
         itemSize = CGSize(width: 100, height: 40)
         sectionInset = UIEdgeInsetsMake(0, 10, 0, 10)
     }
-    
 }

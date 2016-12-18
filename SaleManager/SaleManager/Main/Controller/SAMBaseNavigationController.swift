@@ -10,6 +10,7 @@ import UIKit
 
 class SAMBaseNavigationController: UINavigationController {
 
+    //MARK: - 类初始化设置initialize
     override class func initialize() {
         
         let navBar = UINavigationBar.appearance()
@@ -23,21 +24,15 @@ class SAMBaseNavigationController: UINavigationController {
         navBar.setBackgroundImage(UIImage(named: "navbarBackgroundImage"), for: .default)
     }
 
+    //MARK: - 其他方法
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         
     }
-    
     override init(rootViewController: UIViewController) {
         super.init(rootViewController: rootViewController)
     }
-    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 }

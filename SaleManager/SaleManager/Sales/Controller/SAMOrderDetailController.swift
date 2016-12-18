@@ -150,7 +150,7 @@ class SAMOrderDetailController: UIViewController {
     
     //MARK: - 属性懒加载
     ///左边标题数组
-    fileprivate let titles = [["仓库：", "备注："], ["运费金额：", "其他金额：", "应收金额：", "本单毛利："], ["本次收款：", "收款账户："], ["应收余额："], ["货运公司：", "快递单号：", "业务员：", "拼包地址："]]
+    fileprivate let titles = [["仓库", "备注"], ["运费金额", "其他金额", "应收金额", "本单毛利"], ["本次收款", "收款账户"], ["应收余额"], ["货运公司", "快递单号", "业务员", "拼包地址"]]
     
     ///右边文字内容数组
     fileprivate var titleContents: [[String]]?

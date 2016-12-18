@@ -22,7 +22,7 @@ class SAMStockProductInfoController: UITableViewController {
     }
 
     //MARK: - 对外提供的类工厂方法
-    class func infoVC() -> SAMStockProductInfoController? {
+    class func instance() -> SAMStockProductInfoController? {
         return UIStoryboard(name: "SAMStockProductInfoController", bundle: nil).instantiateInitialViewController() as? SAMStockProductInfoController
     }
     
@@ -41,7 +41,7 @@ class SAMStockProductInfoController: UITableViewController {
         //初始化UI
         setupUI()
         
-        //设置图片控制器的数据模型
+        //给图片控制器传递数据模型
         productImageVC?.stockProductModel = stockProductModel
     }
     
@@ -107,13 +107,12 @@ class SAMStockProductInfoController: UITableViewController {
     //MARK: - 用户点击事件处理
     func navbarBackBtnClick() {
         let _ = navigationController?.popViewController(animated: true)
-        
     }
     
     //MARK: - 懒加载属性
     //产品图片展示器
     fileprivate lazy var productImageVC: SAMProductImageController? = {
-        let vc = SAMProductImageController()
+        let vc = SAMProductImageController.instance()
         return vc
     }()
     
@@ -126,7 +125,6 @@ class SAMStockProductInfoController: UITableViewController {
     @IBOutlet weak var rankLabel: UILabel!
     @IBOutlet weak var countUnitLabel: UILabel!
     @IBOutlet weak var remarkLabel: UILabel!
-    
 }
 
 //MARK: - 代理方法

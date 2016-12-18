@@ -1,5 +1,5 @@
 //
-//  SAMHomeButton.swift
+//  SAMImageAboveButton.swift
 //  SaleManager
 //
 //  Created by apple on 16/11/9.
@@ -8,10 +8,17 @@
 
 import UIKit
 
-class SAMHomeButton: UIButton {
+class SAMImageAboveButton: UIButton {
 
+    //MARK: - 对外提供的类方法，设置imageView高度占按钮高度的比例
+    class func instance(imgHeightScale: CGFloat) -> SAMImageAboveButton {
+        let button = SAMImageAboveButton(type: .custom)
+        button.imgHeightScale = imgHeightScale
+        return button
+    }
+    
     //imageView的高度比例
-    let imgHeightScale: CGFloat = 0.6
+    fileprivate var imgHeightScale: CGFloat = 0.6
     
     override func layoutSubviews() {
         super.layoutSubviews()

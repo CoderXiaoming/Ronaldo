@@ -23,6 +23,11 @@ private let SAMStockCodeCellNormalSize = CGSize(width: 80, height: 77)
 
 class SAMStockConditionalSearchController: UIViewController {
     
+    ///对外提供的类工厂方法
+    class func instance() -> SAMStockConditionalSearchController {
+        return SAMStockConditionalSearchController()
+    }
+    
     //MARK: - 提供给外界设置点击搜索按钮回调闭包的方法
     func setCompletionCallback(_ callback: @escaping (([String: AnyObject]?) -> ())) {
         
@@ -115,7 +120,6 @@ class SAMStockConditionalSearchController: UIViewController {
         
         //重置数据记录
         firstResponder = nil
-
     }
     
     //MARK: - viewDidAppear
@@ -134,14 +138,10 @@ class SAMStockConditionalSearchController: UIViewController {
     fileprivate func loadCategoryStorehouseList() {
         
         //加载分类列表
-        if categories.count == 0 {
-            loadList(loadCategoriesURLStr)
-        }
+        loadList(loadCategoriesURLStr)
         
         //加载仓库列表
-        if storehouses.count == 0 {
-            loadList(loadStorehousesURLStr)
-        }
+        loadList(loadStorehousesURLStr)
     }
     
     //MARK: - 单独加载分类/仓库列表
@@ -157,9 +157,11 @@ class SAMStockConditionalSearchController: UIViewController {
             //对请求链接进行判断
             switch URLStr {
             case loadCategoriesURLStr:
+                self.categories.removeAllObjects()
                 let arr = SAMStockCategory.mj_objectArray(withKeyValuesArray: dictArr)!
                 self.categories.addObjects(from: arr as [AnyObject])
             case loadStorehousesURLStr:
+                self.storehouses.removeAllObjects()
                 let arr = SAMStockStorehouse.mj_objectArray(withKeyValuesArray: dictArr)!
                 self.storehouses.addObjects(from: arr as [AnyObject])
             default :
@@ -204,13 +206,17 @@ class SAMStockConditionalSearchController: UIViewController {
             //判断是否有模型数据
             if count == 0 { //没有模型数据
                 
-                let _ = SAMHUD.showMessage("没有该二维码", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                DispatchQueue.main.async(execute: { 
+                    let _ = SAMHUD.showMessage("没有该二维码", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                })
             }else { //有数据模型
                 
                 let arr = SAMStockCodeModel.mj_objectArray(withKeyValuesArray: dictArr)!
                 if arr.count < self.pageSize { //设置footer状态，提示用户没有更多信息
                     
-                    self.collectionView.mj_footer.endRefreshingWithNoMoreData()
+                    DispatchQueue.main.async(execute: {
+                        self.collectionView.mj_footer.endRefreshingWithNoMoreData()
+                    })
                 }else { //设置pageIndex，可能还有更多信息
                     
                     self.pageIndex += 1
@@ -219,17 +225,18 @@ class SAMStockConditionalSearchController: UIViewController {
                 self.stockCodeModels.addObjects(from: arr as [AnyObject])
             }
             
-            //结束上拉
-            self.collectionView.mj_header.endRefreshing()
-            
-            //刷新数据
+            //结束上拉，刷新数据
             DispatchQueue.main.async(execute: {
+                self.collectionView.mj_header.endRefreshing()
                 self.collectionView.reloadData()
             })
         }) { (Task, Error) in
-            //处理上拉
-            self.collectionView.mj_header.endRefreshing()
-            let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            
+            DispatchQueue.main.async(execute: {
+                //处理上拉
+                self.collectionView.mj_header.endRefreshing()
+                let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            })
         }
     }
     
@@ -253,11 +260,12 @@ class SAMStockConditionalSearchController: UIViewController {
             //判断是否有模型数据
             if count == 0 { //没有模型数据
                 
-                //提示用户
-                let _ = SAMHUD.showMessage("没有更多二维码", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
-                
-                //设置footer
-                self.collectionView.mj_footer.endRefreshingWithNoMoreData()
+                DispatchQueue.main.async(execute: { 
+                    //提示用户
+                    let _ = SAMHUD.showMessage("没有更多二维码", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                    //设置footer
+                    self.collectionView.mj_footer.endRefreshingWithNoMoreData()
+                })
             }else {//有数据模型
                 
                 let arr = SAMStockCodeModel.mj_objectArray(withKeyValuesArray: dictArr)!
@@ -265,15 +273,19 @@ class SAMStockConditionalSearchController: UIViewController {
                 //判断是否还有更多数据
                 if arr.count < self.pageSize { //没有更多数据
                     
-                    //设置footer状态
-                    self.collectionView.mj_footer.endRefreshingWithNoMoreData()
+                    DispatchQueue.main.async(execute: {
+                        //设置footer状态
+                        self.collectionView.mj_footer.endRefreshingWithNoMoreData()
+                    })
                 }else { //可能有更多数据
                     
                     //设置pageIndex
                     self.pageIndex += 1
                     
-                    //处理下拉
-                    self.collectionView.mj_footer.endRefreshing()
+                    DispatchQueue.main.async(execute: {
+                        //处理下拉
+                        self.collectionView.mj_footer.endRefreshing()
+                    })
                 }
                 self.stockCodeModels.addObjects(from: arr as [AnyObject])
                 
@@ -282,11 +294,13 @@ class SAMStockConditionalSearchController: UIViewController {
                     self.collectionView.reloadData()
                 })
             }
-            
         }) { (Task, Error) in
-            //处理下拉
-            self.collectionView.mj_footer.endRefreshing()
-            let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            
+            DispatchQueue.main.async(execute: {
+                //处理下拉, 提示信息
+                self.collectionView.mj_footer.endRefreshing()
+                let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            })
         }
     }
     
@@ -300,7 +314,6 @@ class SAMStockConditionalSearchController: UIViewController {
     }
     
     //MARK: - 用户点击事件处理
-    
     //MARK: - 点击了取消按钮
     @IBAction func cancelBtnClick(_ sender: AnyObject) {
         dismiss(animated: true) { 
@@ -399,7 +412,6 @@ class SAMStockConditionalSearchController: UIViewController {
         })
     }
     
-    
     //MARK: - 结束当前textField编辑状态
     fileprivate func endFirstResponderEditing() {
         if firstResponder != nil {
@@ -474,10 +486,11 @@ class SAMStockConditionalSearchController: UIViewController {
     
     
     //MARK: - 其他方法
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
+    //MARK: - 其他方法
+    fileprivate init() { //重写该方法，为单例服务
+        super.init(nibName: nil, bundle: nil)
     }
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    fileprivate override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: "SAMStockConditionalSearchController", bundle: nibBundleOrNil)
     }
     required init?(coder aDecoder: NSCoder) {

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-//该类是提供给登录界面使用
+//该类是提供给登录界面使用,也控其他界面使用
 class SAMLoginTextField: UITextField {
 
     override func becomeFirstResponder() -> Bool {

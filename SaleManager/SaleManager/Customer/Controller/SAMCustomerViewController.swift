@@ -10,6 +10,12 @@ import UIKit
 import MJExtension
 import MJRefresh
 
+///控制器类型
+enum Type{
+    case Normal //正常控制器
+    case OrderBuild //创建订单时候调用控制器
+}
+
 ///CustomerCell重用标识符
 private let SAMCustomerCellReuseIdentifier = "SAMCustomerCellReuseIdentifier"
 ///cell正常背景色
@@ -22,6 +28,13 @@ private let SAMCustomerCellSelectedColor = mainColor_green
 private let SAMCustomerCellSelectedSize = CGSize(width: ScreenW, height: 160)
 
 class SAMCustomerViewController: UIViewController {
+    
+    //MARK: 对外提供的类工厂方法，同时设置控制器类型
+    class func instance(controllerType: Type) -> SAMCustomerViewController {
+        let vc = SAMCustomerViewController()
+        vc.controllerType = controllerType
+        return vc
+    }
     
     //MARK: - viewDidLoad
     override func viewDidLoad() {
@@ -36,8 +49,13 @@ class SAMCustomerViewController: UIViewController {
         
         view.backgroundColor = UIColor.white
         
-        //设置导航标题
-        navigationItem.title = "客户管理"
+        //根据控制器类型设置导航标题
+        switch controllerType {
+        case .Normal:
+            navigationItem.title = "客户管理"
+        case .OrderBuild:
+            navigationItem.title = "选择客户"
+        }
         
         //检查查询权限
         if !hasCXAuth {
@@ -45,8 +63,8 @@ class SAMCustomerViewController: UIViewController {
             return
         }
         
-        //检查新增权限
-        if hasXZAuth {
+        //检查新增权限 ，如果是正常类型，而且有查询权限才设置该按钮
+        if hasXZAuth && (controllerType == .Normal) {
             let addBtn = UIButton(type: .custom)
             addBtn.setBackgroundImage(UIImage(named: "addButtton"), for: UIControlState())
             addBtn.addTarget(self, action: #selector(SAMCustomerViewController.addCustomer), for: .touchUpInside)
@@ -54,6 +72,17 @@ class SAMCustomerViewController: UIViewController {
             
             let addItem = UIBarButtonItem(customView: addBtn)
             navigationItem.rightBarButtonItem = addItem
+        }
+        
+        //如果是新建订单类型，设置完成按钮
+        if controllerType == .OrderBuild {
+            let addBtn = UIButton(type: .custom)
+            addBtn.setTitle("选择", for: .normal)
+            addBtn.addTarget(self, action: #selector(SAMCustomerViewController.chooseCustomer), for: .touchUpInside)
+            addBtn.sizeToFit()
+            
+            let chooseItem = UIBarButtonItem(customView: addBtn)
+            navigationItem.rightBarButtonItem = chooseItem
         }
         
         //设置搜索按钮外观
@@ -103,9 +132,25 @@ class SAMCustomerViewController: UIViewController {
         collectionView.mj_header.beginRefreshing()
     }
     
-    //MARK: - 添加客户按钮点击
+    //MARK: - 当前为正常类型时，添加客户按钮点击
     func addCustomer() {
         present(customerAddVC, animated: true, completion: nil)
+    }
+    
+    //MARK: - 当前为新建订单类型，选择客户按钮点击
+    func chooseCustomer() {
+        
+        if selectedIndexPath == nil { //如果当前没有选择的客户，提示用户，并返回
+            let _ = SAMHUD.showMessage("请选择客户", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
+            return
+        }
+        
+        let model = customerModels[(selectedIndexPath!.row)] as! SAMCustomerModel
+        
+        //携带数据发出通知
+        NotificationCenter.default.post(name: NSNotification.Name.init(SAMCustomerViewControllerDidSelectCustomerNotification), object: nil, userInfo: ["customerModel": model])
+        
+        navigationController!.popViewController(animated: true)
     }
     
     //MARK: - 加载新数据
@@ -252,6 +297,9 @@ class SAMCustomerViewController: UIViewController {
         endTextFieldEditing(searchTF)
     }
     //MARK: - 懒加载集合
+    ///控制器类型
+    fileprivate var controllerType: Type = .Normal
+    
     ///请求URLStr
     fileprivate let URLStr = "getCustomerList.ashx"
     ///一次数据请求获取的数据最大条数
@@ -286,7 +334,7 @@ class SAMCustomerViewController: UIViewController {
     
     ///添加用户的控制器
     fileprivate lazy var customerAddVC: SAMCustomerAddController = {
-        let vc = SAMCustomerAddController()
+        let vc = SAMCustomerAddController.instance()
         vc.transitioningDelegate = self
         vc.modalPresentationStyle = UIModalPresentationStyle.custom
         return vc
@@ -304,6 +352,16 @@ class SAMCustomerViewController: UIViewController {
     @IBOutlet weak var HUDView: UIView!
     
     //MARK: - 其他方法
+    fileprivate init() {
+        super.init(nibName: nil, bundle: nil)
+    }
+    fileprivate override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     override func loadView() {
         view = Bundle.main.loadNibNamed("SAMCustomerViewController", owner: self, options: nil)![0] as! UIView
     }
@@ -366,11 +424,6 @@ extension SAMCustomerViewController: UICollectionViewDelegate {
             //执行动画
             selectCellAnimation(selectedCell, willNorCell: willNorCell)
         }
-        
-        let cell = collectionView.cellForItem(at: indexPath)!
-        let bottom = cell.frame.maxY
-        print(bottom)
-        
     }
     
     //MARK: - 点击了某个cell时执行的动画

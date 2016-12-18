@@ -49,4 +49,12 @@ class SAMShoppingCarListModel: NSObject {
     ///库存米数
     var stockCountM: Double = 0.0
     
+    ///提交订单记录的码数
+    var countMA: Double {
+        return countM / 0.9144
+    }
+    ///提交订单的总价格 米数✖️价格
+    var countPrice: Double {
+        return price * countM
+    }
 }

@@ -27,6 +27,11 @@ class SAMProductImageController: UIViewController {
         }
     }
     
+    ///对外提供的类工厂方法
+    class func instance() -> SAMProductImageController {
+        return SAMProductImageController()
+    }
+    
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,7 +64,7 @@ class SAMProductImageController: UIViewController {
         scrollView?.addSubview(productImage!)
     }
     
-    //MARK: - 添加右上角按钮
+    //MARK: - 添加右上角按钮，有权限才添加
     fileprivate func setupRightItem() {
         let btn = UIButton()
         btn.addTarget(self, action: #selector(SAMProductImageController.moreInfoBtnClick), for: .touchUpInside)
@@ -81,8 +86,6 @@ class SAMProductImageController: UIViewController {
             setupOperationView()
         }
     }
-    
-    
     
     //MARK: - 初始化设置HUDView
     fileprivate func setupHUDView() {
@@ -284,7 +287,10 @@ class SAMProductImageController: UIViewController {
     }()
 
     //MARK: - 其他方法
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    fileprivate init() {
+        super.init(nibName: nil, bundle: nil)
+    }
+    fileprivate override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     

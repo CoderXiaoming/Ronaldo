@@ -1,5 +1,5 @@
 //
-//  SAMStockAddShoppingCarView.swift
+//  SAMProductOperationView.swift
 //  SaleManager
 //
 //  Created by apple on 16/12/10.
@@ -9,43 +9,40 @@
 import UIKit
 
 ///添加产品的URL
-private let SAMAddShoppingCarURLStr = "CartAdd.ashx"
+private let SAMAddProductToShoppingCarURLStr = "CartAdd.ashx"
 ///编辑产品的URL
-private let SAMEditShoppingCarURLStr = "CartEdit.ashx"
+private let SAMEditShoppingCarProductURLStr = "CartEdit.ashx"
 
 ///键盘展示时图片宽度
 private let keyboardShowingProductImageWidth: CGFloat = 60
 ///键盘展示时购物车控件的高度
-private let keyboardShowingShoppingCarFrame = CGRect(x: 0, y: ScreenH - 550, width: ScreenW, height: 550)
+private let keyboardShowingOperationViewFrame = CGRect(x: 0, y: ScreenH - 550, width: ScreenW, height: 550)
 
 ///键盘隐藏时图片宽度
 private let keyboardHidedProductImageWidth: CGFloat = 90
 ///键盘隐藏时购物车控件的高度
-private let keyboardHidedShoppingCarFrame = CGRect(x: 0, y: ScreenH - 350, width: ScreenW, height: 350)
+private let keyboardHidedOperationViewFrame = CGRect(x: 0, y: ScreenH - 350, width: ScreenW, height: 350)
 
 ///信息字体小rect
-private let shoppingCarViewLabelSmallFont = UIFont.systemFont(ofSize: 13)
+private let operationViewLabelSmallFont = UIFont.systemFont(ofSize: 13)
 ///信息字体大font
-private let shoppingCarViewLabelBigFont = UIFont.systemFont(ofSize: 15)
+private let operationViewLabelBigFont = UIFont.systemFont(ofSize: 15)
 
-protocol SAMStockAddShoppingCarViewDelegate: NSObjectProtocol {
-    func shoppingCarViewDidClickDismissButton()
-    func shoppingCarViewAddOrEditProductSuccess(_ productImage: UIImage)
+protocol SAMProductOperationViewDelegate: NSObjectProtocol {
+    func operationViewDidClickDismissButton()
+    func operationViewAddOrEditProductSuccess(_ productImage: UIImage)
 }
 
-class SAMStockAddShoppingCarView: UIView {
+class SAMProductOperationView: UIView {
 
     ///代理
-    weak var delegate: SAMStockAddShoppingCarViewDelegate?
+    weak var delegate: SAMProductOperationViewDelegate?
     
     ///全局单例
-    static let instance = Bundle.main.loadNibNamed("SAMStockAddShoppingCarView", owner: nil, options: nil)![0] as! SAMStockAddShoppingCarView
+    static let instance = Bundle.main.loadNibNamed("SAMProductOperationView", owner: nil, options: nil)![0] as! SAMProductOperationView
     
     //MARK: - 对外提供的展示控件调用的方法
-    class func shoppingCarViewWillShow(_ stockProductImage: UIImage, addProductModel: SAMStockProductModel?, editProductModel: SAMShoppingCarListModel?) -> SAMStockAddShoppingCarView {
-        
-        //赋值图片
-        instance.productImage.image = stockProductImage
+    class func operationViewWillShow(_ addProductModel: SAMStockProductModel?, editProductModel: SAMShoppingCarListModel?) -> SAMProductOperationView {
         
         //清楚所有文本框
         instance.clearAllTextField()
@@ -62,7 +59,6 @@ class SAMStockAddShoppingCarView: UIView {
         }
         
         //设置确认按钮不可用
-        instance.ensureButton.isEnabled = false
         let buttonTitle = instance.isAddingProduct ? "添加" : "修改"
         instance.ensureButton.setTitle(buttonTitle, for: UIControlState())
         
@@ -84,26 +80,10 @@ class SAMStockAddShoppingCarView: UIView {
         arr.enumerateObjects({ (obj, index, _) in
             let textField = obj as! UITextField
             textField.delegate = self
-            
-            if textField != remarkTF {
-                textField.addTarget(self, action: #selector(SAMStockAddShoppingCarView.textFieldDidChangeValue(_:)), for: .editingChanged)
-            }
         })
         
         //监听键盘弹出通知
-        NotificationCenter.default.addObserver(self, selector: #selector(SAMStockAddShoppingCarView.keyboardWillChangeFrame(_:)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
-    }
-    
-    
-    //MARK: - textField监听的方法
-    func textFieldDidChangeValue(_ textField: UITextField) {
-        
-        //设置确认按钮可用性
-        if pishuTF.hasText && mishuTF.hasText && priceTF.hasText {
-            ensureButton.isEnabled = true
-        }else {
-            ensureButton.isEnabled = false
-        }
+        NotificationCenter.default.addObserver(self, selector: #selector(SAMProductOperationView.keyboardWillChangeFrame(_:)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
     }
     
     //MARK: - 结束当前第一响应者textField
@@ -142,7 +122,7 @@ class SAMStockAddShoppingCarView: UIView {
                 UIView.animate(withDuration: animDuration, animations: {
                     
                     //设置主View的Frame
-                    self.frame = keyboardHidedShoppingCarFrame
+                    self.frame = keyboardHidedOperationViewFrame
                     
                     //设置产品图片的宽度
                     self.productImageWidthConstraint.constant = keyboardHidedProductImageWidth
@@ -157,7 +137,7 @@ class SAMStockAddShoppingCarView: UIView {
             }else { //键盘即将展示
                 UIView.animate(withDuration: animDuration, animations: { 
                     //设置主View的Frame
-                    self.frame = keyboardShowingShoppingCarFrame
+                    self.frame = keyboardShowingOperationViewFrame
                     
                     //设置产品图片的宽度
                     self.productImageWidthConstraint.constant = keyboardShowingProductImageWidth
@@ -179,7 +159,7 @@ class SAMStockAddShoppingCarView: UIView {
         labelArr.enumerateObjects({ (obj, index, _) in
             let label = obj as! UILabel
             
-            label.font = bigger ? shoppingCarViewLabelBigFont : shoppingCarViewLabelSmallFont
+            label.font = bigger ? operationViewLabelBigFont : operationViewLabelSmallFont
         })
     }
     
@@ -191,6 +171,9 @@ class SAMStockAddShoppingCarView: UIView {
             if addProductModel == nil {
                 return
             }
+            
+            //设置图片
+            productImage.sd_setImage(with: addProductModel!.thumbURL1, placeholderImage: UIImage(named: "photo_loadding"))
             
             //设置产品名称
             if addProductModel!.productIDName != "" {
@@ -223,6 +206,9 @@ class SAMStockAddShoppingCarView: UIView {
             if editProductModel == nil {
                 return
             }
+            
+            //设置图片
+            productImage.sd_setImage(with: editProductModel!.thumbURL!, placeholderImage: UIImage(named: "photo_loadding"))
             
             //设置产品名称
             if editProductModel!.productIDName != "" {
@@ -268,7 +254,7 @@ class SAMStockAddShoppingCarView: UIView {
     fileprivate var isAddingProduct: Bool = false {
         didSet{
             //设置请求路径
-            self.requestURLStr = isAddingProduct ? SAMAddShoppingCarURLStr : SAMEditShoppingCarURLStr
+            self.requestURLStr = isAddingProduct ? SAMAddProductToShoppingCarURLStr : SAMEditShoppingCarProductURLStr
         }
     }
     
@@ -281,7 +267,7 @@ class SAMStockAddShoppingCarView: UIView {
         //结束第一响应者编辑状态
         endFirstTextFieldEditing()
         
-        delegate?.shoppingCarViewDidClickDismissButton()
+        delegate?.operationViewDidClickDismissButton()
     }
     
     @IBAction func ensureButtonClick(_ sender: AnyObject) {
@@ -317,7 +303,6 @@ class SAMStockAddShoppingCarView: UIView {
         //发送服务器请求，添加到购物车
         SAMNetWorker.sharedNetWorker().post(requestURLStr!, parameters: parameters, progress: nil, success: { (task, json) in
             
-            
             //获取上传状态
             let Json = json as! [String: AnyObject]
             let dict = Json["head"] as! [String: String]
@@ -331,7 +316,7 @@ class SAMStockAddShoppingCarView: UIView {
                     hud.hide(true)
                     
                     //告诉代理添加产品成功
-                    self.delegate?.shoppingCarViewAddOrEditProductSuccess(self.productImage.image!)
+                    self.delegate?.operationViewAddOrEditProductSuccess(self.productImage.image!)
                 })
             }else { //上传服务器失败
                 
@@ -347,11 +332,13 @@ class SAMStockAddShoppingCarView: UIView {
             }
         }) { (task, error) in
             
-            //隐藏HUD
-            hud.hide(true)
-            
-            //提示用户错误信息
-            let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+            DispatchQueue.main.async(execute: { 
+                //隐藏HUD
+                hud.hide(true)
+                
+                //提示用户错误信息
+                let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+            })
         }
     }
     
@@ -375,13 +362,15 @@ class SAMStockAddShoppingCarView: UIView {
     
     @IBOutlet weak var ensureButton: UIButton!
     @IBOutlet weak var productImageWidthConstraint: NSLayoutConstraint!
+    
+    //MARK: - 其他方法
     deinit {
         //移除通知监听
         NotificationCenter.default.removeObserver(self)
     }
 }
 
-extension SAMStockAddShoppingCarView: UITextFieldDelegate {
+extension SAMProductOperationView: UITextFieldDelegate {
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         

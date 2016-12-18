@@ -1,21 +1,22 @@
 //
-//  SAMSalesHistoryController.swift
+//  SAMOrderManageController.swift
 //  SaleManager
 //
-//  Created by apple on 16/12/6.
+//  Created by apple on 16/12/16.
 //  Copyright © 2016年 YZH. All rights reserved.
 //
 
 import UIKit
 import MJRefresh
+import AFNetworking
 
-///SAMSaleInfoCell重用标识符
-private let SAMSaleInfoCellReuseIdentifier = "SAMSaleInfoCellReuseIdentifier"
-///SAMSaleInfoCell尺寸
-private let SAMSaleInfoCellSize = CGSize(width: ScreenW, height: 95)
+///SAMOrderManagerCell重用标识符
+private let SAMOrderManagerCellReuseIdentifier = "SAMOrderManagerCellReuseIdentifier"
+///SAMOrderManagerCell尺寸
+private let SAMOrderManagerCellSize = CGSize(width: ScreenW, height: 95)
 
-class SAMSalesHistoryController: UIViewController {
-
+class SAMOrderManageController: UIViewController {
+    
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,8 +27,6 @@ class SAMSalesHistoryController: UIViewController {
         //设置collectionView
         setupCollectionView()
     }
-    
-    //TODO: SALES这边个代码没有review 没有设置类工厂方法
     
     //MARK: - 初始化UI
     fileprivate func setupUI() {
@@ -41,7 +40,7 @@ class SAMSalesHistoryController: UIViewController {
         dateBtnContentView.layer.cornerRadius = 5
         
         //设置文本框
-        let arr = NSArray(array: [beginDateTF, endDateTF, customerSearchTF])
+        let arr = NSArray(array: [beginDateTF, endDateTF, customerSearchTF, orderStateSearchTF])
         arr.enumerateObjects({ (obj, _, _) in
             let textField = obj as! UITextField
             
@@ -49,18 +48,18 @@ class SAMSalesHistoryController: UIViewController {
             textField.delegate = self
             
             //设置inputView
-            if textField != self.customerSearchTF {
+            if (textField != self.customerSearchTF) && (textField != self.orderStateSearchTF) {
                 
                 //设置inputView
                 textField.inputView = datePicker
                 
                 //监听事件
-                textField.addTarget(self, action: #selector(SAMSalesHistoryController.textFieldidChangeText), for: .editingChanged)
+                textField.addTarget(self, action: #selector(SAMOrderManageController.textFieldidChangeText), for: .editingChanged)
             }
         })
         
         //设置hudView
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(SAMSalesHistoryController.hudViewDidClick))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(SAMOrderManageController.hudViewDidClick))
         hudView.addGestureRecognizer(tapGesture)
     }
     
@@ -72,11 +71,11 @@ class SAMSalesHistoryController: UIViewController {
         collectionView.dataSource = self
         
         //注册cell
-        collectionView.register(UINib(nibName: "SAMSaleInfoCell", bundle: nil), forCellWithReuseIdentifier: SAMSaleInfoCellReuseIdentifier)
+        collectionView.register(UINib(nibName: "SAMOrderManagerCell", bundle: nil), forCellWithReuseIdentifier: SAMOrderManagerCellReuseIdentifier)
         
         //设置上拉下拉
-        collectionView.mj_header = MJRefreshNormalHeader.init(refreshingTarget: self, refreshingAction: #selector(SAMSalesHistoryController.loadNewSalesInfo))
-        collectionView.mj_footer = MJRefreshBackNormalFooter(refreshingTarget: self, refreshingAction: #selector(SAMSalesHistoryController.loadMoreSalesInfo))
+        collectionView.mj_header = MJRefreshNormalHeader.init(refreshingTarget: self, refreshingAction: #selector(SAMOrderManageController.loadNewOrdersInfo))
+        collectionView.mj_footer = MJRefreshBackNormalFooter(refreshingTarget: self, refreshingAction: #selector(SAMOrderManageController.loadMoreOrdersInfo))
         
         //没有数据自动隐藏footer
         collectionView.mj_footer.isAutomaticallyHidden = true
@@ -87,14 +86,14 @@ class SAMSalesHistoryController: UIViewController {
         super.viewWillAppear(animated)
         
         //设置标题
-        navigationItem.title = "历史订单"
+        navigationItem.title = "订单管理"
         
         //设置时间选择器最大时间
         datePicker!.maximumDate = Date()
     }
     
     //MARK: - 加载数据
-    func loadNewSalesInfo() {
+    func loadNewOrdersInfo() {
         
         //结束下拉刷新
         collectionView.mj_footer.endRefreshing()
@@ -102,18 +101,22 @@ class SAMSalesHistoryController: UIViewController {
         //创建请求参数
         requestSearchPageIndex = 1
         let employeeID = SAMUserAuth.shareUser()!.employeeID!
-        let CGUnitName = customerSearchCon()!
+        let CGUnitName = searchConIn(textField: customerSearchTF)
         let pageSize = String(format: "%d", requestSearchPageSize)
         let pageIndex = String(format: "%d", requestSearchPageIndex)
         let startDate = beginDateTF.text!
         let endDate = endDateTF.text!
-        let parameters = ["employeeID": employeeID, "CGUnitName": CGUnitName, "pageSize": pageSize, "pageIndex": pageIndex, "startDate": startDate, "endDate": endDate]
+        let statusStr = searchConIn(textField: orderStateSearchTF)
+        print(statusStr)
+        let status = statusStr
+        let parameters = ["employeeID": employeeID, "CGUnitName": CGUnitName, "pageSize": pageSize, "pageIndex": pageIndex, "startDate": startDate, "endDate": endDate, "status": status]
         
         //发送请求
-        SAMNetWorker.sharedNetWorker().get(saleInfoRequestURLStr, parameters: parameters, progress: nil, success: {[weak self] (Task, json) in
+        SAMNetWorker.sharedNetWorker().get(orderInfoRequestURLStr, parameters: parameters, progress: nil, success: {[weak self] (Task, json) in
             
+            print(Task.originalRequest!.url!.absoluteString)
             //清空原先数据
-            self!.saleOrderModels.removeAllObjects()
+            self!.orderInfoModels.removeAllObjects()
             
             //获取模型数组
             let Json = json as! [String: AnyObject]
@@ -126,41 +129,41 @@ class SAMSalesHistoryController: UIViewController {
                 let _ = SAMHUD.showMessage("没有符合条件的订单", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
             }else { //有数据模型
                 
-                let arr = SAMSaleOrderInfoModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                let arr = SAMOrderModel.mj_objectArray(withKeyValuesArray: dictArr)!
                 if arr.count < self!.requestSearchPageSize { //设置footer状态，提示用户没有更多信息
                     
                     self!.collectionView.mj_footer.endRefreshingWithNoMoreData()
                 }else { //设置pageIndex，可能还有更多信息
                     
                     self!.requestSearchPageIndex += 1
-                    self!.saleInfoRequestParameters = parameters as [String : AnyObject]?
+                    self!.orderInfoRequestParameters = parameters as [String : AnyObject]?
                 }
-                self!.saleOrderModels.addObjects(from: arr as [AnyObject])
+                self!.orderInfoModels.addObjects(from: arr as [AnyObject])
             }
             
-            //结束上拉
-            self!.collectionView.mj_header.endRefreshing()
-        
             //回主线程
             DispatchQueue.main.async(execute: {
+                
+                //结束上拉
+                self!.collectionView.mj_header.endRefreshing()
                 
                 UIView.animate(withDuration: 0, animations: {
                     
                     //刷新数据
                     self!.collectionView.reloadData()
-                    }, completion: { (_) in
+                }, completion: { (_) in
+                    
+                    //判断顶部条是否隐藏
+                    if self!.searchViewTopDis.constant != 0 {
                         
-                        //判断顶部条是否隐藏
-                        if self!.searchViewTopDis.constant != 0 {
-                            
-                            //展示顶部条
-                            UIView.animate(withDuration: 0.5, delay: 0.2, options: .layoutSubviews, animations: {
-                                //设置stockView顶部距离
-                                self!.searchViewTopDis.constant = 0
-                                self!.view.layoutIfNeeded()
-                                }, completion: { (_) in
-                            })
-                        }
+                        //展示顶部条
+                        UIView.animate(withDuration: 0.5, delay: 0.2, options: .layoutSubviews, animations: {
+                            //设置stockView顶部距离
+                            self!.searchViewTopDis.constant = 0
+                            self!.view.layoutIfNeeded()
+                        }, completion: { (_) in
+                        })
+                    }
                 })
             })
         }) {[weak self] (Task, Error) in
@@ -171,17 +174,17 @@ class SAMSalesHistoryController: UIViewController {
     }
     
     //MARK: - 加载更多数据
-    func loadMoreSalesInfo() {
+    func loadMoreOrdersInfo() {
         
         //结束下拉刷新
         collectionView.mj_header.endRefreshing()
         
         //创建请求参数
         let index = String(format: "%d", requestSearchPageIndex)
-        saleInfoRequestParameters!["pageIndex"] = index as AnyObject?
+        orderInfoRequestParameters!["pageIndex"] = index as AnyObject?
         
         //发送请求
-        SAMNetWorker.sharedNetWorker().get(saleInfoRequestURLStr, parameters: saleInfoRequestParameters!, progress: nil, success: {[weak self] (Task, json) in
+        SAMNetWorker.sharedNetWorker().get(orderInfoRequestURLStr, parameters: orderInfoRequestParameters!, progress: nil, success: {[weak self] (Task, json) in
             
             //获取模型数组
             let Json = json as! [String: AnyObject]
@@ -198,7 +201,7 @@ class SAMSalesHistoryController: UIViewController {
                 self!.collectionView.mj_footer.endRefreshingWithNoMoreData()
             }else {//有数据模型
                 
-                let arr = SAMSaleOrderInfoModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                let arr = SAMOrderModel.mj_objectArray(withKeyValuesArray: dictArr)!
                 
                 //判断是否还有更多数据
                 if arr.count < self!.requestSearchPageSize { //没有更多数据
@@ -213,7 +216,7 @@ class SAMSalesHistoryController: UIViewController {
                     //处理下拉
                     self!.collectionView.mj_footer.endRefreshing()
                 }
-                self!.saleOrderModels.addObjects(from: arr as [AnyObject])
+                self!.orderInfoModels.addObjects(from: arr as [AnyObject])
                 
                 //刷新数据
                 DispatchQueue.main.async(execute: {
@@ -226,14 +229,14 @@ class SAMSalesHistoryController: UIViewController {
             let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
-
-    //MARK: - 获取客户搜索字符串
-    fileprivate func customerSearchCon() -> String? {
-        let searchStr = customerSearchTF.text?.lxm_stringByTrimmingWhitespace()
+    
+    //MARK: - 获取 客户 或者 订单状态 搜索字符串
+    fileprivate func searchConIn(textField: UITextField) -> String {
+        let searchStr = textField.text?.lxm_stringByTrimmingWhitespace()
         if searchStr == "" { //没有内容
             return ""
         }
-        return searchStr?.components(separatedBy: " ")[0]
+        return (searchStr?.components(separatedBy: " ")[0])!
     }
     
     //MARK: - 点击下拉按钮
@@ -251,7 +254,7 @@ class SAMSalesHistoryController: UIViewController {
             UIView.animate(withDuration: 0.3, animations: {
                 self.dateBtnView.transform = CGAffineTransform.identity
                 self.dateBtnView.alpha = 1
-                }, completion: { (_) in
+            }, completion: { (_) in
                 self.dropDownBtn.isSelected = !self.dropDownBtn.isSelected
             })
         }else {
@@ -259,9 +262,9 @@ class SAMSalesHistoryController: UIViewController {
             UIView.animate(withDuration: 0.3, animations: {
                 self.dateBtnView.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
                 self.dateBtnView.alpha = 0.00001
-                }, completion: { (_) in
+            }, completion: { (_) in
                 self.dropDownBtn.isSelected = !self.dropDownBtn.isSelected
-                    
+                
                 //隐藏HUDView
                 self.hideHUDView()
             })
@@ -285,7 +288,7 @@ class SAMSalesHistoryController: UIViewController {
     }
     @IBAction func yesterdayBtnClick(_ sender: AnyObject) {
         
-       dateBtnViewdidClick(1.0)
+        dateBtnViewdidClick(1.0)
     }
     @IBAction func last7daysBtnClick(_ sender: AnyObject) {
         
@@ -295,7 +298,7 @@ class SAMSalesHistoryController: UIViewController {
         
         dateBtnViewdidClick(30.0)
     }
-
+    
     //MARK: - 4个时间按钮点击时调用
     fileprivate func dateBtnViewdidClick(_ days: Double) {
         
@@ -330,7 +333,7 @@ class SAMSalesHistoryController: UIViewController {
     
     //MARK: - 文本框改变内容
     func textFieldidChangeText() {
-        if beginDateTF.hasText && endDateTF.hasText { //三个文本框都有真实内容
+        if beginDateTF.hasText && endDateTF.hasText { //起始和截止时间文本框都有时间才让搜索按钮可用
             searchBtn.isEnabled = true
         }else {
             searchBtn.isEnabled = false
@@ -368,7 +371,7 @@ class SAMSalesHistoryController: UIViewController {
     fileprivate lazy var datePicker: UIDatePicker? = {
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = UIDatePickerMode.date
-        datePicker.addTarget(self, action: #selector(SAMSalesHistoryController.dateChanged(_:)), for: .valueChanged)
+        datePicker.addTarget(self, action: #selector(SAMOrderManageController.dateChanged(_:)), for: .valueChanged)
         return datePicker
     }()
     
@@ -376,16 +379,16 @@ class SAMSalesHistoryController: UIViewController {
     fileprivate var firstTF: UITextField?
     
     ///条件搜索请求URLStr
-    fileprivate let saleInfoRequestURLStr = "getSellMainData.ashx"
+    fileprivate let orderInfoRequestURLStr = "getOrderMainData.ashx"
     ///条件搜索参数字典
-    fileprivate var saleInfoRequestParameters: [String: AnyObject]?
+    fileprivate var orderInfoRequestParameters: [String: AnyObject]?
     ///一次数据请求获取的数据最大条数
     fileprivate let requestSearchPageSize = 15
     ///当前数据的页码
     fileprivate var requestSearchPageIndex = 1
     
     ///数据模型数组
-    fileprivate let saleOrderModels = NSMutableArray()
+    fileprivate let orderInfoModels = NSMutableArray()
     
     //MARK: - XIB链接属性
     @IBOutlet weak var searchConView: UIView!
@@ -393,6 +396,7 @@ class SAMSalesHistoryController: UIViewController {
     @IBOutlet weak var endDateTF: SAMLoginTextField!
     @IBOutlet weak var dropDownBtn: UIButton!
     @IBOutlet weak var customerSearchTF: SAMLoginTextField!
+    @IBOutlet weak var orderStateSearchTF: SAMLoginTextField!
     @IBOutlet weak var searchBtn: UIButton!
     @IBOutlet weak var searchViewTopDis: NSLayoutConstraint!
     
@@ -400,8 +404,6 @@ class SAMSalesHistoryController: UIViewController {
     @IBOutlet weak var dateBtnContentView: UIView!
     
     @IBOutlet weak var hudView: UIView!
-    
-    @IBOutlet weak var constLabel: UILabel!
     
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -413,7 +415,7 @@ class SAMSalesHistoryController: UIViewController {
         hidesBottomBarWhenPushed = true
     }
     override func loadView() {
-        view = Bundle.main.loadNibNamed("SAMSalesHistoryController", owner: self, options: nil)![0] as! UIView
+        view = Bundle.main.loadNibNamed("SAMOrderManageController", owner: self, options: nil)![0] as! UIView
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -421,7 +423,7 @@ class SAMSalesHistoryController: UIViewController {
 }
 
 //MARK: - UITextFieldDelegate
-extension SAMSalesHistoryController: UITextFieldDelegate {
+extension SAMOrderManageController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
         //展现hudView
@@ -456,13 +458,13 @@ extension SAMSalesHistoryController: UITextFieldDelegate {
 }
 
 //MARK: - UICollectionViewDelegate
-extension SAMSalesHistoryController: UICollectionViewDelegate {
+extension SAMOrderManageController: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         //监听滚动，达到某一条件的时候让顶部搜索条件控件上滚消失
         let offsetY = scrollView.contentOffset.y
-        
-        if saleOrderModels.count != 0 {
+   
+        if orderInfoModels.count != 0 {
             if offsetY > 100 {
                 if searchViewTopDis.constant == 0{
                     UIView.animate(withDuration: 0.6, animations: {
@@ -481,90 +483,73 @@ extension SAMSalesHistoryController: UICollectionViewDelegate {
         hud!.labelText = NSLocalizedString("正在加载...", comment: "HUD loading title")
         
         //取出模型
-        let selectedModel = saleOrderModels[indexPath.item] as! SAMSaleOrderInfoModel
+        let selectedModel = orderInfoModels[indexPath.item] as! SAMOrderModel
         
         //创建控制器
         let detailVC = SAMOrderDetailController()
         
         //传递订单模型
-        detailVC.orderInfoModel = selectedModel
+//        detailVC.orderInfoModel = selectedModel
         
         //加载订单详情列表数组模型数组
         detailVC.loadOrderDetailListModels()
         
         //加载订单详情数组模型
-        detailVC.loadOrderDetailModel({ 
+        detailVC.loadOrderDetailModel({
             
-                DispatchQueue.main.async(execute: { 
-                    //隐藏hud
-                    hud!.hide(true)
-                    //成功回调闭包
-                    self.navigationController?.pushViewController(detailVC, animated: true)
-                })
-            }, noData: { 
+            DispatchQueue.main.async(execute: {
+                //隐藏hud
+                hud!.hide(true)
+                //成功回调闭包
+                self.navigationController?.pushViewController(detailVC, animated: true)
+            })
+        }, noData: {
+            
+            DispatchQueue.main.async(execute: {
+                //隐藏hud
+                hud!.hide(true)
                 
-                DispatchQueue.main.async(execute: {
-                    //隐藏hud
-                    hud!.hide(true)
-                    
-                    //提示用户
-                    let _ = SAMHUD.showMessage("没有数据", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
-                })
-            }) {
+                //提示用户
+                let _ = SAMHUD.showMessage("没有数据", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            })
+        }) {
+            
+            DispatchQueue.main.async(execute: {
+                //隐藏hud
+                hud!.hide(true)
                 
-                DispatchQueue.main.async(execute: {
-                    //隐藏hud
-                    hud!.hide(true)
-                    
-                    //提示用户
-                    let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
-                })
+                //提示用户
+                let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            })
         }
     }
 }
 
 //MARK: - UICollectionViewDataSource
-extension SAMSalesHistoryController: UICollectionViewDataSource {
+extension SAMOrderManageController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        let count = saleOrderModels.count
-        
-        //如果有数据则计算统计总数
-        if count != 0 {
-            var countMoney = 0.0
-            for model in saleOrderModels {
-                let orderModel = model as! SAMSaleOrderInfoModel
-                countMoney += orderModel.actualMoney
-            }
-            
-            //设置统计文本
-            constLabel.text = String(format: "订单总数：%d，总金额：%.1f元", count, countMoney)
-        }else { //没有数据
-            
-            //设置统计文本
-            constLabel.text = "暂无数据"
-        }
-        return count
+        return orderInfoModels.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SAMSaleInfoCellReuseIdentifier, for: indexPath) as! SAMSaleInfoCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SAMOrderManagerCellReuseIdentifier, for: indexPath) as! SAMOrderManagerCell
         
         //取出模型，传递模型
-        let model = saleOrderModels[indexPath.row] as! SAMSaleOrderInfoModel
-        cell.saleOrderInfoModel = model
+        let model = orderInfoModels[indexPath.row] as! SAMOrderModel
+        cell.orderInfoModel = model
         
         return cell
     }
 }
 
 //MARK: - collectionView布局代理
-extension SAMSalesHistoryController: UICollectionViewDelegateFlowLayout {
+extension SAMOrderManageController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        return SAMSaleInfoCellSize
+        return SAMOrderManagerCellSize
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -575,3 +560,4 @@ extension SAMSalesHistoryController: UICollectionViewDelegateFlowLayout {
         return 0
     }
 }
+

@@ -10,24 +10,12 @@ import UIKit
 
 class SAMHomeViewController: UIViewController {
 
-    ///所有界面上展示的按钮的模型数据
-    let btnModel = [
-        ["title": "客户资料", "image": "customer", "selector" : "customerBtnClick"],
-                    ["title": "库存查询", "image": "stock", "selector" : "stockBtnClick"],
-                    ["title": "销售历史", "image": "saled", "selector" : "saleBtnClick"],
-                    ["title": "订单管理", "image": "orderManage", "selector" : "orderBtnClick"],
-                    ["title": "待售布匹", "image": "clothSale", "selector" : "clothSaleBtnClick"],
-                    ["title": "缺货登记", "image": "outStock", "selector" : "outStockBtnClick"],
-                    ["title": "客户销售排行", "image": "customerRank", "selector" : "customerRankBtnClick"],
-                    ["title": "产品销售排行", "image": "productRank", "selector" : "productRankBtnClick"],
-                    ["title": "客户回访管理", "image": "visitManager", "selector" : "visitManagerBtnClick"]
-                    ]
-    
-    //MARK: - 重写init方法
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    //MARK: - 对外提供的类工厂方法
+    class func instance() -> SAMHomeViewController {
+        return SAMHomeViewController()
     }
     
+    //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -38,6 +26,7 @@ class SAMHomeViewController: UIViewController {
         view.addSubview(buttonView)
     }
     
+    //MARK: - 初始化UI
     fileprivate func setupUI() {
         //设置导航栏标题
         title = "首页"
@@ -56,10 +45,12 @@ class SAMHomeViewController: UIViewController {
     
     //展示销售历史控制器
     func saleBtnClick() {
-        navigationController!.pushViewController(salesHistoryVC!, animated: true)
+        let saleVC = SAMSalesHistoryController()
+        navigationController!.pushViewController(saleVC, animated: true)
     }
     func orderBtnClick() {
-        print("orderBtnClick")
+        let orderVC = SAMOrderManageController()
+        navigationController!.pushViewController(orderVC, animated: true)
     }
     func clothSaleBtnClick() {
         print("clothSaleBtnClick")
@@ -75,10 +66,6 @@ class SAMHomeViewController: UIViewController {
     }
     func visitManagerBtnClick() {
         print("visitManagerBtnClick")
-    }
-    
-    override var preferredStatusBarStyle : UIStatusBarStyle {
-        return UIStatusBarStyle.lightContent
     }
     
     //MARK: - 懒加载集合
@@ -110,7 +97,8 @@ class SAMHomeViewController: UIViewController {
             let x = (btnW + margin) * (CGFloat(i).truncatingRemainder(dividingBy: rows)) + margin
             let y = (btnH + margin) * CGFloat(Int(i / Int(rows))) + margin
             
-            let btn = SAMHomeButton(frame: CGRect(x: x, y: y, width: btnW, height: btnH))
+            let btn = SAMImageAboveButton.instance(imgHeightScale: 0.6)
+            btn.frame = CGRect(x: x, y: y, width: btnW, height: btnH)
             btn.backgroundColor = UIColor.white
             btn.setTitle(title, for: UIControlState())
             btn.titleLabel?.font = UIFont.systemFont(ofSize: 15)
@@ -131,13 +119,26 @@ class SAMHomeViewController: UIViewController {
         return btnView
     }()
     
-    ///历史订单控制器
-    fileprivate lazy var salesHistoryVC: SAMSalesHistoryController? = {
-        let vc = SAMSalesHistoryController()
-        return vc
-    }()
+    ///所有界面上展示的按钮的模型数据
+    let btnModel = [
+        ["title": "客户资料", "image": "customer", "selector" : "customerBtnClick"],
+        ["title": "库存查询", "image": "stock", "selector" : "stockBtnClick"],
+        ["title": "销售历史", "image": "saled", "selector" : "saleBtnClick"],
+        ["title": "订单管理", "image": "orderManage", "selector" : "orderBtnClick"],
+        ["title": "待售布匹", "image": "clothSale", "selector" : "clothSaleBtnClick"],
+        ["title": "缺货登记", "image": "outStock", "selector" : "outStockBtnClick"],
+        ["title": "客户销售排行", "image": "customerRank", "selector" : "customerRankBtnClick"],
+        ["title": "产品销售排行", "image": "productRank", "selector" : "productRankBtnClick"],
+        ["title": "客户回访管理", "image": "visitManager", "selector" : "visitManagerBtnClick"]
+    ]
     
-    //无关紧要的方法
+    //MARK: - 其他方法
+    fileprivate init() { //重写该方法，为单例服务
+        super.init(nibName: nil, bundle: nil)
+    }
+    fileprivate override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

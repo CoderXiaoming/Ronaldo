@@ -21,6 +21,11 @@ class LXMCodeViewController: UIViewController {
     /// 代理
     weak var delegate: LXMCodeViewControllerDelegate?
     
+    ///对外提供的类工厂方法
+    class func instance() -> LXMCodeViewController {
+        return LXMCodeViewController()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -163,13 +168,23 @@ class LXMCodeViewController: UIViewController {
     @IBOutlet weak var scanLineImage: UIImageView!
     
     //MARK: - 其他方法
+    fileprivate init() { //重写该方法，为单例服务
+        super.init(nibName: nil, bundle: nil)
+    }
+    fileprivate override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     override func loadView() {
+        //从xib加载view
         view = Bundle.main.loadNibNamed("LXMCodeViewController", owner: self, options: nil)![0] as! UIView
     }
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
 }
 
 extension LXMCodeViewController: AVCaptureMetadataOutputObjectsDelegate {

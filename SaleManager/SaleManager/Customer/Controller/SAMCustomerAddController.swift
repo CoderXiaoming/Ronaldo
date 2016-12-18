@@ -51,6 +51,11 @@ class SAMCustomerAddController: UIViewController {
         }
     }
     
+    //MARK: - 对外提供的类工厂方法
+    class func instance() -> SAMCustomerAddController {
+        return SAMCustomerAddController()
+    }
+    
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -328,7 +333,10 @@ class SAMCustomerAddController: UIViewController {
     
 
     //MARK: - 无关紧要的方法
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    fileprivate init() {
+        super.init(nibName: nil, bundle: nil)
+    }
+    fileprivate override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     required init?(coder aDecoder: NSCoder) {
