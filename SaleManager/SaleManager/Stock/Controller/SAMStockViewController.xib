@@ -27,46 +27,46 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ShM-Wd-vIO" userLabel="AllStockView">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="40"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="45"/>
                     <subviews>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="bottom" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="总匹数" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f1T-WP-wLL">
-                            <rect key="frame" x="0.0" y="1" width="94" height="18"/>
+                            <rect key="frame" x="0.0" y="3.5" width="94" height="18"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
-                            <color key="textColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="总米数" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TGP-wS-xAE">
-                            <rect key="frame" x="93.5" y="1" width="94" height="18"/>
+                            <rect key="frame" x="93.5" y="3.5" width="94" height="18"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
-                            <color key="textColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="M4c-2b-Qyi" userLabel="CenterSeperaterView">
-                            <rect key="frame" x="0.0" y="19.5" width="187.5" height="1"/>
+                            <rect key="frame" x="0.0" y="22" width="187.5" height="1"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="1" id="lmz-O3-ziZ"/>
                             </constraints>
                         </view>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="---" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xpf-8I-gWP" userLabel="匹数数值">
-                            <rect key="frame" x="0.0" y="20.5" width="94" height="18"/>
+                            <rect key="frame" x="0.0" y="23" width="94" height="18"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
-                            <color key="textColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="---" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d14-dG-U57" userLabel="米数数值">
-                            <rect key="frame" x="94" y="20.5" width="94" height="18"/>
+                            <rect key="frame" x="94" y="23" width="94" height="18"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
-                            <color key="textColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="产品编号" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="6kT-Mc-3Ek" customClass="SAMLoginTextField" customModule="SaleManager" customModuleProvider="target">
-                            <rect key="frame" x="198" y="5" width="167" height="30"/>
-                            <color key="backgroundColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <rect key="frame" x="198" y="7.5" width="167" height="30"/>
+                            <color key="backgroundColor" red="0.086274509803921567" green="0.47843137254901957" blue="0.74117647058823533" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -76,14 +76,14 @@
                             </connections>
                         </textField>
                     </subviews>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstItem="6kT-Mc-3Ek" firstAttribute="leading" secondItem="d14-dG-U57" secondAttribute="trailing" constant="10" id="1cV-6f-HIo"/>
                         <constraint firstItem="d14-dG-U57" firstAttribute="width" secondItem="f1T-WP-wLL" secondAttribute="width" id="5CB-YR-duc"/>
                         <constraint firstItem="M4c-2b-Qyi" firstAttribute="top" secondItem="TGP-wS-xAE" secondAttribute="bottom" id="6BI-sN-5wL"/>
                         <constraint firstItem="M4c-2b-Qyi" firstAttribute="width" secondItem="ShM-Wd-vIO" secondAttribute="width" multiplier="0.5" id="7pe-iy-wTd"/>
                         <constraint firstItem="xpf-8I-gWP" firstAttribute="leading" secondItem="ShM-Wd-vIO" secondAttribute="leading" id="8uI-vU-gzf"/>
-                        <constraint firstAttribute="height" constant="40" id="Fhe-y2-vic"/>
+                        <constraint firstAttribute="height" constant="45" id="Fhe-y2-vic"/>
                         <constraint firstItem="M4c-2b-Qyi" firstAttribute="top" secondItem="f1T-WP-wLL" secondAttribute="bottom" id="KDS-xK-qSg"/>
                         <constraint firstItem="TGP-wS-xAE" firstAttribute="leading" secondItem="f1T-WP-wLL" secondAttribute="trailing" id="Lxm-z9-VaN"/>
                         <constraint firstAttribute="trailing" secondItem="6kT-Mc-3Ek" secondAttribute="trailing" constant="10" id="PL6-o0-zKk"/>
@@ -100,7 +100,7 @@
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oxW-lJ-4Kz" userLabel="IndicaterView">
-                    <rect key="frame" x="0.0" y="40" width="375" height="30"/>
+                    <rect key="frame" x="0.0" y="45" width="375" height="30"/>
                     <subviews>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="图片" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fru-WM-5ZV">
                             <rect key="frame" x="0.0" y="2" width="125" height="26"/>
@@ -124,7 +124,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
-                    <color key="backgroundColor" red="0.78823529411764703" green="0.76470588235294112" blue="0.7803921568627451" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="backgroundColor" red="0.94509803920000002" green="0.94117647059999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstItem="fru-WM-5ZV" firstAttribute="top" secondItem="oxW-lJ-4Kz" secondAttribute="top" constant="2" id="0uC-Wl-k3t"/>
                         <constraint firstItem="fru-WM-5ZV" firstAttribute="width" secondItem="oxW-lJ-4Kz" secondAttribute="width" multiplier="0.333333" id="C0v-4J-uHu"/>
@@ -142,7 +142,7 @@
                     </constraints>
                 </view>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="J2n-Rg-Skz">
-                    <rect key="frame" x="0.0" y="70" width="375" height="597"/>
+                    <rect key="frame" x="0.0" y="75" width="375" height="592"/>
                     <color key="backgroundColor" red="0.94509803920000002" green="0.94117647059999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="IcI-u2-i31">
                         <size key="itemSize" width="50" height="50"/>
@@ -156,7 +156,7 @@
                     </connections>
                 </collectionView>
             </subviews>
-            <color key="backgroundColor" red="0.98431372549999996" green="0.2666666667" blue="0.25098039220000001" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="J2n-Rg-Skz" secondAttribute="trailing" id="4yk-Gv-bIM"/>
                 <constraint firstItem="ShM-Wd-vIO" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="7Wx-XI-kxO"/>

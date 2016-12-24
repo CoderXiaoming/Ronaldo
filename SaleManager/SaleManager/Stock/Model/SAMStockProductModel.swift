@@ -98,6 +98,15 @@ class SAMStockProductModel: NSObject {
                 
                 //添加数据模型
                 self.productDeatilList.addObjects(from: arr as [AnyObject])
+                
+                //计算选中的高度
+                let countOfRow = Int(ScreenW / SAMStockProductDetailCellWidth)
+                let IntRows = self.productDeatilList.count / countOfRow
+                let remainder = self.productDeatilList.count % countOfRow
+                let realRows = (remainder != 0) ? (IntRows + 1) : IntRows
+                
+                let selectedHeight = SAMStockProductDetailCellHeight * CGFloat(realRows) + SAMStockProductCellNormalHeight + SAMStockProductDetailCellMinimumLineSpacing * CGFloat(realRows - 1)
+                self.cellSelectedSize = CGSize(width: ScreenW, height: selectedHeight)
             }
         }) { (Task, Error) in
         }
@@ -108,6 +117,9 @@ class SAMStockProductModel: NSObject {
     var thumbURL1: URL?
     ///大图1（主缩略图）链接
     var imageURL1: URL?
+    
+    ///collectioinView的高度
+    var cellSelectedSize = CGSize(width: ScreenW, height: 126)
     
     ///库存明细模型数组
     let productDeatilList = NSMutableArray()

@@ -292,32 +292,52 @@ class SAMShoppingCarController: UIViewController {
     
     @IBAction func deleteBtnClick(_ sender: UIButton) {
         
-        //设置全选按钮状态
-        allSelectedButton.isSelected = false
-        
-        let deleateArr = selectedModels.mutableCopy()
-        
-        //从 源模型数组 和 选中数组 中删除选中模型
-        selectedModels.removeAllObjects()
-        
-        //遍历删除数组
-        (deleateArr as AnyObject).enumerateObjects { (obj, index, _) in
-            
-            //获取模型 和 源数组中对应的编号
-            let model = obj as! SAMShoppingCarListModel
-            let orignalIndex = listModels.index(of: model)
-            
-            //从源数组中删除对应模型
-            listModels.removeObject(at: orignalIndex)
-            //动画删除对应组
-            tableView.deleteSections(IndexSet.init(integer: orignalIndex), with: .left)
-            
-            //异步发送删除请求
-            let parameters = ["id": model.id!]
-            SAMNetWorker.sharedNetWorker().post("CartDelete.ashx", parameters: parameters, progress: nil, success: { (task, Json) in
-                }, failure: { (task, error) in
-            })
+        //创建 UIAlertController
+        let totalCount = listModels.count
+        let deleateCount = selectedModels.count
+        var alertMessage: String
+        if deleateCount == totalCount {
+            alertMessage = "是否清空购物车？"
+        }else {
+            alertMessage = String(format: "是否删除这%d条？", deleateCount)
         }
+        let alertVC = UIAlertController(title: alertMessage, message: nil, preferredStyle: .alert)
+        
+        //添加两个按钮
+        alertVC.addAction(UIAlertAction(title: "取消", style: .cancel, handler: { (_) in
+        }))
+        alertVC.addAction(UIAlertAction(title: "确定", style: .destructive, handler: { (_) in
+            
+            //设置全选按钮状态
+            self.allSelectedButton.isSelected = false
+            
+            let deleateArr = self.selectedModels.mutableCopy()
+            
+            //从 源模型数组 和 选中数组 中删除选中模型
+            self.selectedModels.removeAllObjects()
+            
+            //遍历删除数组
+            (deleateArr as AnyObject).enumerateObjects { (obj, index, _) in
+                
+                //获取模型 和 源数组中对应的编号
+                let model = obj as! SAMShoppingCarListModel
+                let orignalIndex = self.listModels.index(of: model)
+                
+                //从源数组中删除对应模型
+                self.listModels.removeObject(at: orignalIndex)
+                //动画删除对应组
+                self.tableView.deleteSections(IndexSet.init(integer: orignalIndex), with: .left)
+                
+                //异步发送删除请求
+                let parameters = ["id": model.id!]
+                SAMNetWorker.sharedNetWorker().post("CartDelete.ashx", parameters: parameters, progress: nil, success: { (task, Json) in
+                }, failure: { (task, error) in
+                })
+            }
+        }))
+        
+        //展示控制器
+        present(alertVC, animated: true, completion: nil)
     }
     
     @IBAction func orderBtnClick(_ sender: UIButton) {
@@ -329,7 +349,7 @@ class SAMShoppingCarController: UIViewController {
             models.append(model)
         })
         
-        let buildOrderVC = SAMOrderBuildController.buildOrder(productModels: models)
+        let buildOrderVC = SAMOrderOwedOperationController.buildOrder(productModels: models, type: .buildOrder)
         
         //判断当前导航栏是否隐藏
         if navigationController!.isNavigationBarHidden { //如果当前导航栏隐藏，直接复制取消按钮点击代码
@@ -528,6 +548,8 @@ extension SAMShoppingCarController: UITableViewDelegate {
             return 5
         }
     }
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    }
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         
         //取出cell
@@ -538,7 +560,7 @@ extension SAMShoppingCarController: UITableViewDelegate {
         
         /*******************  查询按钮  ********************/
         let equiryAction = UITableViewRowAction(style: .normal, title: "查询") { (action, indexPath) in
-            let stockVC = SAMStockViewController.stockRequest(shoppingCarListModel: model)
+            let stockVC = SAMStockViewController.instance(shoppingCarListModel: model, type: .requestStock)
             self.navigationController?.pushViewController(stockVC, animated: true)
         }
         equiryAction.backgroundColor = UIColor.randomColor()
@@ -697,7 +719,8 @@ extension SAMShoppingCarController: SAMProductOperationViewDelegate {
         //隐藏购物车
         hideProductOperationView(false)
     }
-    func operationViewAddOrEditProductSuccess(_ productImage: UIImage) {
+    
+    func operationViewAddOrEditProductSuccess(_ productImage: UIImage, postShoppingCarListModelSuccess: Bool) {
         //隐藏购物车
         hideProductOperationView(true)
     }
@@ -732,7 +755,9 @@ extension SAMShoppingCarController {
     func showShoppingCar(editModel: SAMShoppingCarListModel) {
     
         //设置购物车控件的目标frame
-        self.productOperationView = SAMProductOperationView.operationViewWillShow(nil, editProductModel: editModel)
+        self.productOperationView = SAMProductOperationView.operationViewWillShow(nil, editProductModel: editModel, postModelAfterOperationSuccess: false)
+        
+        
         self.productOperationView!.delegate = self
         self.productOperationView!.frame = CGRect(x: 0, y: ScreenH, width: ScreenW, height: 350)
         

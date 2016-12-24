@@ -13,6 +13,8 @@ import UIKit
 let LoginSuccessNotification = "LoginSuccessNotification"
 ///用户在新建订单时成功选择客户时发出的通知
 let SAMCustomerViewControllerDidSelectCustomerNotification = "SAMCustomerViewControllerDidSelectCustomerNotification"
+///用户在新建订单时从库存界面成功获取到购物车数据模型发出的通知
+let SAMProductOperationViewGetShoppingCarListModelNotification = "SAMProductOperationViewGetShoppingCarListModelNotification"
 
 let ScreenW = UIScreen.main.bounds.width
 let ScreenH = UIScreen.main.bounds.height
@@ -22,6 +24,7 @@ let KeyWindow = UIApplication.shared.keyWindow
 let mainColor_green = UIColor(red: 140 / 255.0, green: 213 / 255.0, blue: 82 / 255.0, alpha: 1.0)
 let customGrayColor = UIColor(red: 84 / 255.0, green: 84 / 255.0, blue: 84 / 255.0, alpha: 1.0)
 let customBlueColor = UIColor(red: 52 / 255.0, green: 152 / 255.0, blue: 219 / 255.0, alpha: 1.0)
+let customBGWhiteColor = UIColor(red: 241 / 255.0, green: 240 / 255.0, blue: 255 / 255.0, alpha: 1.0)
 
 
 let randomColor = UIColor(red: (CGFloat(arc4random_uniform(255)) / CGFloat(255.0)), green: (CGFloat(arc4random_uniform(255)) / CGFloat(255.0)), blue: (CGFloat(arc4random_uniform(255)) / CGFloat(255.0)), alpha: 1.0)

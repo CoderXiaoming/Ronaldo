@@ -30,7 +30,7 @@ private let operationViewLabelBigFont = UIFont.systemFont(ofSize: 15)
 
 protocol SAMProductOperationViewDelegate: NSObjectProtocol {
     func operationViewDidClickDismissButton()
-    func operationViewAddOrEditProductSuccess(_ productImage: UIImage)
+    func operationViewAddOrEditProductSuccess(_ productImage: UIImage, postShoppingCarListModelSuccess: Bool)
 }
 
 class SAMProductOperationView: UIView {
@@ -42,7 +42,7 @@ class SAMProductOperationView: UIView {
     static let instance = Bundle.main.loadNibNamed("SAMProductOperationView", owner: nil, options: nil)![0] as! SAMProductOperationView
     
     //MARK: - 对外提供的展示控件调用的方法
-    class func operationViewWillShow(_ addProductModel: SAMStockProductModel?, editProductModel: SAMShoppingCarListModel?) -> SAMProductOperationView {
+    class func operationViewWillShow(_ addProductModel: SAMStockProductModel?, editProductModel: SAMShoppingCarListModel?, postModelAfterOperationSuccess: Bool) -> SAMProductOperationView {
         
         //清楚所有文本框
         instance.clearAllTextField()
@@ -57,6 +57,9 @@ class SAMProductOperationView: UIView {
             instance.editProductModel = editProductModel
             instance.isAddingProduct = false
         }
+        
+        //记录是否发出通知
+        instance.willPostModel = postModelAfterOperationSuccess
         
         //设置确认按钮不可用
         let buttonTitle = instance.isAddingProduct ? "添加" : "修改"
@@ -248,6 +251,9 @@ class SAMProductOperationView: UIView {
         }
     }
 
+    ///是否需要发送模型数据通知
+    fileprivate var willPostModel: Bool = false
+    
     fileprivate var firstTF: UITextField?
     
     ///记录当前是 添加商品 还是 编辑商品
@@ -310,14 +316,70 @@ class SAMProductOperationView: UIView {
             
             if status == "success" { //上传服务器成功
             
-                //返回主线程
-                DispatchQueue.main.async(execute: {
-                    //隐藏HUD
-                    hud.hide(true)
+                if !self.isAddingProduct { //如果是编辑数据模型状态，则需要主动修改模型数据
                     
-                    //告诉代理添加产品成功
-                    self.delegate?.operationViewAddOrEditProductSuccess(self.productImage.image!)
-                })
+                    self.editProductModel?.countP = Int(NSString(string: self.pishuTF.text!).intValue)
+                    self.editProductModel?.countM = Double(NSString(string: self.mishuTF.text!).doubleValue)
+                    self.editProductModel?.price = Double(NSString(string: self.priceTF.text!).doubleValue)
+                    self.editProductModel?.memoInfo = self.remarkTF.text
+                }
+                
+                //判断是否要发送携带购物车数据模型的通知
+                if self.willPostModel { //需要发出通知
+                    
+                    //创建请求参数
+                    let userIDStr = SAMUserAuth.shareUser()!.id!
+                    let parameters = ["userID": userIDStr, "productIDName": ""]
+                    
+                    //发送请求
+                    SAMNetWorker.sharedNetWorker().get("getCartList.ashx", parameters: parameters, progress: nil, success: { (Task, json) in
+                        
+                        //隐藏HUD
+                        hud.hide(true)
+                        
+                        //获取模型数组
+                        let Json = json as! [String: AnyObject]
+                        let dictArr = Json["body"] as? [[String: AnyObject]]
+                        let count = dictArr?.count ?? 0
+                        if count == 0 { //没有模型数据
+                            
+                            //告诉代理添加产品成功操作，但是模型数据获取失败
+                            self.delegate?.operationViewAddOrEditProductSuccess(self.productImage.image!, postShoppingCarListModelSuccess: false)
+                            
+                            return
+                        }else { //有数据模型
+                            
+                            let arr = SAMShoppingCarListModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                            let model = arr.lastObject as! SAMShoppingCarListModel
+                            
+                            //发出通知
+                            NotificationCenter.default.post(name: NSNotification.Name.init(SAMProductOperationViewGetShoppingCarListModelNotification), object: nil, userInfo: ["model": model])
+                            
+                            //告诉代理添加产品成功操作，模型数据获取成功
+                            self.delegate?.operationViewAddOrEditProductSuccess(self.productImage.image!, postShoppingCarListModelSuccess: true)
+                            
+                            return
+                        }
+                    }) { (Task, Error) in
+                        
+                        //隐藏HUD
+                        hud.hide(true)
+                        
+                        //提示用户
+                        let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+                        return
+                    }
+                }else { //不需要发出通知
+                    
+                    //返回主线程
+                    DispatchQueue.main.async(execute: {
+                        //隐藏HUD
+                        hud.hide(true)
+                        
+                        //告诉代理添加产品成功操作，但是模型数据获取失败
+                        self.delegate?.operationViewAddOrEditProductSuccess(self.productImage.image!, postShoppingCarListModelSuccess: false)
+                    })
+                }
             }else { //上传服务器失败
                 
                 //返回主线程

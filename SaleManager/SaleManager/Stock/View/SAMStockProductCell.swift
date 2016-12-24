@@ -9,6 +9,9 @@
 import UIKit
 import SDWebImage
 
+//cell正常高度
+let SAMStockProductCellNormalHeight: CGFloat = 75
+
 //库存明细重用标识符
 private let SAMStockProductDetailCellReuseIdentifier = "SAMStockProductDetailCellReuseIdentifier"
 
@@ -47,6 +50,10 @@ class SAMStockProductCell: UICollectionViewCell {
             
             //设置匹数
             pishuLabel.text = String(format: "%d", stockProductModel!.countP)
+            
+            //设置警告，购物车按钮状态
+            stockWarningBtn.isEnabled = couldOperateWarningAndCar
+            shoppingCarBtn.isEnabled = couldOperateWarningAndCar
         }
     }
     
@@ -54,6 +61,10 @@ class SAMStockProductCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
+        //设置图片圆角
+        productImageBtn.layer.cornerRadius = 10
+        
+        //设置CollectionView
         setupCollectionView()
     }
     
@@ -65,7 +76,7 @@ class SAMStockProductCell: UICollectionViewCell {
         collectionView.delegate = self
         
         //设置背景色
-        collectionView.backgroundColor = customBlueColor
+        collectionView.backgroundColor = UIColor.clear
         
         //注册cell
         collectionView.register(UINib(nibName: "SAMStockProductDetailCell", bundle: nil), forCellWithReuseIdentifier: SAMStockProductDetailCellReuseIdentifier)
@@ -80,7 +91,7 @@ class SAMStockProductCell: UICollectionViewCell {
         let dict = ["collectionView" : collectionView, "topContentView":topContentView] as [String : AnyObject]
         
         cons += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[collectionView]-0-|", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
-        cons += NSLayoutConstraint.constraints(withVisualFormat: "V:[topContentView]-0-[collectionView(50)]", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
+        cons += NSLayoutConstraint.constraints(withVisualFormat: "V:[topContentView]-0-[collectionView(1000)]", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
         
         contentView.addConstraints(cons)
     }
@@ -108,6 +119,9 @@ class SAMStockProductCell: UICollectionViewCell {
         let view = UICollectionView(frame: CGRect.zero, collectionViewLayout: SAMStockProductDetailColletionViewFlowlayout())
         return view
     }()
+    
+    ///库存警告，购物车按钮是否可用，对外提供设置
+    var couldOperateWarningAndCar = true
     
     //MARK: - XIB链接属性
     @IBOutlet weak var topContentView: UIView!
@@ -147,10 +161,11 @@ private class SAMStockProductDetailColletionViewFlowlayout: UICollectionViewFlow
     
     override func prepare() {
         super.prepare()
-        minimumLineSpacing = 0
-        scrollDirection = UICollectionViewScrollDirection.horizontal
-        collectionView?.showsHorizontalScrollIndicator = false
-        itemSize = CGSize(width: 100, height: 40)
+        minimumLineSpacing = SAMStockProductDetailCellMinimumLineSpacing
+        minimumInteritemSpacing = 0
+        scrollDirection = UICollectionViewScrollDirection.vertical
+        collectionView?.showsVerticalScrollIndicator = false
+        itemSize = CGSize(width: SAMStockProductDetailCellWidth, height: SAMStockProductDetailCellHeight)
         sectionInset = UIEdgeInsetsMake(0, 10, 0, 10)
     }
 }

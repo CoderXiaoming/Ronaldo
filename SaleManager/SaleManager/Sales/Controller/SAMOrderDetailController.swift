@@ -22,6 +22,13 @@ class SAMOrderDetailController: UIViewController {
     ///接收的订单模型
     var orderInfoModel: SAMSaleOrderInfoModel?
     
+    ///对外提供的类工厂方法
+    class func instance() -> SAMOrderDetailController {
+        let vc = SAMOrderDetailController()
+        vc.hidesBottomBarWhenPushed = true
+        return vc
+    }
+    
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -214,16 +221,20 @@ class SAMOrderDetailController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     
     //MARK: - 其他方法
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    fileprivate init() { //重写该方法，为单例服务
+        super.init(nibName: nil, bundle: nil)
+    }
+    fileprivate override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
-    override func loadView() {
-        view = Bundle.main.loadNibNamed("SAMOrderDetailController", owner: self, options: nil)![0] as! UIView
-    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+    override func loadView() {
+        //从xib加载view
+        view = Bundle.main.loadNibNamed("SAMOrderDetailController", owner: self, options: nil)![0] as! UIView
+    }
 }
 
 //MARK: - UICollectionViewDataSource

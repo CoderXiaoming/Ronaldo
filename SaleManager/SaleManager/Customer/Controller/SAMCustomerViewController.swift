@@ -181,7 +181,6 @@ class SAMCustomerViewController: UIViewController {
         
         //发送请求
         SAMNetWorker.sharedNetWorker().get(URLStr, parameters: patametersNew, progress: nil, success: { (Task, json) in
-            
             //清空原先数据
             self.customerModels.removeAllObjects()
             self.selectedIndexPath = nil

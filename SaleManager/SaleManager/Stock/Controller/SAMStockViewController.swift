@@ -9,6 +9,13 @@
 import UIKit
 import MJRefresh
 
+///控制器类型
+enum stockControllerType {
+    case normal //常规
+    case requestStock //查询库存
+    case requestBuildOrder //创建订单
+}
+
 //刚是否成功上传成功图片
 var SAMStockHasUnloadProductImage = false
 
@@ -16,31 +23,40 @@ var SAMStockHasUnloadProductImage = false
 private let SAMStockProductCellReuseIdentifier = "SAMStockProductCellReuseIdentifier"
 
 ///产品cell正常状态size
-private let SAMStockProductCellNormalSize = CGSize(width: ScreenW, height: 75)
-///产品cell选中状态size
-private let SAMStockProductCellSelectedSize = CGSize(width: ScreenW, height: 126)
+private let SAMStockProductCellNormalSize = CGSize(width: ScreenW, height: SAMStockProductCellNormalHeight)
 
 class SAMStockViewController: UIViewController {
     
     ///对外提供的类工厂方法
-    class func instance() -> SAMStockViewController {
-        return SAMStockViewController()
-    }
-    
-    ///对外提供根据 一个购物车产品模型 查询库存的方法，同时返回一个库存控制器
-    class func stockRequest(shoppingCarListModel: SAMShoppingCarListModel) ->SAMStockViewController {
+    class func instance(shoppingCarListModel: SAMShoppingCarListModel?, type: stockControllerType) ->SAMStockViewController {
     
         let vc = SAMStockViewController()
         
-        //购物车数据模型
-        vc.shoppingCarListModel = shoppingCarListModel
-        
-        //当前是产品名搜索状态
-        vc.isProductNameSearch = true
-        
-        //当前有外部查询请求
-        vc.hasOutRequest = true
-        return vc
+        //判断控制器类型
+        switch type {
+            case .normal:
+                
+                //当前可以操作产品Cell
+                vc.couldOperateCell = true
+                return vc
+            case .requestStock:
+                
+                //购物车数据模型
+                vc.shoppingCarListModel = shoppingCarListModel
+                //当前是产品名搜索状态
+                vc.isProductNameSearch = true
+                //当前有外部查询请求
+                vc.hasOutRequest = true
+                //当前不可以操作产品Cell
+                vc.couldOperateCell = false
+                return vc
+            case .requestBuildOrder:
+                
+                //当前可以操作产品Cell
+                vc.couldOperateCell = true
+                vc.isFromBuildOrder = true
+                return vc
+        }
     }
     
     //MARK: - viewDidLoad
@@ -56,6 +72,8 @@ class SAMStockViewController: UIViewController {
     
     //MARK: - 初始化UI
     fileprivate func setupUI() {
+        
+        //设置标题
         navigationItem.title = "库存查询"
         
         //设置导航栏右边按钮
@@ -87,6 +105,9 @@ class SAMStockViewController: UIViewController {
         collectionView.mj_footer = MJRefreshBackNormalFooter(refreshingTarget: self, refreshingAction: #selector(SAMStockViewController.loadConSearchMoreInfo))
         //没有数据自动隐藏footer
         collectionView.mj_footer.isAutomaticallyHidden = true
+        
+        //隐藏滑动条
+        collectionView.showsVerticalScrollIndicator = false
     }
     
     //MARK: - 搜索按钮点击
@@ -110,7 +131,28 @@ class SAMStockViewController: UIViewController {
             conditionalSearchVC!.transitioningDelegate = self
             conditionalSearchVC!.modalPresentationStyle = UIModalPresentationStyle.custom
             conditionalSearchVC!.setCompletionCallback({[weak self] (parameters) in
+                
+                //赋值数据模型
                 self!.conSearchParameters = parameters
+                
+                //计算动画所需数据
+                let originalFrame = self!.view.convert(self!.conditionalSearchVC!.view.frame, from: self!.conditionalSearchVC!.view)
+                let originalCenterY = (originalFrame.maxY - originalFrame.origin.y) * 0.5
+                let transformY = self!.collectionView.frame.origin.y - originalCenterY - 15
+                
+                //动画隐藏界面
+                UIView.animate(withDuration: 0.3, animations: {
+                    
+                    let transform = CGAffineTransform(translationX: 0, y: transformY)
+                    self!.conditionalSearchVC!.view.transform = transform.scaledBy(x: 0.0001, y: 0.0001)
+                }, completion: { (_) in
+                    
+                    //恢复界面形变，刷新数据
+                    self!.conditionalSearchVC!.dismiss(animated: true, completion: {
+                        
+                        self!.collectionView.mj_header.beginRefreshing()
+                    })
+                })
             })
             present(conditionalSearchVC!, animated: true, completion: nil)
         }
@@ -218,24 +260,8 @@ class SAMStockViewController: UIViewController {
                 //结束上拉
                 self.collectionView.mj_header.endRefreshing()
                 
-                UIView.animate(withDuration: 0, animations: {
-                    
-                    //刷新数据
-                    self.collectionView.reloadData()
-                    }, completion: { (_) in
-                        
-                        //判断顶部条是否隐藏
-                        if self.allStockViewTopDistance.constant != 0 {
-                            
-                            //展示顶部条
-                            UIView.animate(withDuration: 0.5, delay: 0.2, options: .layoutSubviews, animations: {
-                                //设置stockView顶部距离
-                                self.allStockViewTopDistance.constant = 0
-                                self.view.layoutIfNeeded()
-                                }, completion: { (_) in
-                            })
-                        }
-                })
+                //刷新数据
+                self.collectionView.reloadData()
             })
         }) { (Task, Error) in
             
@@ -387,31 +413,7 @@ class SAMStockViewController: UIViewController {
     fileprivate var conditionalSearchVC: SAMStockConditionalSearchController?
     
     ///条件搜索参数字典
-    var conSearchParameters: [String: AnyObject]? {
-        didSet {
-            if (conSearchParameters != nil) && !isProductNameSearch {
-                
-                //计算动画所需数据
-                let originalFrame = view.convert(conditionalSearchVC!.view.frame, from: conditionalSearchVC!.view)
-                let originalCenterY = (originalFrame.maxY - originalFrame.origin.y) * 0.5
-                let transformY = collectionView.frame.origin.y - originalCenterY - 15
-                
-                //动画隐藏界面
-                UIView.animate(withDuration: 0.3, animations: {
-                    
-                    let transform = CGAffineTransform(translationX: 0, y: transformY)
-                    self.conditionalSearchVC!.view.transform = transform.scaledBy(x: 0.0001, y: 0.0001)
-                }, completion: { (_) in
-                    
-                    //恢复界面形变，刷新数据
-                    self.conditionalSearchVC!.dismiss(animated: true, completion: {
-                        
-                        self.collectionView.mj_header.beginRefreshing()
-                    })
-                })
-            }
-        }
-    }
+    var conSearchParameters: [String: AnyObject]?
     
     ///条件搜索请求URLStr
     fileprivate let conSearchURLStr = "getStock.ashx"
@@ -424,11 +426,14 @@ class SAMStockViewController: UIViewController {
     
     ///当前是否有外界查询请求
     fileprivate var hasOutRequest: Bool = false
-    ///外界查询请求产品名称
-    fileprivate var outRequestProductName: String?
+    ///当前是否可以操作产品Cell
+    fileprivate var couldOperateCell: Bool = true
     
     ///当前是否为单独产品名搜索
     fileprivate var isProductNameSearch: Bool = false
+    ///当前是否为来自创建订单控制器
+    fileprivate var isFromBuildOrder: Bool = false
+    
     ///单独产品名搜索字符串
     fileprivate var productNameSearchStr: String?
     
@@ -561,29 +566,40 @@ class SAMStockViewController: UIViewController {
     }
 }
 
+//MARK: - CollectionView数据源方法UICollectionViewDataSource
+extension SAMStockViewController: UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return stockProductModels.count
+    }
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SAMStockProductCellReuseIdentifier, for: indexPath) as! SAMStockProductCell
+        
+        //设置警告，购物车按钮状态
+        cell.couldOperateWarningAndCar = couldOperateCell
+        
+        //取出模型
+        let model = stockProductModels[indexPath.row] as! SAMStockProductModel
+        cell.stockProductModel = model
+        
+        //设置代理
+        cell.delegate = self
+        
+        return cell
+    }
+}
+
 //MARK: - CollectionView代理UICollectionViewDelegate
 extension SAMStockViewController: UICollectionViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-
-        //退出产品名搜索框编辑状态
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         endProductNameTFEditing(false)
-        
-        //监听滚动，达到某一条件的时候让顶部所有库存条上滚消失
-        let offsetY = scrollView.contentOffset.y
-        
-        if stockProductModels.count != 0 {
-            if offsetY > 100 {
-                if allStockViewTopDistance.constant == 0{
-                    UIView.animate(withDuration: 0.6, animations: {
-                        self.allStockViewTopDistance.constant = -self.allStockView.bounds.height
-                        self.view.layoutIfNeeded()
-                    })
-                }
-            }
-        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        endProductNameTFEditing(false)
         
         if selectedIndexPath == indexPath { //选中了当前选中的CELL
             
@@ -613,32 +629,15 @@ extension SAMStockViewController: UICollectionViewDelegate {
     }
 }
 
-//MARK: - CollectionView数据源方法UICollectionViewDataSource
-extension SAMStockViewController: UICollectionViewDataSource {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return stockProductModels.count
-    }
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SAMStockProductCellReuseIdentifier, for: indexPath) as! SAMStockProductCell
-        
-        //取出模型
-        let model = stockProductModels[indexPath.row] as! SAMStockProductModel
-        cell.stockProductModel = model
-        
-        //设置代理
-        cell.delegate = self
-        
-        return cell
-    }
-}
-
 //MARK: - collectionView布局代理
 extension SAMStockViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
+        //取出模型
+        let model = stockProductModels[indexPath.row] as! SAMStockProductModel
+        
         if indexPath == selectedIndexPath {
-            return SAMStockProductCellSelectedSize
+            return model.cellSelectedSize
         }
         
         return SAMStockProductCellNormalSize
@@ -676,6 +675,8 @@ extension SAMStockViewController: SAMStockProductCellDelegate {
     //点击了库存警报
     func productCellDidClickStockWarnningButton(_ stockProductModel: SAMStockProductModel) {
     
+        let owedVC = SAMOrderOwedOperationController.buildOwe(productModel: stockProductModel, type: .buildOwe)
+        navigationController!.pushViewController(owedVC, animated: true)
     }
     
     //点击了产品图片
@@ -695,9 +696,23 @@ extension SAMStockViewController: SAMProductOperationViewDelegate {
         //隐藏购物车
         hideProductOperationView(false, produtImage: nil)
     }
-    func operationViewAddOrEditProductSuccess(_ productImage: UIImage) {
-        //隐藏购物车
-        hideProductOperationView(true, produtImage: productImage)
+    
+    func operationViewAddOrEditProductSuccess(_ productImage: UIImage, postShoppingCarListModelSuccess: Bool) {
+        
+        if isFromBuildOrder && postShoppingCarListModelSuccess {
+            
+            //隐藏购物车, 提示用户
+            hideProductOperationView(false, produtImage: productImage)
+            let _ = SAMHUD.showMessage("添加成功", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+        }else if isFromBuildOrder && !postShoppingCarListModelSuccess {
+            
+            //隐藏购物车, 提示用户
+            hideProductOperationView(false, produtImage: productImage)
+            let _ = SAMHUD.showMessage("添加失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+        }else {
+            //隐藏购物车
+            hideProductOperationView(true, produtImage: productImage)
+        }
     }
     
     //MARK: - 购物车相关4各方法
@@ -721,7 +736,8 @@ extension SAMStockViewController: SAMProductOperationViewDelegate {
     fileprivate func showShoppingCar(_ productImage: UIImage, productModel: SAMStockProductModel) {
     
         //设置购物车控件的目标frame
-        productOperationView = SAMProductOperationView.operationViewWillShow(productModel, editProductModel: nil)
+        productOperationView = SAMProductOperationView.operationViewWillShow(productModel, editProductModel: nil, postModelAfterOperationSuccess: isFromBuildOrder)
+        
         productOperationView!.delegate = self
         productOperationView!.frame = CGRect(x: 0, y: ScreenH, width: ScreenW, height: 350)
         
@@ -791,6 +807,7 @@ extension SAMStockViewController: SAMProductOperationViewDelegate {
                     
                     //调用成功添加购物车的动画
                     if didAddProduct {
+                        
                         self.addToShoppingCarSuccess(produtImage!)
                     }
             })

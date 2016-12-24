@@ -28,28 +28,28 @@ class SAMMainTabBarController: UITabBarController {
         navbar.backgroundImage = UIImage(named: "tabbarBackgroundcolorImage")
         
         //初始化设置所有tabBarItem正常状态和选中时的颜色
-        UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: mainColor_green], for: .selected)
-        UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.black], for: UIControlState())
+        UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: UIColor(red: 22 / 255.0, green: 122 / 255.0, blue: 189 / 255.0, alpha: 1.0)], for: .selected)
+        UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: UIColor(red: 52 / 255.0, green: 52 / 255.0, blue: 52 / 255.0, alpha: 1.0)], for: UIControlState())
     }
     
     //MARK: - 添加所有控制器
     fileprivate func addAllControllers() {
         
         //首页控制器
-        let homeVC = SAMBaseNavigationController(rootViewController: SAMHomeViewController.instance())
-        addOnmeController(homeVC, tabImg: UIImage(named: "visitManagertabbar")!, selectedImg: UIImage(named: "visitManager_selected")!, tabTile: "首页")
+        let homeVC = SAMBaseNavigationController(rootViewController: SAMComOperationController.instance())
+        addOnmeController(homeVC, tabImg: UIImage(named: "home_tabar")!, selectedImg: UIImage(named: "home_tabar_highlighted")!, tabTile: "首页")
         
-        let stockVC = SAMBaseNavigationController(rootViewController: SAMStockViewController.instance())
-        addOnmeController(stockVC, tabImg: UIImage(named: "stock")!, selectedImg: UIImage(named: "stock_selected")!, tabTile: "库存")
+        let stockVC = SAMBaseNavigationController(rootViewController: SAMStockViewController.instance(shoppingCarListModel: nil, type: .normal))
+        addOnmeController(stockVC, tabImg: UIImage(named: "stock_tabbar")!, selectedImg: UIImage(named: "stock_tabbar_highlighted")!, tabTile: "库存")
         
         let codeVC = SAMBaseNavigationController(rootViewController: LXMCodeViewController.instance())
-        addOnmeController(codeVC, tabImg: UIImage(named: "codeScan")!, selectedImg: UIImage(named: "codeScan_selected")!, tabTile: "扫码")
+        addOnmeController(codeVC, tabImg: UIImage(named: "QRcode_tabar")!, selectedImg: UIImage(named: "QRcode_tabar_highlighted")!, tabTile: "扫码")
         
         let carVC = SAMBaseNavigationController(rootViewController: SAMShoppingCarController.sharedInstanceMain())
-        addOnmeController(carVC, tabImg: UIImage(named: "shoppingCar")!, selectedImg: UIImage(named: "shoppingCar_selected")!, tabTile: "购物车")
+        addOnmeController(carVC, tabImg: UIImage(named: "shoppingCar_tabar")!, selectedImg: UIImage(named: "shoppingCar_tabar_highlighted")!, tabTile: "购物车")
         
         let customerVC = SAMBaseNavigationController(rootViewController: SAMCustomerViewController.instance(controllerType: .Normal))
-        addOnmeController(customerVC, tabImg: UIImage(named: "customer")!, selectedImg: UIImage(named: "customer_selected")!, tabTile: "客户")
+        addOnmeController(customerVC, tabImg: UIImage(named: "customer_tabar")!, selectedImg: UIImage(named: "customer_tabar_highlighted")!, tabTile: "客户")
     }
     
     //MARK: - 单独添加一个控制器

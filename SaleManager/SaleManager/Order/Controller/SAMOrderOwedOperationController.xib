@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1212" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SAMOrderOwedOperationController" customModule="SaleManager" customModuleProvider="target">
+            <connections>
+                <outlet property="agreeSendButton" destination="6lw-1j-NsF" id="cti-EB-4IE"/>
+                <outlet property="deleteButton" destination="DjZ-bR-cvd" id="tVb-Dv-ebH"/>
+                <outlet property="editBtnView" destination="5qT-nl-jme" id="WnY-uz-ZYS"/>
+                <outlet property="saveAndSendButton" destination="P90-P8-hXb" id="nqT-8o-OHy"/>
+                <outlet property="saveBtnView" destination="cHl-hH-TqO" id="WP3-OV-9Ll"/>
+                <outlet property="saveButton" destination="3af-ul-1PM" id="ZaJ-tO-ZcF"/>
+                <outlet property="saveEditButton" destination="aqR-UQ-urf" id="uiv-4D-bxR"/>
+                <outlet property="tableView" destination="YXQ-Tz-6b2" id="boR-di-aNY"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="YXQ-Tz-6b2">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="623"/>
+                    <color key="backgroundColor" red="0.94509803920000002" green="0.94117647059999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="separatorColor" red="0.94509803920000002" green="0.94117647059999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                </tableView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cHl-hH-TqO" userLabel="SaveButtonView">
+                    <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3af-ul-1PM">
+                            <rect key="frame" x="0.0" y="0.0" width="187" height="44"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <state key="normal" title="保存" backgroundImage="dateButtonBGImage"/>
+                            <state key="disabled" backgroundImage="dateButtonBGImage_highlighted">
+                                <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="saveBtnClick:" destination="-1" eventType="touchUpInside" id="3Pq-aV-8Sg"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P90-P8-hXb">
+                            <rect key="frame" x="188" y="0.0" width="187" height="44"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <state key="normal" title="保存并同意发货" backgroundImage="dateButtonBGImage"/>
+                            <state key="disabled" backgroundImage="dateButtonBGImage_highlighted">
+                                <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="saveAndSendBtnClick:" destination="-1" eventType="touchUpInside" id="Jn5-fg-ftr"/>
+                            </connections>
+                        </button>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gjF-FT-v4q">
+                            <rect key="frame" x="187" y="0.0" width="1" height="44"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="1" id="Rbc-Q7-vcd"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="P90-P8-hXb" firstAttribute="top" secondItem="cHl-hH-TqO" secondAttribute="top" id="5YW-oW-rOL"/>
+                        <constraint firstItem="gjF-FT-v4q" firstAttribute="leading" secondItem="3af-ul-1PM" secondAttribute="trailing" id="9XQ-Bn-Qeb"/>
+                        <constraint firstItem="gjF-FT-v4q" firstAttribute="centerX" secondItem="cHl-hH-TqO" secondAttribute="centerX" id="D4r-pp-eSz"/>
+                        <constraint firstItem="3af-ul-1PM" firstAttribute="leading" secondItem="cHl-hH-TqO" secondAttribute="leading" id="E3c-NG-82S"/>
+                        <constraint firstAttribute="bottom" secondItem="gjF-FT-v4q" secondAttribute="bottom" id="E5F-Xc-CMw"/>
+                        <constraint firstItem="3af-ul-1PM" firstAttribute="top" secondItem="cHl-hH-TqO" secondAttribute="top" id="TTW-CG-gSp"/>
+                        <constraint firstAttribute="bottom" secondItem="3af-ul-1PM" secondAttribute="bottom" id="eYz-q6-kjv"/>
+                        <constraint firstItem="P90-P8-hXb" firstAttribute="leading" secondItem="gjF-FT-v4q" secondAttribute="trailing" id="f1J-gN-gtZ"/>
+                        <constraint firstAttribute="bottom" secondItem="P90-P8-hXb" secondAttribute="bottom" id="gnf-5u-Pxt"/>
+                        <constraint firstAttribute="height" constant="44" id="hfe-QE-duQ"/>
+                        <constraint firstItem="gjF-FT-v4q" firstAttribute="top" secondItem="cHl-hH-TqO" secondAttribute="top" id="jb8-1D-aSQ"/>
+                        <constraint firstAttribute="trailing" secondItem="P90-P8-hXb" secondAttribute="trailing" id="rdV-NI-KMr"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5qT-nl-jme" userLabel="EditButtonView">
+                    <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="skw-ES-0aX" userLabel="LeftSeperaterView">
+                            <rect key="frame" x="125" y="0.0" width="1" height="44"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="1" id="ddl-cz-lp5"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k9g-X4-8lU" userLabel="RightSeperaterView">
+                            <rect key="frame" x="250" y="0.0" width="1" height="44"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="1" id="GES-JB-sbG"/>
+                            </constraints>
+                        </view>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DjZ-bR-cvd">
+                            <rect key="frame" x="0.0" y="0.0" width="125" height="44"/>
+                            <color key="backgroundColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <state key="normal" title="删除"/>
+                            <connections>
+                                <action selector="deleteBtnClick:" destination="-1" eventType="touchUpInside" id="EzC-Sy-veS"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aqR-UQ-urf">
+                            <rect key="frame" x="126" y="0.0" width="124" height="44"/>
+                            <color key="backgroundColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <state key="normal" title="保存修改" backgroundImage="dateButtonBGImage"/>
+                            <state key="disabled" backgroundImage="dateButtonBGImage_highlighted">
+                                <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="saveEditBtnClick:" destination="-1" eventType="touchUpInside" id="5Hj-76-LPS"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6lw-1j-NsF">
+                            <rect key="frame" x="251" y="0.0" width="124" height="44"/>
+                            <color key="backgroundColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <state key="normal" title="同意发货" backgroundImage="dateButtonBGImage"/>
+                            <state key="disabled" backgroundImage="dateButtonBGImage_highlighted">
+                                <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="agreeSendBtnClick:" destination="-1" eventType="touchUpInside" id="TGR-wq-AcY"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="DjZ-bR-cvd" firstAttribute="leading" secondItem="5qT-nl-jme" secondAttribute="leading" id="ABD-Yx-81b"/>
+                        <constraint firstItem="6lw-1j-NsF" firstAttribute="leading" secondItem="k9g-X4-8lU" secondAttribute="trailing" id="CCO-b5-hPe"/>
+                        <constraint firstAttribute="trailing" secondItem="6lw-1j-NsF" secondAttribute="trailing" id="Cn4-Gw-y5T"/>
+                        <constraint firstItem="k9g-X4-8lU" firstAttribute="leading" secondItem="aqR-UQ-urf" secondAttribute="trailing" id="GL3-e2-6ZP"/>
+                        <constraint firstAttribute="bottom" secondItem="DjZ-bR-cvd" secondAttribute="bottom" id="GVe-hh-jJy"/>
+                        <constraint firstAttribute="bottom" secondItem="6lw-1j-NsF" secondAttribute="bottom" id="HpL-4n-qYw"/>
+                        <constraint firstItem="skw-ES-0aX" firstAttribute="top" secondItem="5qT-nl-jme" secondAttribute="top" id="KKf-ve-zZl"/>
+                        <constraint firstAttribute="height" constant="44" id="Myw-z5-AjM"/>
+                        <constraint firstItem="aqR-UQ-urf" firstAttribute="top" secondItem="5qT-nl-jme" secondAttribute="top" id="NPY-F6-SwC"/>
+                        <constraint firstAttribute="bottom" secondItem="aqR-UQ-urf" secondAttribute="bottom" id="SmK-5y-YZB"/>
+                        <constraint firstAttribute="bottom" secondItem="k9g-X4-8lU" secondAttribute="bottom" id="Vv0-UB-Ggg"/>
+                        <constraint firstItem="k9g-X4-8lU" firstAttribute="centerX" secondItem="5qT-nl-jme" secondAttribute="centerX" multiplier="1.33333" id="WVH-YX-Gad"/>
+                        <constraint firstItem="skw-ES-0aX" firstAttribute="centerX" secondItem="5qT-nl-jme" secondAttribute="centerX" multiplier="0.666667" id="WX5-a6-3os"/>
+                        <constraint firstItem="skw-ES-0aX" firstAttribute="leading" secondItem="DjZ-bR-cvd" secondAttribute="trailing" id="b9L-IW-NIP"/>
+                        <constraint firstItem="6lw-1j-NsF" firstAttribute="top" secondItem="5qT-nl-jme" secondAttribute="top" id="fVt-ek-Ci5"/>
+                        <constraint firstItem="aqR-UQ-urf" firstAttribute="leading" secondItem="skw-ES-0aX" secondAttribute="trailing" id="ibU-0C-CI4"/>
+                        <constraint firstItem="k9g-X4-8lU" firstAttribute="top" secondItem="5qT-nl-jme" secondAttribute="top" id="nxM-nI-3Zc"/>
+                        <constraint firstItem="DjZ-bR-cvd" firstAttribute="top" secondItem="5qT-nl-jme" secondAttribute="top" id="tZn-MW-6wq"/>
+                        <constraint firstAttribute="bottom" secondItem="skw-ES-0aX" secondAttribute="bottom" id="vmc-8q-ICE"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="cHl-hH-TqO" secondAttribute="bottom" id="Cmn-qZ-BDD"/>
+                <constraint firstItem="YXQ-Tz-6b2" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="E81-Ll-CWJ"/>
+                <constraint firstAttribute="trailing" secondItem="5qT-nl-jme" secondAttribute="trailing" id="FLp-WN-6jf"/>
+                <constraint firstItem="YXQ-Tz-6b2" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="HQ0-jA-Jzu"/>
+                <constraint firstItem="cHl-hH-TqO" firstAttribute="top" secondItem="YXQ-Tz-6b2" secondAttribute="bottom" id="eKQ-kp-Rp4"/>
+                <constraint firstAttribute="trailing" secondItem="YXQ-Tz-6b2" secondAttribute="trailing" id="jNb-eg-7El"/>
+                <constraint firstAttribute="bottom" secondItem="5qT-nl-jme" secondAttribute="bottom" id="nFM-pj-sLh"/>
+                <constraint firstItem="5qT-nl-jme" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="pqn-fH-IgC"/>
+                <constraint firstAttribute="trailing" secondItem="cHl-hH-TqO" secondAttribute="trailing" id="uYw-ab-kau"/>
+                <constraint firstItem="cHl-hH-TqO" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="zvc-ng-zsY"/>
+            </constraints>
+            <point key="canvasLocation" x="32.5" y="105.5"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="dateButtonBGImage" width="60" height="35"/>
+        <image name="dateButtonBGImage_highlighted" width="60" height="35"/>
+    </resources>
+</document>

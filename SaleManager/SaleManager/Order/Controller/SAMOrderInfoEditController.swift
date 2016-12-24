@@ -32,22 +32,31 @@ class SAMOrderInfoEditController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightButton)
         rightButton.isEnabled = false
         
-        //监听文本框
+        //监听文本框，并设置代理
         contentTextField.addTarget(self, action: #selector(SAMOrderInfoEditController.textFieldEditChange), for: .editingChanged)
-        
+        contentTextField.delegate = self
     }
     
+    //MARK: - viewWillAppear
     override func viewWillAppear(_ animated: Bool) {
         
         //赋值文本框
         contentTextField.text = orderTitleModel?.cellContent
         
         //设置不同内容设置键盘类型
-        if orderTitleModel!.cellTitle == "客户" || orderTitleModel!.cellTitle == "备注" {
+        if orderTitleModel!.cellTitle == "备注" {
             contentTextField.keyboardType = UIKeyboardType.default
+        }else if orderTitleModel!.cellTitle == "交货日期" {
+            contentTextField.inputView = datePicker
         }else {
             contentTextField.keyboardType = UIKeyboardType.decimalPad
         }
+    }
+    
+    //MARK: - viewDidAppear
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        contentTextField.becomeFirstResponder()
     }
     
     //MARK: - 左边按钮点击事件
@@ -57,7 +66,7 @@ class SAMOrderInfoEditController: UIViewController {
     
     //MARK: - 左边按钮点击事件
     func rightButtonClick() {
-        
+        contentTextField.resignFirstResponder()
         orderTitleModel?.cellContent = contentTextField.text!.lxm_stringByTrimmingWhitespace()!
         navigationController!.popViewController(animated: true)
     }
@@ -70,10 +79,24 @@ class SAMOrderInfoEditController: UIViewController {
             rightButton.isEnabled = true
         }
     }
-
+    
+    //时间选择器 选择时间
+    func dateChanged(_ datePicker: UIDatePicker) {
+        
+        //设置文本框时间
+        contentTextField.text = datePicker.date.yyyyMMddStr()
+        
+        //调用文本框监听方法
+        textFieldEditChange()
+    }
+    
     //MARK: - 属性
     ///编辑的数据模型
-    fileprivate var orderTitleModel: SAMOrderBuildTitleModel?
+    fileprivate var orderTitleModel: SAMOrderBuildTitleModel? {
+        didSet{
+            isEditTitle = (orderTitleModel?.cellTitle == "备注" || orderTitleModel?.cellTitle == "交货日期") ? true : false
+        }
+    }
     
     ///当前是编辑文字，否则是编辑数字
     fileprivate var isEditTitle: Bool = true
@@ -91,6 +114,14 @@ class SAMOrderInfoEditController: UIViewController {
 
         return button
     }()
+    
+    ///时间选择器
+    fileprivate lazy var datePicker: UIDatePicker? = {
+        let datePicker = UIDatePicker()
+        datePicker.datePickerMode = UIDatePickerMode.date
+        datePicker.addTarget(self, action: #selector(SAMOrderInfoEditController.dateChanged(_:)), for: .valueChanged)
+        return datePicker
+    }()
 
     //MARK: - xib链接属性
     @IBOutlet weak var contentTextField: UITextField!
@@ -102,7 +133,6 @@ class SAMOrderInfoEditController: UIViewController {
     fileprivate override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
-    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -110,5 +140,86 @@ class SAMOrderInfoEditController: UIViewController {
         //从xib加载view
         view = Bundle.main.loadNibNamed("SAMOrderInfoEditController", owner: self, options: nil)![0] as! UIView
     }
+}
 
+//MARK: - 文本框代理 UITextFieldDelegate
+extension SAMOrderInfoEditController: UITextFieldDelegate {
+
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        //如果当前是文本编辑
+        if isEditTitle {
+            return true
+        }
+        
+        //获取当前文本
+        let str = textField.text
+        if str == "" {
+            return true
+        }
+        
+        //如果第一个是小数点就删除小数点
+        if str == "." {
+            textField.text = ""
+            return true
+        }
+        
+        //如果第一个是0
+        if str == "0" {
+            
+            //如果第二个是小数点，允许输入
+            if string == "." {
+                
+                return true
+            }else { //如果第二个不是是小数点，删除第一个0
+                
+                textField.text = ""
+                return true
+            }
+        }
+        
+        //如果输入小数点，且当前文本已经有小数点，不让输入
+        if (str!.contains(".")) && (string == ".") {
+            return false
+        }
+        
+        return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        
+        //如果是文本编辑就直接返回
+        if isEditTitle {
+            return
+        }
+        
+        //获取文本字符串
+        var str = textField.text
+        
+        //如果是空字符串，就赋值文本框，返回
+        if str == ""  {
+            contentTextField.text = "0"
+            return
+        }
+        
+        //截取最后一个小数点
+        str = str?.lxm_stringByTrimmingLastIfis(".")
+        
+        //如果截取后没有字符，或者为0，则赋值
+        if str == "" || str == "0"  {
+            contentTextField.text = "0"
+            return
+        }
+        
+        //赋值文本框
+        textField.text = str
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        //结束第一响应者
+        textField.resignFirstResponder()
+        
+        return true
+    }
 }
