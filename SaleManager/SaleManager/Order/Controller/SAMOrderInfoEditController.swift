@@ -64,7 +64,7 @@ class SAMOrderInfoEditController: UIViewController {
         navigationController!.popViewController(animated: true)
     }
     
-    //MARK: - 左边按钮点击事件
+    //MARK: - 右边按钮点击事件
     func rightButtonClick() {
         contentTextField.resignFirstResponder()
         orderTitleModel?.cellContent = contentTextField.text!.lxm_stringByTrimmingWhitespace()!

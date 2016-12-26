@@ -16,13 +16,6 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="55"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KLG-QG-3Jd">
-                    <rect key="frame" x="0.0" y="54" width="375" height="1"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="1" id="keL-2Q-GP4"/>
-                    </constraints>
-                </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="匹数" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NUI-f5-YvY">
                     <rect key="frame" x="0.0" y="33" width="75" height="17"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -59,9 +52,11 @@
                         <constraint firstAttribute="height" constant="30" id="1EF-7o-xyD"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <state key="normal" title="添加">
+                    <state key="normal" image="productAddToShoppingCar_normal">
                         <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
+                    <state key="disabled" image="productAddToShoppingCar_disable"/>
+                    <state key="highlighted" image="productAddToShoppingCar_normal"/>
                     <connections>
                         <action selector="AddBtnClick:" destination="iN0-l3-epB" eventType="touchUpInside" id="d41-2a-cnG"/>
                     </connections>
@@ -69,17 +64,15 @@
             </subviews>
             <color key="backgroundColor" red="0.94509803920000002" green="0.94117647059999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="KLG-QG-3Jd" secondAttribute="bottom" id="2Xm-if-TjZ"/>
                 <constraint firstItem="fq7-Js-G8U" firstAttribute="centerY" secondItem="NUI-f5-YvY" secondAttribute="centerY" id="6sq-hh-8iu"/>
-                <constraint firstItem="NUI-f5-YvY" firstAttribute="width" secondItem="KLG-QG-3Jd" secondAttribute="width" multiplier="0.2" id="8Ow-3U-fyi"/>
-                <constraint firstItem="KLG-QG-3Jd" firstAttribute="top" secondItem="NUI-f5-YvY" secondAttribute="bottom" constant="4" id="COx-qF-5HL"/>
                 <constraint firstItem="3oc-WS-AXN" firstAttribute="centerY" secondItem="NUI-f5-YvY" secondAttribute="centerY" id="CxQ-6E-afa"/>
+                <constraint firstAttribute="bottom" secondItem="NUI-f5-YvY" secondAttribute="bottom" constant="5" id="Dsv-yY-ATm"/>
                 <constraint firstItem="fq7-Js-G8U" firstAttribute="width" secondItem="NUI-f5-YvY" secondAttribute="width" id="EJY-eY-ilZ"/>
                 <constraint firstItem="0ZT-aS-ax0" firstAttribute="width" secondItem="NUI-f5-YvY" secondAttribute="width" id="Fbc-td-HlN"/>
                 <constraint firstItem="0ZT-aS-ax0" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="H4B-hT-lxj"/>
+                <constraint firstItem="NUI-f5-YvY" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" multiplier="0.2" id="I2v-BE-3Gm"/>
                 <constraint firstItem="4xF-aB-fYi" firstAttribute="width" secondItem="NUI-f5-YvY" secondAttribute="width" id="KW3-pP-VCH"/>
                 <constraint firstAttribute="trailing" secondItem="0ZT-aS-ax0" secondAttribute="trailing" id="KYk-YC-vxF"/>
-                <constraint firstItem="KLG-QG-3Jd" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="NKZ-lt-BhH"/>
                 <constraint firstItem="96r-y0-UNT" firstAttribute="leading" secondItem="3oc-WS-AXN" secondAttribute="trailing" id="Rhk-La-e6G"/>
                 <constraint firstItem="4xF-aB-fYi" firstAttribute="centerY" secondItem="NUI-f5-YvY" secondAttribute="centerY" id="XmR-xE-PXi"/>
                 <constraint firstItem="96r-y0-UNT" firstAttribute="width" secondItem="NUI-f5-YvY" secondAttribute="width" id="c5P-Me-qnz"/>
@@ -87,13 +80,19 @@
                 <constraint firstItem="96r-y0-UNT" firstAttribute="centerY" secondItem="NUI-f5-YvY" secondAttribute="centerY" id="mgE-GZ-knI"/>
                 <constraint firstItem="NUI-f5-YvY" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="nTo-oM-Cfr"/>
                 <constraint firstItem="4xF-aB-fYi" firstAttribute="leading" secondItem="fq7-Js-G8U" secondAttribute="trailing" id="oPT-ej-bob"/>
-                <constraint firstAttribute="trailing" secondItem="KLG-QG-3Jd" secondAttribute="trailing" id="r7O-p9-Ojb"/>
                 <constraint firstItem="fq7-Js-G8U" firstAttribute="leading" secondItem="96r-y0-UNT" secondAttribute="trailing" id="yt7-3u-LJU"/>
                 <constraint firstItem="3oc-WS-AXN" firstAttribute="width" secondItem="NUI-f5-YvY" secondAttribute="width" id="zr5-Aq-wos"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="addProductButton" destination="0ZT-aS-ax0" id="PBv-Z6-omz"/>
+            </connections>
             <point key="canvasLocation" x="36.5" y="-1.5"/>
         </view>
     </objects>
+    <resources>
+        <image name="productAddToShoppingCar_disable" width="23" height="21"/>
+        <image name="productAddToShoppingCar_normal" width="23" height="21"/>
+    </resources>
 </document>

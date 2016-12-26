@@ -563,13 +563,13 @@ extension SAMShoppingCarController: UITableViewDelegate {
             let stockVC = SAMStockViewController.instance(shoppingCarListModel: model, type: .requestStock)
             self.navigationController?.pushViewController(stockVC, animated: true)
         }
-        equiryAction.backgroundColor = UIColor.randomColor()
+        equiryAction.backgroundColor = UIColor(red: 0, green: 255 / 255.0, blue: 127 / 255.0, alpha: 1.0)
         
         /*******************  编辑按钮  ********************/
         let editAction = UITableViewRowAction(style: .default, title: "编辑") { (action, indexPath) in
             self.showShoppingCar(editModel: model)
         }
-        editAction.backgroundColor = UIColor.randomColor()
+        editAction.backgroundColor = customBlueColor
         
         //操作数组
         return[editAction, equiryAction]

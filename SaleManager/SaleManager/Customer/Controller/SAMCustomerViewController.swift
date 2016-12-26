@@ -23,7 +23,7 @@ private let SAMCustomerCellNormalColor = UIColor.white
 ///cell正常size
 private let SAMCustomerCellNormalSize = CGSize(width: ScreenW, height: 91)
 ///cell选中背景色
-private let SAMCustomerCellSelectedColor = mainColor_green
+private let SAMCustomerCellSelectedColor = customBlueColor
 ///cell选中size
 private let SAMCustomerCellSelectedSize = CGSize(width: ScreenW, height: 160)
 
@@ -33,6 +33,7 @@ class SAMCustomerViewController: UIViewController {
     class func instance(controllerType: Type) -> SAMCustomerViewController {
         let vc = SAMCustomerViewController()
         vc.controllerType = controllerType
+        
         return vc
     }
     
@@ -78,6 +79,8 @@ class SAMCustomerViewController: UIViewController {
         if controllerType == .OrderBuild {
             let addBtn = UIButton(type: .custom)
             addBtn.setTitle("选择", for: .normal)
+            
+            addBtn.setTitleColor(UIColor(red: 75 / 255.0, green: 75 / 255.0, blue: 75 / 255.0, alpha: 1.0), for: .normal)
             addBtn.addTarget(self, action: #selector(SAMCustomerViewController.chooseCustomer), for: .touchUpInside)
             addBtn.sizeToFit()
             
@@ -107,6 +110,8 @@ class SAMCustomerViewController: UIViewController {
     
     //MARK: - 初始化collectionView
     fileprivate func setupCollectionView() {
+        
+        collectionView.showsVerticalScrollIndicator = false
         
         //设置代理数据源
         collectionView.delegate = self

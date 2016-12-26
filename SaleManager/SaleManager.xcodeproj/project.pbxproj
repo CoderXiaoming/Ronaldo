@@ -49,6 +49,8 @@
 		18A63B2F1DE7D5BF00869ABB /* SAMStockProductCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18A63B2D1DE7D5BF00869ABB /* SAMStockProductCell.xib */; };
 		18ABA9561DDB4EE100B503F0 /* SAMUserAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18ABA9551DDB4EE100B503F0 /* SAMUserAuth.swift */; };
 		18B089D31DD7EC9900CDF36D /* SAMNetWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B089D21DD7EC9900CDF36D /* SAMNetWorker.swift */; };
+		18B7CF951E10E8AD009F42C5 /* SAMForSaleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B7CF941E10E8AD009F42C5 /* SAMForSaleModel.swift */; };
+		18B7CF971E111681009F42C5 /* customerGradientColor.plist in Resources */ = {isa = PBXBuildFile; fileRef = 18B7CF961E111681009F42C5 /* customerGradientColor.plist */; };
 		18BA151D1DFA8E2E003D524C /* SAMOrderDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18BA151B1DFA8E2E003D524C /* SAMOrderDetailController.swift */; };
 		18BA151E1DFA8E2E003D524C /* SAMOrderDetailController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18BA151C1DFA8E2E003D524C /* SAMOrderDetailController.xib */; };
 		18BA15201DFAAA7C003D524C /* SAMSaleOrderDetailListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18BA151F1DFAAA7C003D524C /* SAMSaleOrderDetailListModel.swift */; };
@@ -87,14 +89,10 @@
 		18DE1AE41E0912C300E69965 /* SAMOrderDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DE1AE31E0912C300E69965 /* SAMOrderDetailModel.swift */; };
 		18DE1AED1E0BBBA400E69965 /* SAMComOperationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DE1AEB1E0BBBA400E69965 /* SAMComOperationController.swift */; };
 		18DE1AEE1E0BBBA400E69965 /* SAMComOperationController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18DE1AEC1E0BBBA400E69965 /* SAMComOperationController.xib */; };
-		18DE1AF71E0C06AF00E69965 /* SAMOrderManagerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DE1AF51E0C06AF00E69965 /* SAMOrderManagerCell.swift */; };
-		18DE1AF81E0C06AF00E69965 /* SAMOrderManagerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18DE1AF61E0C06AF00E69965 /* SAMOrderManagerCell.xib */; };
-		18DE1AFB1E0C06FD00E69965 /* SAMSaleInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DE1AF91E0C06FD00E69965 /* SAMSaleInfoCell.swift */; };
-		18DE1AFC1E0C06FD00E69965 /* SAMSaleInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18DE1AFA1E0C06FD00E69965 /* SAMSaleInfoCell.xib */; };
 		18DE1AFE1E0C076A00E69965 /* SAMOrderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DE1AFD1E0C076A00E69965 /* SAMOrderModel.swift */; };
 		18DE1B001E0C07CD00E69965 /* SAMSaleOrderInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DE1AFF1E0C07CD00E69965 /* SAMSaleOrderInfoModel.swift */; };
-		18DE1B031E0CBDE600E69965 /* SAMOwedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DE1B011E0CBDE600E69965 /* SAMOwedCell.swift */; };
-		18DE1B041E0CBDE600E69965 /* SAMOwedCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18DE1B021E0CBDE600E69965 /* SAMOwedCell.xib */; };
+		18DE1B031E0CBDE600E69965 /* SAMComOperationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DE1B011E0CBDE600E69965 /* SAMComOperationCell.swift */; };
+		18DE1B041E0CBDE600E69965 /* SAMComOperationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18DE1B021E0CBDE600E69965 /* SAMComOperationCell.xib */; };
 		18DE1B061E0CC29A00E69965 /* SAMOwedInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DE1B051E0CC29A00E69965 /* SAMOwedInfoModel.swift */; };
 		18EC9B411DDC026F00E78C7E /* SAMCustomerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18EC9B401DDC026F00E78C7E /* SAMCustomerModel.swift */; };
 		18EC9B441DDC06C900E78C7E /* SAMCustomerCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18EC9B421DDC06C900E78C7E /* SAMCustomerCollectionCell.swift */; };
@@ -167,6 +165,8 @@
 		18A63B2D1DE7D5BF00869ABB /* SAMStockProductCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMStockProductCell.xib; sourceTree = "<group>"; };
 		18ABA9551DDB4EE100B503F0 /* SAMUserAuth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMUserAuth.swift; sourceTree = "<group>"; };
 		18B089D21DD7EC9900CDF36D /* SAMNetWorker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMNetWorker.swift; sourceTree = "<group>"; };
+		18B7CF941E10E8AD009F42C5 /* SAMForSaleModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMForSaleModel.swift; sourceTree = "<group>"; };
+		18B7CF961E111681009F42C5 /* customerGradientColor.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = customerGradientColor.plist; sourceTree = "<group>"; };
 		18BA151B1DFA8E2E003D524C /* SAMOrderDetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMOrderDetailController.swift; sourceTree = "<group>"; };
 		18BA151C1DFA8E2E003D524C /* SAMOrderDetailController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMOrderDetailController.xib; sourceTree = "<group>"; };
 		18BA151F1DFAAA7C003D524C /* SAMSaleOrderDetailListModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMSaleOrderDetailListModel.swift; sourceTree = "<group>"; };
@@ -211,14 +211,10 @@
 		18DE1AE31E0912C300E69965 /* SAMOrderDetailModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMOrderDetailModel.swift; sourceTree = "<group>"; };
 		18DE1AEB1E0BBBA400E69965 /* SAMComOperationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMComOperationController.swift; sourceTree = "<group>"; };
 		18DE1AEC1E0BBBA400E69965 /* SAMComOperationController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMComOperationController.xib; sourceTree = "<group>"; };
-		18DE1AF51E0C06AF00E69965 /* SAMOrderManagerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMOrderManagerCell.swift; sourceTree = "<group>"; };
-		18DE1AF61E0C06AF00E69965 /* SAMOrderManagerCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMOrderManagerCell.xib; sourceTree = "<group>"; };
-		18DE1AF91E0C06FD00E69965 /* SAMSaleInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMSaleInfoCell.swift; sourceTree = "<group>"; };
-		18DE1AFA1E0C06FD00E69965 /* SAMSaleInfoCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMSaleInfoCell.xib; sourceTree = "<group>"; };
 		18DE1AFD1E0C076A00E69965 /* SAMOrderModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMOrderModel.swift; sourceTree = "<group>"; };
 		18DE1AFF1E0C07CD00E69965 /* SAMSaleOrderInfoModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMSaleOrderInfoModel.swift; sourceTree = "<group>"; };
-		18DE1B011E0CBDE600E69965 /* SAMOwedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMOwedCell.swift; sourceTree = "<group>"; };
-		18DE1B021E0CBDE600E69965 /* SAMOwedCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMOwedCell.xib; sourceTree = "<group>"; };
+		18DE1B011E0CBDE600E69965 /* SAMComOperationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMComOperationCell.swift; sourceTree = "<group>"; };
+		18DE1B021E0CBDE600E69965 /* SAMComOperationCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMComOperationCell.xib; sourceTree = "<group>"; };
 		18DE1B051E0CC29A00E69965 /* SAMOwedInfoModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMOwedInfoModel.swift; sourceTree = "<group>"; };
 		18EC9B401DDC026F00E78C7E /* SAMCustomerModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMCustomerModel.swift; sourceTree = "<group>"; };
 		18EC9B421DDC06C900E78C7E /* SAMCustomerCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMCustomerCollectionCell.swift; sourceTree = "<group>"; };
@@ -509,6 +505,7 @@
 			isa = PBXGroup;
 			children = (
 				1808BD671DE140B800D79718 /* provinces.plist */,
+				18B7CF961E111681009F42C5 /* customerGradientColor.plist */,
 				18C2034F1DD322EF00C0117C /* SAMConstant.swift */,
 				18F4530C1DDF43E100574FCB /* SAMStringExtension.swift */,
 				1854292E1DF69DBF005BDAA6 /* NSDate+Extension.swift */,
@@ -653,6 +650,7 @@
 			isa = PBXGroup;
 			children = (
 				18DE1AFD1E0C076A00E69965 /* SAMOrderModel.swift */,
+				18B7CF941E10E8AD009F42C5 /* SAMForSaleModel.swift */,
 				18DE1AFF1E0C07CD00E69965 /* SAMSaleOrderInfoModel.swift */,
 				18DE1B051E0CC29A00E69965 /* SAMOwedInfoModel.swift */,
 			);
@@ -664,12 +662,8 @@
 			children = (
 				181259141E0DFFEB0068BBF9 /* SAMComOperationIndicaterView.swift */,
 				181259161E0DFFFA0068BBF9 /* SAMComOperationIndicaterView.xib */,
-				18DE1AF51E0C06AF00E69965 /* SAMOrderManagerCell.swift */,
-				18DE1AF61E0C06AF00E69965 /* SAMOrderManagerCell.xib */,
-				18DE1AF91E0C06FD00E69965 /* SAMSaleInfoCell.swift */,
-				18DE1AFA1E0C06FD00E69965 /* SAMSaleInfoCell.xib */,
-				18DE1B011E0CBDE600E69965 /* SAMOwedCell.swift */,
-				18DE1B021E0CBDE600E69965 /* SAMOwedCell.xib */,
+				18DE1B011E0CBDE600E69965 /* SAMComOperationCell.swift */,
+				18DE1B021E0CBDE600E69965 /* SAMComOperationCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -817,11 +811,9 @@
 			files = (
 				18F50F101DD5A94F00CEA8C9 /* SAMLoginController.xib in Resources */,
 				183FDC191E076B50007117E8 /* SAMOrderBuildBigCell.xib in Resources */,
-				18DE1B041E0CBDE600E69965 /* SAMOwedCell.xib in Resources */,
-				18DE1AF81E0C06AF00E69965 /* SAMOrderManagerCell.xib in Resources */,
+				18DE1B041E0CBDE600E69965 /* SAMComOperationCell.xib in Resources */,
 				183FDC291E07ED03007117E8 /* SAMOrderProductSectionFooterView.xib in Resources */,
 				187EA2891DE5AF41004523A4 /* SAMStockCodeSearchCell.xib in Resources */,
-				18DE1AFC1E0C06FD00E69965 /* SAMSaleInfoCell.xib in Resources */,
 				18BA15241DFAAFC4003D524C /* SAMOrderDetailListCell.xib in Resources */,
 				18C73D371E03DCE100A8BB8E /* SAMOrderOwedOperationController.xib in Resources */,
 				187EA27A1DE53295004523A4 /* SAMStockConditionalSearchController.xib in Resources */,
@@ -849,6 +841,7 @@
 				185429531DF906A8005BDAA6 /* SAMOrderDetailSmallCell.xib in Resources */,
 				18C203541DD477D800C0117C /* SAMStockViewController.xib in Resources */,
 				18C73D451E04DAC800A8BB8E /* SAMOrderInfoEditController.xib in Resources */,
+				18B7CF971E111681009F42C5 /* customerGradientColor.plist in Resources */,
 				180F9B271E00DCFB004FCBEA /* SAMShoppingCarListCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -939,14 +932,14 @@
 				18C203401DD30EA900C0117C /* SAMMainTabBarController.swift in Sources */,
 				18DE1AFE1E0C076A00E69965 /* SAMOrderModel.swift in Sources */,
 				18C73D5A1E06D94E00A8BB8E /* SAMImageAboveButton.swift in Sources */,
-				18DE1AF71E0C06AF00E69965 /* SAMOrderManagerCell.swift in Sources */,
 				18BA152B1DFB8093003D524C /* SAMOrderMishuCell.swift in Sources */,
 				187EA27C1DE5477F004523A4 /* SAMStockCategory.swift in Sources */,
 				187EA2881DE5AF41004523A4 /* SAMStockCodeSearchCell.swift in Sources */,
 				187618D91DF065B1000DF4A1 /* SAMProductImageController.swift in Sources */,
 				184570D41DE87E1F00F8AAB0 /* SAMStockProductDetailCell.swift in Sources */,
+				18B7CF951E10E8AD009F42C5 /* SAMForSaleModel.swift in Sources */,
 				18A63B2E1DE7D5BF00869ABB /* SAMStockProductCell.swift in Sources */,
-				18DE1B031E0CBDE600E69965 /* SAMOwedCell.swift in Sources */,
+				18DE1B031E0CBDE600E69965 /* SAMComOperationCell.swift in Sources */,
 				18ABA9561DDB4EE100B503F0 /* SAMUserAuth.swift in Sources */,
 				18DE1B061E0CC29A00E69965 /* SAMOwedInfoModel.swift in Sources */,
 				18F50F0F1DD5A94F00CEA8C9 /* SAMLoginController.swift in Sources */,
@@ -955,7 +948,6 @@
 				185D10101DDD4EC300556D17 /* SAMHUD.swift in Sources */,
 				185429521DF906A8005BDAA6 /* SAMOrderDetailSmallCell.swift in Sources */,
 				18C203481DD30FEC00C0117C /* LXMCodeViewController.swift in Sources */,
-				18DE1AFB1E0C06FD00E69965 /* SAMSaleInfoCell.swift in Sources */,
 				185429561DF90722005BDAA6 /* SAMOrderDetailBigCell.swift in Sources */,
 				18C2034C1DD3100900C0117C /* SAMCustomerViewController.swift in Sources */,
 				184570D11DE80D3E00F8AAB0 /* SAMStockProductModel.swift in Sources */,

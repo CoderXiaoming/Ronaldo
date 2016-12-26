@@ -57,6 +57,8 @@ class SAMStockConditionalSearchController: UIViewController {
         
         //设置 分类/仓库 选择器
         categoryTF.inputView = categoryPickerView
+        
+        
         storehouseTF.inputView = storehousePickerView
         
         //设置搜索按钮外观

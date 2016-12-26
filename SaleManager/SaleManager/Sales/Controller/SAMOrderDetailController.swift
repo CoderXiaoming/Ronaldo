@@ -41,7 +41,7 @@ class SAMOrderDetailController: UIViewController {
     fileprivate func setupCollectionView() {
         
         //设置内容边距
-        collectionView.contentInset = UIEdgeInsets(top: 5, left: 0, bottom: 10, right: 0)
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         
         //设置代理数据源
         collectionView.delegate = self
@@ -157,7 +157,7 @@ class SAMOrderDetailController: UIViewController {
     
     //MARK: - 属性懒加载
     ///左边标题数组
-    fileprivate let titles = [["仓库", "备注"], ["运费金额", "其他金额", "应收金额", "本单毛利"], ["本次收款", "收款账户"], ["应收余额"], ["货运公司", "快递单号", "业务员", "拼包地址"]]
+    fileprivate let titles = [["仓库", "备注"], ["运费金额", "其他金额", "应收金额", "本单毛利"], ["本次收款", "收款账户", "应收余额"], ["货运公司", "快递单号", "业务员", "拼包地址"]]
     
     ///右边文字内容数组
     fileprivate var titleContents: [[String]]?
@@ -205,7 +205,7 @@ class SAMOrderDetailController: UIViewController {
             let PBAddressStr = orderDetailModel!.PBAddress != "" ? orderDetailModel!.PBAddress : "---"
             
             //设置右边文字内容数组
-            titleContents = [[storehouseNameStr!, memoInfoStr!], [freightFeeStr!, cutMoneyStr!, actualMoneyStr!, profitsStr!], [receivedMoneyStr!, accountNameStr!], [dueMoneyStr!], [freightCompanyStr!, freightNumberStr!, employeeNameStr!, PBAddressStr!]]
+            titleContents = [[storehouseNameStr!, memoInfoStr!], [freightFeeStr!, cutMoneyStr!, actualMoneyStr!, profitsStr!], [receivedMoneyStr!, accountNameStr!, dueMoneyStr!], [freightCompanyStr!, freightNumberStr!, employeeNameStr!, PBAddressStr!]]
         }
     }
     

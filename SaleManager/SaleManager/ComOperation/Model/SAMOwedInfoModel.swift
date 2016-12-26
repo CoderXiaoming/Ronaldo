@@ -34,4 +34,23 @@ class SAMOwedInfoModel: NSObject {
     ///状态：欠货中，已完成，已删除
     var iState: String?
     
+    //MARK: - 附加属性
+    ///用户数据模型
+    var orderCustomerModel: SAMCustomerModel? {
+        //简单创建用户数据模型
+        let model = SAMCustomerModel()
+        model.CGUnitName = CGUnitName
+        model.id = CGUnitID
+        return model
+    }
+    
+    ///当前欠货的产品数据模型
+    var stockModel: SAMStockProductModel? {
+        //简单创建当前欠货的产品数据模型
+        let model = SAMStockProductModel()
+        model.productIDName = productIDName
+        model.id = productID
+        return model
+    }
+    
 }

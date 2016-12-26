@@ -30,26 +30,17 @@
                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TxP-pU-oM4" userLabel="BottomSeperaterView">
-                        <rect key="frame" x="10" y="42" width="277" height="1"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="1" id="wyx-gm-hIl"/>
-                        </constraints>
-                    </view>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="u8O-xv-krb" secondAttribute="trailing" id="3rW-Pp-b4Q"/>
-                    <constraint firstAttribute="trailing" secondItem="TxP-pU-oM4" secondAttribute="trailing" id="B3C-Rq-uIc"/>
-                    <constraint firstAttribute="bottom" secondItem="TxP-pU-oM4" secondAttribute="bottom" id="PPL-xh-yju"/>
                     <constraint firstItem="eo8-xP-6pZ" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Zl8-2r-PLf"/>
                     <constraint firstItem="eo8-xP-6pZ" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="q3G-mt-dke"/>
-                    <constraint firstItem="TxP-pU-oM4" firstAttribute="leading" secondItem="eo8-xP-6pZ" secondAttribute="leading" id="r70-fp-6GF"/>
                     <constraint firstItem="u8O-xv-krb" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="yni-QZ-Z0S"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="contentLabel" destination="u8O-xv-krb" id="Fy0-Cz-g5O"/>
+                <outlet property="contentLabelTrailingDistance" destination="3rW-Pp-b4Q" id="Zag-sh-Bke"/>
                 <outlet property="titleLabel" destination="eo8-xP-6pZ" id="9BJ-7y-SKd"/>
             </connections>
         </tableViewCell>

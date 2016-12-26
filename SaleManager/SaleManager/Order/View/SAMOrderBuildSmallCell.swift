@@ -28,19 +28,24 @@ class SAMOrderBuildSmallCell: UITableViewCell {
         }
     }
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    //MARK: - 对外提供的，当不可编辑时设置cell的样式
+    func setCellEditDisabledStyle() {
+    
+        accessoryType = .none
+        contentLabelTrailingDistance.constant = 15
     }
     
+    //MARK: - 对外提供的，当可编辑时设置cell的样式
+    func setCellEditEnabledStyle() {
+        
+        accessoryType = .disclosureIndicator
+        contentLabelTrailingDistance.constant = 0
+    }
     
     //MARK: - XIB链接属性
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var contentLabel: UILabel!
+    
+    @IBOutlet weak var contentLabelTrailingDistance: NSLayoutConstraint!
+    
 }

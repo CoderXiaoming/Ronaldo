@@ -44,8 +44,7 @@ class SAMOrderOwedOperationController: UIViewController {
         vc.productToOrderModels = orderInfoModel.productListModels
         
         //记录控制器状态
-        vc.couldEditOrder = !orderInfoModel.isAgreeSend
-        vc.isCheckOrder = true
+        vc.couldEdit = !orderInfoModel.isAgreeSend
         
         vc.hidesBottomBarWhenPushed = true
         return vc
@@ -66,8 +65,11 @@ class SAMOrderOwedOperationController: UIViewController {
     class func checkOwe(oweInfoModel: SAMOwedInfoModel, type: OrderOwedOperationControllerType) -> SAMOrderOwedOperationController {
         
         let vc = SAMOrderOwedOperationController()
-        vc.controllerType = type
         vc.oweModel = oweInfoModel
+        
+        //记录控制器状态
+        vc.controllerType = type
+        vc.couldEdit = (oweInfoModel.iState! == "欠货中") ? true : false
         
         vc.hidesBottomBarWhenPushed = true
         return vc
@@ -101,26 +103,6 @@ class SAMOrderOwedOperationController: UIViewController {
         case OrderOwedOperationControllerType.checkOwe:
             if checkOwe != nil {
                 checkOwe!()
-            }else {
-                break
-            }
-        }
-    }
-    
-    //MARK: - 根据不同控制器类型执行不同的事情(两种)
-    fileprivate func performByControllerType(order: (()->())?, owe: (()->())?) {
-        
-        switch controllerType! {
-        case OrderOwedOperationControllerType.buildOrder, OrderOwedOperationControllerType.checkOrder:
-            if order != nil {
-                order!()
-            }else {
-                break
-            }
-            
-        case OrderOwedOperationControllerType.buildOwe, OrderOwedOperationControllerType.checkOwe:
-            if owe != nil {
-                owe!()
             }else {
                 break
             }
@@ -167,6 +149,10 @@ class SAMOrderOwedOperationController: UIViewController {
         }) {
             self.titles = [[["客户", self.oweModel!.CGUnitName!], ["交货日期", self.oweModel!.endDate!]], [["产品型号", self.oweModel!.productIDName!], ["匹数", String(format: "%d", self.oweModel!.countP)], ["米数", String(format: "%.1f", self.oweModel!.countM)]], [["备注", self.oweModel!.memoInfo!], ["状态", self.oweModel!.iState!]]]
             self.saveUrlStr = "OOSRecordEdit.ashx"
+            //设置用户
+            self.orderCustomerModel = self.oweModel?.orderCustomerModel!
+            //设置产品数据模型
+            self.stockModel = self.oweModel?.stockModel!
         }
         
         for section in 0...(titles.count - 1) {
@@ -202,9 +188,15 @@ class SAMOrderOwedOperationController: UIViewController {
         }, checkOrder: {
             //展示编辑按钮父控件
             self.editBtnView.isHidden = false
-            self.saveEditButton.isEnabled = !self.orderInfoModel!.isAgreeSend
-            self.agreeSendButton.isEnabled = !self.orderInfoModel!.isAgreeSend
-            self.navigationItem.title = "订单详情"
+            if !self.orderInfoModel!.isAgreeSend { //还未发货
+                
+                self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "发货", style: .plain, target: self, action: #selector(SAMOrderOwedOperationController.orderAgreeToSend))
+                self.navigationItem.title = "订单详情(未发货)"
+            }else { //已发货
+                self.saveEditButton.isEnabled = false
+                self.navigationItem.title = "订单详情(已发货)"
+            }
+            
         }, buildOwe: {
             //隐藏编辑按钮父控件
             self.editBtnView.isHidden = true
@@ -212,12 +204,20 @@ class SAMOrderOwedOperationController: UIViewController {
         }) {
             //展示编辑按钮父控件
             self.editBtnView.isHidden = false
+            self.saveEditButton.isEnabled = self.couldEdit
             self.navigationItem.title = "缺货详情"
         }
+        
+        //设置返回按钮
+        let backItem = UIBarButtonItem()
+        backItem.title = ""
+        navigationItem.backBarButtonItem = backItem
     }
     
     //MARK: - 初始化设置tableView
     fileprivate func setupTableView() {
+        
+        tableView.showsVerticalScrollIndicator = false
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -225,6 +225,46 @@ class SAMOrderOwedOperationController: UIViewController {
         //注册CELL
         tableView.register(UINib.init(nibName: "SAMOrderBuildSmallCell", bundle: nil), forCellReuseIdentifier: SAMOrderBuildSmallCellReuseIdentifier)
         tableView.register(UINib.init(nibName: "SAMOrderBuildBigCell", bundle: nil), forCellReuseIdentifier: SAMOrderBuildBigCellReuseIdentifier)
+    }
+    
+    //MARK: - 订单同意发货调用的方法
+    func orderAgreeToSend() {
+        
+        let alertVC = UIAlertController(title: "确定发货？", message: nil, preferredStyle: .alert)
+        alertVC.addAction(UIAlertAction(title: "取消", style: .cancel, handler: nil))
+        alertVC.addAction(UIAlertAction(title: "确定", style: .destructive, handler: { (_) in
+            
+            //设置加载hud
+            let hud = SAMHUD.showAdded(to: KeyWindow, animated: true)!
+            hud.labelText = NSLocalizedString("请等待...", comment: "HUD loading title")
+            
+            SAMNetWorker.sharedNetWorker().get("OrderBillAgreeSend.ashx", parameters: ["billNumber": self.orderInfoModel!.billNumber!], progress: nil, success: { (task, json) in
+                
+                //获取状态字符串
+                let Json = json as! [String: AnyObject]
+                let dict = Json["head"] as! [String: String]
+                let state = dict["status"]
+                
+                if state == "success" { //发货成功
+                    
+                    hud.hide(true)
+                    let hud = SAMHUD.showMessage("发货成功", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+                    hud?.delegate = self
+                    
+                }else { //发货失败
+                    
+                    hud.hide(true)
+                    let _ = SAMHUD.showMessage("发货失败", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                }
+            }) { (task, error) in
+                
+                hud.hide(true)
+                let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            }
+        })
+        )
+        
+        present(alertVC, animated: true, completion: nil)
     }
     
     //MARK: - 监听的三个方法
@@ -241,8 +281,23 @@ class SAMOrderOwedOperationController: UIViewController {
         
         //赋值用户模型
         orderCustomerModel = notification.userInfo!["customerModel"] as? SAMCustomerModel
+        
+        if orderCustomerModel == nil {
+            //设置按钮状态
+            saveButton.isEnabled = false
+            return
+        }
+        
+        //赋值用户名
+        let orderTitleModel = self.titleModels[0][0]!
+        orderTitleModel.cellContent = orderCustomerModel!.CGUnitName!
+        
+        //设置按钮状态
+        saveButton.isEnabled = true
+        
+        //刷新数据
+        tableView.reloadRows(at: [IndexPath(item: 0, section: 0)], with: .none)
     }
-    
     //成功获取购物车数据模型通知的监听
     func productOperationViewGetModelSuccess(notification: NSNotification) {
         
@@ -286,7 +341,8 @@ class SAMOrderOwedOperationController: UIViewController {
         let dateStr = Date().yyyyMMddStr()
         let userID = SAMUserAuth.shareUser()!.id!
         
-        performByControllerType(order: { 
+        switch controllerType! {
+        case OrderOwedOperationControllerType.buildOrder, OrderOwedOperationControllerType.checkOrder:
             let employeeID = SAMUserAuth.shareUser()!.employeeID!
             let memoInfo = self.titleModels[0][1]!.cellContent
             let cutMoney = self.titleModels[2][0]!.cellContent
@@ -295,15 +351,24 @@ class SAMOrderOwedOperationController: UIViewController {
             let receiveMoney = self.titleModels[2][3]!.cellContent
             
             MainData = ["startDate": dateStr, "CGUnitID": CGUnitID, "employeeID": employeeID, "memoInfo": memoInfo, "cutMoney": cutMoney, "otherMoney": otherMoney, "totalMoney": totalMoney, "receiveMoney": receiveMoney, "userID": userID]
-        }) {
+            
+        case OrderOwedOperationControllerType.buildOwe, OrderOwedOperationControllerType.checkOwe:
             let endDate = self.titleModels[0][1]!.cellContent
+            if endDate == "" {
+                let _ = SAMHUD.showMessage("交货日期不能为空", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+                return
+            }
             let productID = self.stockModel!.id!
             let countP = self.titleModels[1][1]!.cellContent
             let countM = self.titleModels[1][2]!.cellContent
+            let mishu = Double.init(countM)!
+            if mishu == 0 {
+                let _ = SAMHUD.showMessage("米数必须大于0", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+                return
+            }
             let memoInfo = self.titleModels[2][0]!.cellContent
             
             MainData = ["CGUnitID": CGUnitID, "startDate": dateStr, "endDate": endDate, "productID": productID, "countP": countP, "countM": countM, "memoInfo": memoInfo, "userID": userID]
-
         }
         
         if controllerType! == OrderOwedOperationControllerType.checkOrder {
@@ -362,87 +427,63 @@ class SAMOrderOwedOperationController: UIViewController {
         }
     }
     
-    @IBAction func saveAndSendBtnClick(_ sender: Any) {
-    }
-    
     @IBAction func deleteBtnClick(_ sender: UIButton) {
         
-        //设置加载hud
-        let hud = SAMHUD.showAdded(to: KeyWindow, animated: true)!
-        hud.labelText = NSLocalizedString("请等待...", comment: "HUD loading title")
-        
-        //设置请求参数，请求路径
-        var requestURLStr: String?
-        var parameters: [String: String]?
-        switch controllerType! {
+        let alertVC = UIAlertController(title: "确定删除？", message: nil, preferredStyle: .alert)
+        alertVC.addAction(UIAlertAction(title: "取消", style: .cancel, handler: nil))
+        alertVC.addAction(UIAlertAction(title: "确定", style: .destructive, handler: { (_) in
+            
+            
+            //设置加载hud
+            let hud = SAMHUD.showAdded(to: KeyWindow, animated: true)!
+            hud.labelText = NSLocalizedString("请等待...", comment: "HUD loading title")
+            
+            //设置请求参数，请求路径
+            var requestURLStr: String?
+            var parameters: [String: String]?
+            switch self.controllerType! {
             case OrderOwedOperationControllerType.checkOrder:
                 requestURLStr = "OrderBillDelete.ashx"
-                parameters = ["billNumber": orderInfoModel!.billNumber!]
+                parameters = ["billNumber": self.orderInfoModel!.billNumber!]
             case OrderOwedOperationControllerType.checkOwe:
                 requestURLStr = "OOSRecordDelete.ashx"
-                parameters = ["id": oweModel!.id!]
+                parameters = ["id": self.oweModel!.id!]
             default:
                 break
-        }
-        
-        SAMNetWorker.sharedNetWorker().get(requestURLStr!, parameters: parameters!, progress: nil, success: { (task, json) in
-            
-            //获取状态字符串
-            let Json = json as! [String: AnyObject]
-            let dict = Json["head"] as! [String: String]
-            let state = dict["status"]
-            
-            if state == "success" { //删除成功
-                
-                hud.hide(true)
-                let _ = SAMHUD.showMessage("删除成功", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
-                self.navigationController!.popViewController(animated: true)
-            }else { //删除失败
-                
-                hud.hide(true)
-                let _ = SAMHUD.showMessage("删除失败", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
             }
-        }) { (task, error) in
             
-            hud.hide(true)
-            let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
-        }
+            SAMNetWorker.sharedNetWorker().get(requestURLStr!, parameters: parameters!, progress: nil, success: { (task, json) in
+                
+                //获取状态字符串
+                let Json = json as! [String: AnyObject]
+                let dict = Json["head"] as! [String: String]
+                let state = dict["status"]
+                
+                if state == "success" { //删除成功
+                    
+                    hud.hide(true)
+                    let hud = SAMHUD.showMessage("删除成功", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+                    hud?.delegate = self
+                }else { //删除失败
+                    
+                    hud.hide(true)
+                    let _ = SAMHUD.showMessage("删除失败", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                }
+            }) { (task, error) in
+                
+                hud.hide(true)
+                let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            }
+        })
+        )
+        
+        present(alertVC, animated: true, completion: nil)
     }
     
     @IBAction func saveEditBtnClick(_ sender: UIButton) {
         
         saveBtnClick(saveButton)
     }
-    @IBAction func agreeSendBtnClick(_ sender: UIButton) {
-        
-        //设置加载hud
-        let hud = SAMHUD.showAdded(to: KeyWindow, animated: true)!
-        hud.labelText = NSLocalizedString("请等待...", comment: "HUD loading title")
-        
-        SAMNetWorker.sharedNetWorker().get("OrderBillAgreeSend.ashx", parameters: ["billNumber": orderInfoModel!.billNumber!], progress: nil, success: { (task, json) in
-            
-            //获取状态字符串
-            let Json = json as! [String: AnyObject]
-            let dict = Json["head"] as! [String: String]
-            let state = dict["status"]
-            
-            if state == "success" { //发货成功
-                
-                hud.hide(true)
-                let _ = SAMHUD.showMessage("发货成功", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
-                self.navigationController!.popViewController(animated: true)
-            }else { //发货失败
-                
-                hud.hide(true)
-                let _ = SAMHUD.showMessage("发货失败", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
-            }
-        }) { (task, error) in
-            
-            hud.hide(true)
-            let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
-        }
-    }
-    
     
     //MARK: - 属性懒加载
     ///控制器类型
@@ -465,10 +506,8 @@ class SAMOrderOwedOperationController: UIViewController {
     ///保存URL (新建保存，和编辑保存，其他URL在各自方法中)
     fileprivate var saveUrlStr = "OrderBillAdd.ashx"
     
-    ///当前是否是查看订单状态
-    fileprivate var isCheckOrder: Bool = false
     ///当前是否可以编辑订单
-    fileprivate var couldEditOrder: Bool = true
+    fileprivate var couldEdit: Bool = true
     
     ///产品组footerView统计信息
     fileprivate lazy var productSectionFooterView = SAMOrderProductSectionFooterView.instance()
@@ -476,27 +515,7 @@ class SAMOrderOwedOperationController: UIViewController {
     fileprivate var productSectionCountArr = [Double]()
     
     ///接收的客户模型
-    fileprivate var orderCustomerModel: SAMCustomerModel? {
-        didSet{
-            if orderCustomerModel == nil {
-                //设置按钮状态
-                saveButton.isEnabled = false
-                saveAndSendButton.isEnabled = false
-                return
-            }
-            
-            //赋值用户名
-            let orderTitleModel = self.titleModels[0][0]!
-            orderTitleModel.cellContent = orderCustomerModel!.CGUnitName!
-            
-            //设置按钮状态
-            saveButton.isEnabled = true
-            saveAndSendButton.isEnabled = true
-            
-            //刷新数据
-            tableView.reloadRows(at: [IndexPath(item: 0, section: 0)], with: .none)
-        }
-    }
+    fileprivate var orderCustomerModel: SAMCustomerModel?
     
     ///购物车编辑控件
     fileprivate var productOperationView: SAMProductOperationView?
@@ -519,12 +538,10 @@ class SAMOrderOwedOperationController: UIViewController {
     
     @IBOutlet weak var saveBtnView: UIView!
     @IBOutlet weak var saveButton: UIButton!
-    @IBOutlet weak var saveAndSendButton: UIButton!
     
     @IBOutlet weak var editBtnView: UIView!
     @IBOutlet weak var deleteButton: UIButton!
     @IBOutlet weak var saveEditButton: UIButton!
-    @IBOutlet weak var agreeSendButton: UIButton!
     
     //MARK: - 其他方法
     fileprivate init() { //重写该方法，为单例服务
@@ -590,16 +607,29 @@ extension SAMOrderOwedOperationController: UITableViewDataSource {
                     
                     //取出模型，传递模型
                     cell.titleModel = titleModels[indexPath.section][indexPath.row]! as SAMOrderBuildTitleModel
+                    
+                    //如果该订单已经发货，则不可编辑，或者最后一组不可编辑
+                    if !couldEdit || (indexPath.section == titleModels.count - 1) {
+                        cell.setCellEditDisabledStyle()
+                    }else {
+                        cell.setCellEditEnabledStyle()
+                    }
                     return cell
                 }
 
-                
             case OrderOwedOperationControllerType.buildOwe, OrderOwedOperationControllerType.checkOwe:
             
                 let cell = tableView.dequeueReusableCell(withIdentifier: SAMOrderBuildSmallCellReuseIdentifier, for: indexPath) as! SAMOrderBuildSmallCell
                 
                 //取出模型，传递模型
                 cell.titleModel = titleModels[indexPath.section][indexPath.row]! as SAMOrderBuildTitleModel
+                
+                //如果该订单已经发货，则不可编辑，或者是转台栏
+                if !couldEdit || cell.titleModel?.cellTitle == "状态" {
+                    cell.setCellEditDisabledStyle()
+                }else {
+                    cell.setCellEditEnabledStyle()
+                }
                 return cell
         }
     }
@@ -627,60 +657,88 @@ extension SAMOrderOwedOperationController: UITableViewDelegate {
         
         switch controllerType! {
             case OrderOwedOperationControllerType.buildOrder, OrderOwedOperationControllerType.checkOrder:
-                if section == 1 {
-                    return 60
+                if section == 0 {
+                    return 20
+                }else if section == 1 {
+                    return 55
                 }else if section == 2 {
                     return 30
+                }else if section == 3 {
+                    return 20
                 }else {
                     return 0
                 }
                 
             case OrderOwedOperationControllerType.buildOwe, OrderOwedOperationControllerType.checkOwe:
-                return 44
+                if section != (titleModels.count - 1) {
+                    return 20
+                }else {
+                    return 0
+                }
         }
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         
-        switch controllerType! {
-            case OrderOwedOperationControllerType.buildOrder, OrderOwedOperationControllerType.checkOrder:
-                if section == 0 || section == 1 {
-                    return 0
-                }else {
-                    return 20
-            }
-                
-            case OrderOwedOperationControllerType.buildOwe, OrderOwedOperationControllerType.checkOwe:
-                return 20
+        if section == (titleModels.count - 1) {
+            return 20
+        }else {
+            return 0
         }
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
+        //透明View
+        let clearView = UIView(frame: CGRect(x: 0, y: 0, width: ScreenW, height: 20))
+        clearView.backgroundColor = UIColor.clear
+        
         if controllerType! == OrderOwedOperationControllerType.buildOwe || controllerType! == OrderOwedOperationControllerType.checkOwe {
-            return nil
+            return clearView
         }
         
         if section == 1 {
-            let view = SAMOrderProductSectionHeaderView.instance()
+            let view = SAMOrderProductSectionHeaderView.instance(couldAddProduct: couldEdit)
             view.delegate = self
             return view
         }else if section == 2 {
             return productSectionFooterView
         }else {
-            return nil
+            return clearView
         }
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        //透明View
+        let clearView = UIView(frame: CGRect(x: 0, y: 0, width: ScreenW, height: 20))
+        clearView.backgroundColor = UIColor.clear
+        return clearView
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        if indexPath == IndexPath(row: 0, section: 0) { //点击了客户栏
-            navigationController!.pushViewController(SAMCustomerViewController.instance(controllerType: .OrderBuild), animated: true)
-        }else if (indexPath == IndexPath(row: 0, section: 1)) || ((indexPath.section == 1) && (controllerType == OrderOwedOperationControllerType.buildOrder || controllerType == OrderOwedOperationControllerType.checkOrder)) { //点击了产品组 或者 第一组
-            
+        //如果当前不能编辑，则取消选中，返回
+        if !couldEdit {
             tableView.deselectRow(at: indexPath, animated: false)
-        }else {
+            return
+        }
+        
+        //点击cell的标题
+        let cellTitle = titleModels[indexPath.section][indexPath.row]!.cellTitle
+        
+        if cellTitle == "客户" { //点击了客户栏
+            navigationController!.pushViewController(SAMCustomerViewController.instance(controllerType: .OrderBuild), animated: true)
             
+        }else if (cellTitle == "交货日期") || (cellTitle == "状态") || (cellTitle == "产品型号") {
+            tableView.deselectRow(at: indexPath, animated: true)
+            
+        }else if ((indexPath.section == 1) && (controllerType == OrderOwedOperationControllerType.buildOrder || controllerType == OrderOwedOperationControllerType.checkOrder)) { //点击了产品组
+            tableView.deselectRow(at: indexPath, animated: true)
+            
+        }else if indexPath.section == 3 { //查看订单组中 日期、开单人。。。这组信息
+            tableView.deselectRow(at: indexPath, animated: true)
+            
+        }else {
             //取出模型
             let model = titleModels[indexPath.section][indexPath.row]!
             let editVC = SAMOrderInfoEditController.editInfo(orderTitleModel: model)
@@ -691,6 +749,10 @@ extension SAMOrderOwedOperationController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle { //这个方法要进行设置，不然其他行也可以左滑
         
         if controllerType! == OrderOwedOperationControllerType.buildOwe || controllerType! == OrderOwedOperationControllerType.checkOwe {
+            return .none
+        }
+        
+        if !couldEdit {
             return .none
         }
         
@@ -723,13 +785,13 @@ extension SAMOrderOwedOperationController: UITableViewDelegate {
                 let stockVC = SAMStockViewController.instance(shoppingCarListModel: model, type: .requestStock)
                 self.navigationController?.pushViewController(stockVC, animated: true)
             }
-            equiryAction.backgroundColor = UIColor.randomColor()
+            equiryAction.backgroundColor = UIColor(red: 0, green: 255 / 255.0, blue: 127 / 255.0, alpha: 1.0)
             
             /*******************  编辑按钮  ********************/
             let editAction = UITableViewRowAction(style: .default, title: "编辑") { (action, indexPath) in
                 self.showShoppingCar(editModel: model)
             }
-            editAction.backgroundColor = UIColor.randomColor()
+            editAction.backgroundColor = customBlueColor
             
             /*******************  删除按钮  ********************/
             let deleteAction = UITableViewRowAction(style: .normal, title: "删除") { (action, indexPath) in
@@ -743,7 +805,7 @@ extension SAMOrderOwedOperationController: UITableViewDelegate {
                 //动画删除该行CELL
                 self.tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .left)
             }
-            deleteAction.backgroundColor = UIColor.randomColor()
+            deleteAction.backgroundColor = UIColor(red: 255 / 255.0, green: 69 / 255.0, blue: 0, alpha: 1.0)
             
             //如果只有这组只有一个产品了，不显示删除按钮
             if self.productToOrderModels.count == 1 {
@@ -883,7 +945,6 @@ extension SAMOrderOwedOperationController: MBProgressHUDDelegate {
         
         //退出控制器
         navigationController!.popViewController(animated: true)
-       
     }
 }
 
