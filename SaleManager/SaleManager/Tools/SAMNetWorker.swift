@@ -9,8 +9,6 @@
 import UIKit
 import AFNetworking
 
-
-
 class SAMNetWorker: AFHTTPSessionManager {
     
     ///全局使用的netWorker单例

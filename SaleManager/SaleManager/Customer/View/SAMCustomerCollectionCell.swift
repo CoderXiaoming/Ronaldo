@@ -42,40 +42,44 @@ class SAMCustomerCollectionCell: UICollectionViewCell {
             }else {
                 phoneLabel.text = "---"
             }
-            
-            //设置 faxLabel
-            if customerModel?.faxNumber != "" {
-                faxLabel.text = customerModel?.faxNumber
-            }else {
-                faxLabel.text = "---"
-            }
-            
-            //设置 telLabel
-            if customerModel?.phoneNumber != "" {
-                telLabel.text = customerModel?.phoneNumber
-            }else {
-                telLabel.text = "---"
-            }
-            
-            //设置 addLabel
-            var addStr = ""
-            if (customerModel?.province != "") && (customerModel?.city != "") {
-                addStr = String(format: "(%@/%@)", (customerModel?.province)!, (customerModel?.city)!)
-            }else if customerModel?.province != "" {
-                addStr = String(format: "（%@）", (customerModel?.province)!)
-            }else if customerModel?.city != "" {
-                addStr = String(format: "（%@）", (customerModel?.city)!)
-            }
-            
-            if customerModel?.address != "" {
-                addStr = addStr + (customerModel?.address)!
-            }
-            
-            if addStr != "" {
-                addLabel.text = addStr
-            }else {
-                addLabel.text = "---"
-            }
+        }
+    }
+    
+    ///对外提供展示更多数据
+    func showMoreInfo() {
+        
+        //设置 faxLabel
+        if customerModel?.faxNumber != "" {
+            faxLabel.text = customerModel?.faxNumber
+        }else {
+            faxLabel.text = "---"
+        }
+        
+        //设置 telLabel
+        if customerModel?.phoneNumber != "" {
+            telLabel.text = customerModel?.phoneNumber
+        }else {
+            telLabel.text = "---"
+        }
+        
+        //设置 addLabel
+        var addStr = ""
+        if (customerModel?.province != "") && (customerModel?.city != "") {
+            addStr = String(format: "(%@/%@)", (customerModel?.province)!, (customerModel?.city)!)
+        }else if customerModel?.province != "" {
+            addStr = String(format: "（%@）", (customerModel?.province)!)
+        }else if customerModel?.city != "" {
+            addStr = String(format: "（%@）", (customerModel?.city)!)
+        }
+        
+        if customerModel?.address != "" {
+            addStr = addStr + (customerModel?.address)!
+        }
+        
+        if addStr != "" {
+            addLabel.text = addStr
+        }else {
+            addLabel.text = "---"
         }
     }
     
