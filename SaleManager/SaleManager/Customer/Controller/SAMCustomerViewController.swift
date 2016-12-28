@@ -238,11 +238,10 @@ class SAMCustomerViewController: UIViewController {
         vistTableView.rowHeight = UITableViewAutomaticDimension
         
         //注册cell
-        vistTableView.register(UINib(nibName: "SAMCustomerVistSearchCell", bundle: nil), forCellReuseIdentifier: SAMCustomerCellReuseIdentifier)
+        vistTableView.register(UINib(nibName: "SAMCustomerVistSearchCell", bundle: nil), forCellReuseIdentifier: SAMCustomerVistSearchCellReuseIdentifier)
         
         //设置上拉下拉
         vistTableView.mj_header = MJRefreshNormalHeader.init(refreshingTarget: self, refreshingAction: #selector(SAMCustomerViewController.loadVistSearchInfo))
-        
     }
     
     //MARK: - 加载新数据
@@ -272,7 +271,7 @@ class SAMCustomerViewController: UIViewController {
         let patametersNew = ["employeeID": id!, "con": searchStr, "pageSize": size, "pageIndex": index]
         
         //发送请求
-        SAMNetWorker.sharedNetWorker().get(URLStr, parameters: patametersNew, progress: nil, success: { (Task, json) in
+        SAMNetWorker.sharedNetWorker().get("getCustomerList.ashx", parameters: patametersNew, progress: nil, success: { (Task, json) in
             //清空原先数据
             self.customerModels.removeAllObjects()
             self.selectedIndexPath = nil
@@ -328,7 +327,7 @@ class SAMCustomerViewController: UIViewController {
         let patameters = ["userID": userID, "CGUnitName": CGUnitName, "startDate": startDate, "endDate": endDate]
         
         //发送请求
-        SAMNetWorker.sharedNetWorker().get(URLStr, parameters: patameters, progress: nil, success: { (Task, json) in
+        SAMNetWorker.sharedNetWorker().get("getCGUnitFollowList.ashx", parameters: patameters, progress: nil, success: { (Task, json) in
 
             //清空原先数据
             self.vistModels.removeAllObjects()
@@ -382,7 +381,7 @@ class SAMCustomerViewController: UIViewController {
         let index = String(format: "%d", pageIndex)
         parameters!["pageIndex"] = index as AnyObject?
         //发送请求
-        SAMNetWorker.sharedNetWorker().get(URLStr, parameters: parameters!, progress: nil, success: { (Task, json) in
+        SAMNetWorker.sharedNetWorker().get("getCustomerList.ashx", parameters: parameters!, progress: nil, success: { (Task, json) in
             
             //获取模型数组
             let Json = json as! [String: AnyObject]
@@ -437,6 +436,10 @@ class SAMCustomerViewController: UIViewController {
     ///正常查询下添加客户按钮点击
     func addCustomer() {
         hudViewDidClick()
+        let customerAddVC = SAMCustomerAddController.instance(customerModel: nil, type: .addCustomer)
+        customerAddVC.transitioningDelegate = self
+        customerAddVC.modalPresentationStyle = UIModalPresentationStyle.custom
+        //展示控制器
         present(customerAddVC, animated: true, completion: nil)
     }
     
@@ -613,8 +616,6 @@ class SAMCustomerViewController: UIViewController {
     ///控制器类型
     fileprivate var controllerType: CustomerwControllerType = .Normal
     
-    ///请求URLStr
-    fileprivate let URLStr = "getCustomerList.ashx"
     ///一次数据请求获取的数据最大条数
     fileprivate let pageSize = 15
     ///当前数据的页码
@@ -649,14 +650,6 @@ class SAMCustomerViewController: UIViewController {
         view.addSubview(imageView)
         imageView.center = CGPoint(x: ScreenW * 0.5, y: ScreenH * 0.5)
         return view
-    }()
-    
-    ///添加用户的控制器
-    fileprivate lazy var customerAddVC: SAMCustomerAddController = {
-        let vc = SAMCustomerAddController.instance()
-        vc.transitioningDelegate = self
-        vc.modalPresentationStyle = UIModalPresentationStyle.custom
-        return vc
     }()
     
     ///时间选择器
@@ -908,20 +901,31 @@ extension SAMCustomerViewController: UIViewControllerTransitioningDelegate {
 
 //MARK: - SAMCustomerCollectionCellDelegate
 extension SAMCustomerViewController: SAMCustomerCollectionCellDelegate {
+    func customerCellDidClickVisitShow() {
+        selectedCustomerCell!.rightSwipeCell()
+    }
+    func customerCellDidClickVisitAdd() {
+        selectedCustomerCell!.rightSwipeCell()
+        //获取选中的模型，并传递
+        let customerModel = self.customerModels[selectedIndexPath!.row] as! SAMCustomerModel
+        let customerAddVC = SAMCustomerAddController.instance(customerModel: customerModel, type: .addVist)
+        customerAddVC.transitioningDelegate = self
+        customerAddVC.modalPresentationStyle = UIModalPresentationStyle.custom
+        
+        //展示控制器
+        present(customerAddVC, animated: true, completion: nil)
+    }
     func customerCellDidClickEdit() {
         selectedCustomerCell!.rightSwipeCell()
         
         //获取选中的模型，并传递
         let customerModel = self.customerModels[selectedIndexPath!.row] as! SAMCustomerModel
-        customerAddVC.editingModel = customerModel
+        let customerAddVC = SAMCustomerAddController.instance(customerModel: customerModel, type: .eidtCustomer)
+        customerAddVC.transitioningDelegate = self
+        customerAddVC.modalPresentationStyle = UIModalPresentationStyle.custom
         
         //展示控制器
         present(customerAddVC, animated: true, completion: nil)
-    }
-    func customerCellDidClickVisit() {
-        selectedCustomerCell!.rightSwipeCell()
-        
-        
     }
     func customerCellDidClickPhone() {
         

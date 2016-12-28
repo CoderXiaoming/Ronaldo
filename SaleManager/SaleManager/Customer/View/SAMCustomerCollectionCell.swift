@@ -9,8 +9,9 @@
 import UIKit
 
 protocol SAMCustomerCollectionCellDelegate: NSObjectProtocol {
+    func customerCellDidClickVisitShow()
+    func customerCellDidClickVisitAdd()
     func customerCellDidClickEdit()
-    func customerCellDidClickVisit()
     func customerCellDidClickPhone()
 }
 
@@ -131,11 +132,14 @@ class SAMCustomerCollectionCell: UICollectionViewCell {
     @IBAction func editBtnClick(_ sender: AnyObject) {
         delegate?.customerCellDidClickEdit()
     }
-    @IBAction func visitBtnClick(_ sender: AnyObject) {
-        delegate?.customerCellDidClickVisit()
-    }
     @IBAction func phoneBtnClick(_ sender: AnyObject) {
         delegate?.customerCellDidClickPhone()
+    }
+    @IBAction func vistEditBtnClick(_ sender: UIButton) {
+        delegate?.customerCellDidClickVisitAdd()
+    }
+    @IBAction func visitShowBtnClick(_ sender: UIButton) {
+        delegate?.customerCellDidClickVisitShow()
     }
     
     //MARK: - XIB链接属性

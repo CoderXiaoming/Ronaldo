@@ -31,7 +31,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FSd-eF-IRR" userLabel="SearchView">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="76"/>
+                    <rect key="frame" x="0.0" y="75" width="375" height="76"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FGK-YY-oDL" userLabel="ContainerView">
                             <rect key="frame" x="0.0" y="1" width="330" height="74"/>
@@ -161,14 +161,14 @@
                     </constraints>
                 </view>
                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p4b-hW-jEo">
-                    <rect key="frame" x="0.0" y="76" width="375" height="591"/>
+                    <rect key="frame" x="0.0" y="151" width="375" height="516"/>
                 </scrollView>
                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8hg-Q5-DAI">
-                    <rect key="frame" x="0.0" y="76" width="375" height="591"/>
+                    <rect key="frame" x="0.0" y="151" width="375" height="516"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HlH-wH-bg5" userLabel="DateButtonView">
-                    <rect key="frame" x="325" y="-40" width="80" height="147"/>
+                    <rect key="frame" x="325" y="35" width="80" height="147"/>
                     <subviews>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="dateButtonViewTriggle" translatesAutoresizingMaskIntoConstraints="NO" id="6M2-Cp-hR4">
                             <rect key="frame" x="0.0" y="0.0" width="80" height="4"/>
@@ -309,9 +309,9 @@
                 <constraint firstItem="FSd-eF-IRR" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="oOb-0p-apx"/>
                 <constraint firstAttribute="trailing" secondItem="p4b-hW-jEo" secondAttribute="trailing" id="sZ2-3N-dQT"/>
                 <constraint firstAttribute="trailing" secondItem="FSd-eF-IRR" secondAttribute="trailing" id="sc5-jG-C6h"/>
-                <constraint firstItem="FSd-eF-IRR" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="tZR-57-Lvz"/>
+                <constraint firstItem="FSd-eF-IRR" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="75" id="tZR-57-Lvz"/>
                 <constraint firstAttribute="bottom" secondItem="p4b-hW-jEo" secondAttribute="bottom" id="yUv-eq-thL"/>
-                <constraint firstItem="HlH-wH-bg5" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="-40" id="ylc-Nd-w8E"/>
+                <constraint firstItem="HlH-wH-bg5" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="35" id="ylc-Nd-w8E"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
         </view>

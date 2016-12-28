@@ -109,7 +109,7 @@
                     </constraints>
                 </view>
                 <button autoresizesSubviews="NO" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P4m-AS-cXV" customClass="SAMImageAboveButton" customModule="SaleManager" customModuleProvider="target">
-                    <rect key="frame" x="312.5" y="0.0" width="62.5" height="44"/>
+                    <rect key="frame" x="312" y="0.0" width="62.5" height="44"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
                     <state key="normal" title="产品排行" image="indicater_productRank_normal">
@@ -126,7 +126,7 @@
                     </connections>
                 </button>
             </subviews>
-            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <color key="backgroundColor" red="0.69019607839999997" green="0.87843137250000003" blue="0.90196078430000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="Ocn-bM-rTA" firstAttribute="width" secondItem="lKW-0T-t5Q" secondAttribute="width" id="5hg-7s-xdY"/>
                 <constraint firstAttribute="bottom" secondItem="eDT-xj-cME" secondAttribute="bottom" id="8MV-Ms-JmX"/>

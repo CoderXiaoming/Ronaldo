@@ -15,6 +15,8 @@ let LoginSuccessNotification = "LoginSuccessNotification"
 let SAMCustomerViewControllerDidSelectCustomerNotification = "SAMCustomerViewControllerDidSelectCustomerNotification"
 ///用户在新建订单时从库存界面成功获取到购物车数据模型发出的通知
 let SAMProductOperationViewGetShoppingCarListModelNotification = "SAMProductOperationViewGetShoppingCarListModelNotification"
+///用户在二维码扫描界面成功获取到信息跳转发出的通知
+let SAMQRCodeViewGetProductNameNotification = "SAMQRCodeViewGetProductNameNotification"
 
 let ScreenW = UIScreen.main.bounds.width
 let ScreenH = UIScreen.main.bounds.height

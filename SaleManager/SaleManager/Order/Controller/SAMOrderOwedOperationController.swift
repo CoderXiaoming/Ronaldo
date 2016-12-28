@@ -129,6 +129,7 @@ class SAMOrderOwedOperationController: UIViewController {
     //MARK: - viewWillAppear
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         //刷新数据
         tableView.reloadData()
     }
@@ -543,6 +544,7 @@ class SAMOrderOwedOperationController: UIViewController {
     @IBOutlet weak var deleteButton: UIButton!
     @IBOutlet weak var saveEditButton: UIButton!
     
+    @IBOutlet weak var tableViewTopDistance: NSLayoutConstraint!
     //MARK: - 其他方法
     fileprivate init() { //重写该方法，为单例服务
         super.init(nibName: nil, bundle: nil)
@@ -723,26 +725,27 @@ extension SAMOrderOwedOperationController: UITableViewDelegate {
             return
         }
         
-        //点击cell的标题
-        let cellTitle = titleModels[indexPath.section][indexPath.row]!.cellTitle
-        
-        if cellTitle == "客户" { //点击了客户栏
-            navigationController!.pushViewController(SAMCustomerViewController.instance(controllerType: .OrderBuild), animated: true)
-            
-        }else if (cellTitle == "交货日期") || (cellTitle == "状态") || (cellTitle == "产品型号") {
-            tableView.deselectRow(at: indexPath, animated: true)
-            
-        }else if ((indexPath.section == 1) && (controllerType == OrderOwedOperationControllerType.buildOrder || controllerType == OrderOwedOperationControllerType.checkOrder)) { //点击了产品组
+        if ((indexPath.section == 1) && (controllerType == OrderOwedOperationControllerType.buildOrder || controllerType == OrderOwedOperationControllerType.checkOrder)) { //点击了产品组
             tableView.deselectRow(at: indexPath, animated: true)
             
         }else if indexPath.section == 3 { //查看订单组中 日期、开单人。。。这组信息
             tableView.deselectRow(at: indexPath, animated: true)
             
         }else {
-            //取出模型
-            let model = titleModels[indexPath.section][indexPath.row]!
-            let editVC = SAMOrderInfoEditController.editInfo(orderTitleModel: model)
-            navigationController!.pushViewController(editVC, animated: true)
+            //点击cell的标题
+            let cellTitle = titleModels[indexPath.section][indexPath.row]!.cellTitle
+            if (cellTitle == "状态") || (cellTitle == "产品型号") {
+                tableView.deselectRow(at: indexPath, animated: true)
+                
+            }else if cellTitle == "客户" {
+                navigationController!.pushViewController(SAMCustomerViewController.instance(controllerType: .OrderBuild), animated: true)
+                
+            }else {
+                //取出模型，跳转编辑界面
+                let model = titleModels[indexPath.section][indexPath.row]!
+                let editVC = SAMOrderInfoEditController.editInfo(orderTitleModel: model)
+                navigationController!.pushViewController(editVC, animated: true)
+            }
         }
     }
     

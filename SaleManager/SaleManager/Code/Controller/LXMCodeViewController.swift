@@ -202,24 +202,25 @@ extension LXMCodeViewController: AVCaptureMetadataOutputObjectsDelegate {
             
             if (metadataObj?.type == AVMetadataObjectTypeQRCode) && (metadataObj?.isKind(of: AVMetadataMachineReadableCodeObject.self))! {
                 
-                //获取扫面字符串
-                let result = metadataObj!.stringValue
-                
                 //停止扫描
                 stopScan()
                 
-                //给代理传值， 下面一句已经包含了responseto
-                delegate?.codeScandidScan(self, result: result)
+                //获取扫面字符串
+                let result = metadataObj!.stringValue
                 
-                let alert = UIAlertController(title: "成功", message: result, preferredStyle: .alert)
+                //获取解码字符串
+                let str = SAMQRCoder.encrypt(withContent: result, type: CCOperation(kCCDecrypt), key: "yzh2016g")
                 
-                alert.addAction(UIAlertAction(title: "取消", style: .cancel, handler: { (action) in
-                    self.startScan()
-                }))
-                present(alert, animated: true, completion: nil)
+                //发出通知
+                NotificationCenter.default.post(name: NSNotification.Name.init(SAMQRCodeViewGetProductNameNotification), object: nil, userInfo: ["productIDName": str!])
                 
-                //TODO: - 扫描成功后给个提示音后再跳转界面
-                
+                //切换到库存查询界面
+                tabBarController!.selectedIndex = 1
+                let animation = CATransition()
+                animation.duration = 0.8
+                animation.timingFunction = CAMediaTimingFunction(name: "easeInEaseOut")
+                animation.type = "cameraIrisHollowClose"
+                tabBarController?.view.layer.add(animation, forKey: nil)
             }
         }
     }

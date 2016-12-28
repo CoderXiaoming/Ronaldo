@@ -16,7 +16,7 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="80"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="79.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="79"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ICd-tZ-PRE">
@@ -41,11 +41,11 @@
                             <constraint firstAttribute="height" constant="18" id="UFb-uA-AR1"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                        <nil key="textColor"/>
+                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="内容：" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XNG-Jh-9Ig">
-                        <rect key="frame" x="56" y="38" width="254" height="23.5"/>
+                        <rect key="frame" x="56" y="38" width="254" height="33.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -63,7 +63,7 @@
                     <constraint firstItem="XNG-Jh-9Ig" firstAttribute="top" secondItem="5SE-km-75Z" secondAttribute="top" id="9bO-At-eL1"/>
                     <constraint firstAttribute="bottom" secondItem="qiy-9f-P1r" secondAttribute="bottom" id="Am6-LP-Kai"/>
                     <constraint firstItem="5SE-km-75Z" firstAttribute="top" secondItem="ICd-tZ-PRE" secondAttribute="bottom" constant="10" id="HdK-PH-mwu"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="XNG-Jh-9Ig" secondAttribute="bottom" constant="10" id="I9M-S1-GOL"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="XNG-Jh-9Ig" secondAttribute="bottom" id="I9M-S1-GOL"/>
                     <constraint firstItem="ICd-tZ-PRE" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="RvP-d8-wdX"/>
                     <constraint firstAttribute="trailingMargin" secondItem="9LS-kT-4Ku" secondAttribute="trailing" constant="10" id="T1K-kD-D7v"/>
                     <constraint firstItem="XNG-Jh-9Ig" firstAttribute="leading" secondItem="5SE-km-75Z" secondAttribute="trailing" id="Tmx-oy-5Rh"/>
@@ -77,7 +77,7 @@
             <connections>
                 <outlet property="contentLabel" destination="XNG-Jh-9Ig" id="Zhk-z6-6q8"/>
                 <outlet property="customerLabel" destination="ICd-tZ-PRE" id="loi-F7-acO"/>
-                <outlet property="dateLabel" destination="Zmz-h6-QSH" id="wl6-VL-tog"/>
+                <outlet property="dateLabel" destination="9LS-kT-4Ku" id="box-F2-OX6"/>
             </connections>
             <point key="canvasLocation" x="32" y="91"/>
         </tableViewCell>

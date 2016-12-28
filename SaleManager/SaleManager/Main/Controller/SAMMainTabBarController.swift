@@ -37,6 +37,7 @@ class SAMMainTabBarController: UITabBarController {
         
         //首页控制器
         let homeVC = SAMBaseNavigationController(rootViewController: SAMComOperationController.instance())
+        homeVC.view.backgroundColor = UIColor.white
         addOnmeController(homeVC, tabImg: UIImage(named: "home_tabar")!, selectedImg: UIImage(named: "home_tabar_highlighted")!, tabTile: "首页")
         
         let stockVC = SAMBaseNavigationController(rootViewController: SAMStockViewController.instance(shoppingCarListModel: nil, type: .normal))

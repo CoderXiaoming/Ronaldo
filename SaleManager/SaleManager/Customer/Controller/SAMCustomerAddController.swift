@@ -32,6 +32,11 @@ fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   }
 }
 
+enum CustomerAddControlleType {
+    case addCustomer
+    case eidtCustomer
+    case addVist
+}
 
 ///新增客户URLStr
 private let SAMUploadCustomerUrlStr = "CustomerAdd.ashx"
@@ -40,29 +45,53 @@ private let SAMEditCustomerUrlStr = "CustomerEdit.ashx"
 
 class SAMCustomerAddController: UIViewController {
     
-    ///传递需要编辑的客户数据
-    var editingModel: SAMCustomerModel? {
-        didSet {
-            if editingModel == nil {
-                requestURLStr = SAMUploadCustomerUrlStr
-            }else {
-                requestURLStr = SAMEditCustomerUrlStr
-            }
-        }
-    }
-    
     //MARK: - 对外提供的类工厂方法
-    class func instance() -> SAMCustomerAddController {
-        return SAMCustomerAddController()
+    class func instance(customerModel: SAMCustomerModel?, type: CustomerAddControlleType) -> SAMCustomerAddController {
+        let vc = SAMCustomerAddController()
+        vc.controllerType = type
+        vc.editingModel = customerModel
+        return vc
     }
     
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //初始化UI
+        setupUI()
+    }
+    
+    //MARK: - 初始化UI
+    fileprivate func setupUI() {
+        
         //设置圆角
         view.layer.cornerRadius = 8
-        
+    
+        switch controllerType! {
+            case CustomerAddControlleType.addCustomer:
+                thirdView.isHidden = true
+                titleLabel.text = "新增客户"
+                setupTextField()
+                requestURLStr = SAMUploadCustomerUrlStr
+            
+            case CustomerAddControlleType.eidtCustomer:
+                thirdView.isHidden = true
+                //设置标题
+                titleLabel.text = "编辑客户"
+                setupTextField()
+                setupEditCustomerModel()
+                requestURLStr = SAMEditCustomerUrlStr
+            
+            case CustomerAddControlleType.addVist:
+                vistContentTextView.layer.cornerRadius = 5
+                vistContentTextView.layer.masksToBounds = true
+                vistCustomerLabel.text = editingModel?.CGUnitName
+        }
+    }
+    
+    ///设置文本框
+    fileprivate func setupTextField() {
+    
         //设置textField的代理
         let arr = NSArray(array: [corporationTF, contactTF, cellTF, telTF, provinceTF, cityTF, addTF, addTF2, remarkTF])
         arr.enumerateObjects({ (obj, ind, nil) in
@@ -73,55 +102,28 @@ class SAMCustomerAddController: UIViewController {
         //设置城市选择器
         provinceTF.inputView = cityPickerView
         cityTF.inputView = cityPickerView
-        
-        //设置初始请求URL
-        if requestURLStr == nil {
-            requestURLStr = SAMUploadCustomerUrlStr
-        }
     }
     
-    //MARK: - viewWillAppear
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        //清空所有文本框
-        let arr = NSArray(array: [corporationTF, contactTF, cellTF, telTF, provinceTF, cityTF, addTF, addTF2, remarkTF])
-        arr.enumerateObjects({ (obj, ind, nil) in
-            let tf = obj as! SAMLoginTextField
-            tf.text = nil
-        })
-        
-        //重置记录
-        isAddTFdidReachMax = false
-        proIndex = 0
-        firstResponder = nil
-        
-        //判断是不是编辑状态
-        if editingModel != nil {
-            
-            //设置标题
-            titleLabel.text = "编辑客户"
-            
-            //设置公司名字 联系人名字
-            if editingModel!.CGUnitName!.contains("公司") { //对字符串进行分割
-                let strArr = editingModel!.CGUnitName?.components(separatedBy: "公司")
-                if strArr?.count > 1 {
-                    corporationTF.text = (strArr![0] as String).lxm_stringByTrimmingWhitespace()
-                    contactTF.text = (strArr![1] as String).lxm_stringByTrimmingWhitespace()
-                }
-            }else {
-                corporationTF.text = editingModel?.CGUnitName
+    ///赋值编辑的客户数据模型
+    fileprivate func setupEditCustomerModel() {
+    
+        //设置公司名字 联系人名字
+        if editingModel!.CGUnitName!.contains("公司") { //对字符串进行分割
+            let strArr = editingModel!.CGUnitName?.components(separatedBy: "公司")
+            if strArr?.count > 1 {
+                corporationTF.text = (strArr![0] as String).lxm_stringByTrimmingWhitespace()
+                contactTF.text = (strArr![1] as String).lxm_stringByTrimmingWhitespace()
             }
-            
-            cellTF.text = editingModel?.mobilePhone
-            telTF.text = editingModel?.phoneNumber
-            provinceTF.text = editingModel?.province
-            cityTF.text = editingModel?.city
-            addTF.text = editingModel?.address
-            remarkTF.text = editingModel?.memoInfo
         }else {
-            titleLabel.text = "新增客户"
+            corporationTF.text = editingModel?.CGUnitName
         }
+        
+        cellTF.text = editingModel?.mobilePhone
+        telTF.text = editingModel?.phoneNumber
+        provinceTF.text = editingModel?.province
+        cityTF.text = editingModel?.city
+        addTF.text = editingModel?.address
+        remarkTF.text = editingModel?.memoInfo
     }
     
     //MARK: - 点击事件处理
@@ -245,8 +247,6 @@ class SAMCustomerAddController: UIViewController {
     
     //MARK: - 上传资料后回调
     fileprivate func unloadCompletion(_ state: String) {
-        //记录请求完成的状态
-        requestCompState = state
         
         //分情况展示提示信息
         switch state {
@@ -266,6 +266,62 @@ class SAMCustomerAddController: UIViewController {
         }
     }
     
+    ///上传回访界面取消按钮点击
+    @IBAction func vistCancelBtnClick(_ sender: UIButton) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    ///上传回访界面确认按钮点击
+    @IBAction func vistEnsureBtnClick(_ sender: UIButton) {
+        
+        //退出编辑状态
+        vistContentTextView.resignFirstResponder()
+        
+        //创建主请求参数
+        let strContent = vistContentTextView.text.lxm_stringByTrimmingWhitespace()!
+        if strContent == "" {
+            let _ = SAMHUD.showMessage("请填写回访内容", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+            return
+        }
+        
+        let CGUnitID = editingModel!.id!
+        let startDate = Date().yyyyMMddStr()
+        let userID = SAMUserAuth.shareUser()?.id!
+        
+        let MainData = ["CGUnitID": CGUnitID, "startDate": startDate, "strContent": strContent, "userID": userID]
+        
+        //转换为Json字符串
+        let mainJsonData = try! JSONSerialization.data(withJSONObject: MainData, options: JSONSerialization.WritingOptions.prettyPrinted)
+        let mainJsonStr = String(data: mainJsonData, encoding: String.Encoding.utf8)!
+        
+        //设置加载hud
+        let hud = SAMHUD.showAdded(to: KeyWindow, animated: true)
+        hud!.labelText = NSLocalizedString("正在保存...", comment: "HUD loading title")
+        //发送服务器请求
+        SAMNetWorker.sharedNetWorker().post("CGUnitFollowAdd.ashx", parameters: ["MainData": mainJsonStr], progress: nil, success: { (task, json) in
+            
+            //隐藏HUD
+            hud?.hide(true)
+            
+            //获取状态字符串
+            let Json = json as! [String: AnyObject]
+            let dict = Json["head"] as! [String: String]
+            let state = dict["status"]
+            
+            if state == "success" { //保存成功
+                
+                let hud = SAMHUD.showMessage("保存成功", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                hud?.delegate = self
+            }else { //保存失败
+                let _ = SAMHUD.showMessage("保存失败", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            }
+        }) { (task, error) in
+            let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+        }
+
+    }
+    
+    
     //MARK: - 结束当前textField编辑状态
     func endFirstResponderEditing() {
         if firstResponder != nil {
@@ -273,19 +329,11 @@ class SAMCustomerAddController: UIViewController {
         }
     }
     
-    //MARK: - viewDidDisappear
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        //恢复界面
-        self.fitstView.transform = CGAffineTransform.identity
-        self.secondView.transform = CGAffineTransform.identity
-        
-        //还原模型
-        editingModel = nil
-    }
-    
     //MARK: - 懒加载集合
+    ///控制器类型
+    fileprivate var controllerType: CustomerAddControlleType?
+    ///传递需要编辑的客户数据
+    fileprivate var editingModel: SAMCustomerModel?
     ///当前第一相应textfield
     fileprivate var firstResponder: UITextField?
     ///addTF已经达到了最大长度
@@ -313,8 +361,6 @@ class SAMCustomerAddController: UIViewController {
     fileprivate var proIndex = 0
     ///请求URLStr
     fileprivate var requestURLStr: String?
-    ///请求完毕的状态
-    fileprivate var requestCompState: String?
     
     //MARK: - xib链接属性
     @IBOutlet weak var titleLabel: UILabel!
@@ -330,6 +376,11 @@ class SAMCustomerAddController: UIViewController {
     @IBOutlet weak var addTF: SAMLoginTextField!
     @IBOutlet weak var addTF2: SAMLoginTextField!
     @IBOutlet weak var remarkTF: SAMLoginTextField!
+    
+    @IBOutlet weak var thirdView: UIView!
+    @IBOutlet weak var vistCustomerLabel: UILabel!
+    @IBOutlet weak var vistContentTextView: UITextView!
+    @IBOutlet weak var visitAddEnsureBtn: UIButton!
     
 
     //MARK: - 无关紧要的方法
@@ -418,10 +469,7 @@ extension SAMCustomerAddController: UIPickerViewDelegate, UIPickerViewDataSource
 //MARK: - 监听HUD，看情况退出控制器
 extension SAMCustomerAddController: MBProgressHUDDelegate {
     func hudWasHidden(_ hud: MBProgressHUD!) {
-        if requestCompState == "success" {
-            self.dismiss(animated: true, completion: nil)
-        }
-        
+        self.dismiss(animated: true, completion: nil)
     }
 }
 

@@ -18,6 +18,8 @@
 		1816D7B11E12B03F00CA9308 /* SAMCustomerVistModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1816D7B01E12B03F00CA9308 /* SAMCustomerVistModel.swift */; };
 		1816D7B41E12C7CA00CA9308 /* SAMCustomerVistSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1816D7B21E12C7CA00CA9308 /* SAMCustomerVistSearchCell.swift */; };
 		1816D7B51E12C7CA00CA9308 /* SAMCustomerVistSearchCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1816D7B31E12C7CA00CA9308 /* SAMCustomerVistSearchCell.xib */; };
+		1816D7BC1E1387AF00CA9308 /* GTMBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 1816D7BA1E1387AF00CA9308 /* GTMBase64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1816D7BF1E139B4200CA9308 /* SAMQRCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1816D7BE1E139B4200CA9308 /* SAMQRCoder.m */; };
 		183FDC181E076B50007117E8 /* SAMOrderBuildBigCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183FDC141E076B50007117E8 /* SAMOrderBuildBigCell.swift */; };
 		183FDC191E076B50007117E8 /* SAMOrderBuildBigCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 183FDC151E076B50007117E8 /* SAMOrderBuildBigCell.xib */; };
 		183FDC1A1E076B50007117E8 /* SAMOrderBuildSmallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183FDC161E076B50007117E8 /* SAMOrderBuildSmallCell.swift */; };
@@ -136,6 +138,12 @@
 		1816D7B01E12B03F00CA9308 /* SAMCustomerVistModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMCustomerVistModel.swift; sourceTree = "<group>"; };
 		1816D7B21E12C7CA00CA9308 /* SAMCustomerVistSearchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMCustomerVistSearchCell.swift; sourceTree = "<group>"; };
 		1816D7B31E12C7CA00CA9308 /* SAMCustomerVistSearchCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMCustomerVistSearchCell.xib; sourceTree = "<group>"; };
+		1816D7B81E1387AE00CA9308 /* SaleManager-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SaleManager-Bridging-Header.h"; sourceTree = "<group>"; };
+		1816D7B91E1387AF00CA9308 /* GTMBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMBase64.h; sourceTree = "<group>"; };
+		1816D7BA1E1387AF00CA9308 /* GTMBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTMBase64.m; sourceTree = "<group>"; };
+		1816D7BB1E1387AF00CA9308 /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
+		1816D7BD1E139B4200CA9308 /* SAMQRCoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAMQRCoder.h; sourceTree = "<group>"; };
+		1816D7BE1E139B4200CA9308 /* SAMQRCoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SAMQRCoder.m; sourceTree = "<group>"; };
 		183FDC141E076B50007117E8 /* SAMOrderBuildBigCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMOrderBuildBigCell.swift; sourceTree = "<group>"; };
 		183FDC151E076B50007117E8 /* SAMOrderBuildBigCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMOrderBuildBigCell.xib; sourceTree = "<group>"; };
 		183FDC161E076B50007117E8 /* SAMOrderBuildSmallCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMOrderBuildSmallCell.swift; sourceTree = "<group>"; };
@@ -577,6 +585,12 @@
 				185D100F1DDD4EC300556D17 /* SAMHUD.swift */,
 				18D30D8F1DDEA01400C1DC67 /* SAMPresentingAnimator.swift */,
 				18D30D9D1DDED07000C1DC67 /* SAMDismissingAnimator.swift */,
+				1816D7BD1E139B4200CA9308 /* SAMQRCoder.h */,
+				1816D7BE1E139B4200CA9308 /* SAMQRCoder.m */,
+				1816D7B91E1387AF00CA9308 /* GTMBase64.h */,
+				1816D7BA1E1387AF00CA9308 /* GTMBase64.m */,
+				1816D7BB1E1387AF00CA9308 /* GTMDefines.h */,
+				1816D7B81E1387AE00CA9308 /* SaleManager-Bridging-Header.h */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -968,6 +982,7 @@
 				187EA2791DE53295004523A4 /* SAMStockConditionalSearchController.swift in Sources */,
 				18EC9B411DDC026F00E78C7E /* SAMCustomerModel.swift in Sources */,
 				18C2034A1DD30FF800C0117C /* SAMShoppingCarController.swift in Sources */,
+				1816D7BC1E1387AF00CA9308 /* GTMBase64.m in Sources */,
 				18EC9B441DDC06C900E78C7E /* SAMCustomerCollectionCell.swift in Sources */,
 				18C73D411E03EB2E00A8BB8E /* SAMOrderBuildTitleModel.swift in Sources */,
 				18DE1AED1E0BBBA400E69965 /* SAMComOperationController.swift in Sources */,
@@ -995,6 +1010,7 @@
 				185429391DF8122B005BDAA6 /* SAMSaleOrderDetailModel.swift in Sources */,
 				18BA15201DFAAA7C003D524C /* SAMSaleOrderDetailListModel.swift in Sources */,
 				1854292F1DF69DBF005BDAA6 /* NSDate+Extension.swift in Sources */,
+				1816D7BF1E139B4200CA9308 /* SAMQRCoder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1147,7 +1163,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.YaZhouHong.SpecialSales;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "SaleManager/Tools/SaleManager-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
@@ -1166,7 +1182,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.YaZhouHong.SpecialSales;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "SaleManager/Tools/SaleManager-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

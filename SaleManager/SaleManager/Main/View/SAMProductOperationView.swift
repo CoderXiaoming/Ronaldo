@@ -211,7 +211,11 @@ class SAMProductOperationView: UIView {
             }
             
             //设置图片
-            productImage.sd_setImage(with: editProductModel!.thumbURL!, placeholderImage: UIImage(named: "photo_loadding"))
+            if editProductModel!.thumbURL != nil {
+                productImage.sd_setImage(with: editProductModel!.thumbURL!, placeholderImage: UIImage(named: "photo_loadding"))
+            }else {
+                productImage.image = UIImage(named: "photo_loadding")
+            }
             
             //设置产品名称
             if editProductModel!.productIDName != "" {

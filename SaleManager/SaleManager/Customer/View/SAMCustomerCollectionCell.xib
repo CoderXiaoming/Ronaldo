@@ -22,44 +22,56 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fy8-8K-KPw" userLabel="ButtonView">
                         <rect key="frame" x="300" y="0.0" width="60" height="160"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b1l-Cc-p1a">
-                                <rect key="frame" x="0.0" y="0.0" width="60" height="53.5"/>
-                                <state key="normal" title="编 辑"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b1l-Cc-p1a">
+                                <rect key="frame" x="0.0" y="80" width="60" height="40"/>
+                                <state key="normal" image="customerEdit_normal"/>
                                 <connections>
                                     <action selector="editBtnClick:" destination="gTV-IL-0wX" eventType="touchUpInside" id="BYX-wh-jeS"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="297-Md-xix">
-                                <rect key="frame" x="0.0" y="107" width="60" height="53"/>
-                                <state key="normal" title="电 话"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="297-Md-xix">
+                                <rect key="frame" x="0.0" y="120" width="60" height="40"/>
+                                <state key="normal" image="customerCall_normal"/>
                                 <connections>
                                     <action selector="phoneBtnClick:" destination="gTV-IL-0wX" eventType="touchUpInside" id="WhO-lJ-7iY"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qjA-n0-uvR">
-                                <rect key="frame" x="0.0" y="53.5" width="60" height="53.5"/>
-                                <state key="normal" title="回 访"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qjA-n0-uvR">
+                                <rect key="frame" x="0.0" y="40" width="60" height="40"/>
+                                <state key="normal" image="vistEdit_normal"/>
                                 <connections>
-                                    <action selector="visitBtnClick:" destination="gTV-IL-0wX" eventType="touchUpInside" id="kZI-gY-adU"/>
+                                    <action selector="vistEditBtnClick:" destination="gTV-IL-0wX" eventType="touchUpInside" id="WY7-vp-sjf"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jYG-OR-HPz">
+                                <rect key="frame" x="0.0" y="0.0" width="60" height="40"/>
+                                <state key="normal" image="vistShow_normal"/>
+                                <connections>
+                                    <action selector="visitBtnClick:" destination="gTV-IL-0wX" eventType="touchUpInside" id="voD-xk-quy"/>
+                                    <action selector="visitShowBtnClick:" destination="gTV-IL-0wX" eventType="touchUpInside" id="h5q-hg-Mvo"/>
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.94509803920000002" green="0.94117647059999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="b1l-Cc-p1a" secondAttribute="trailing" id="1cF-GD-X3c"/>
-                            <constraint firstItem="b1l-Cc-p1a" firstAttribute="top" secondItem="fy8-8K-KPw" secondAttribute="top" id="9wO-P0-cRg"/>
-                            <constraint firstAttribute="bottom" secondItem="297-Md-xix" secondAttribute="bottom" id="Gg4-Sz-7wb"/>
-                            <constraint firstAttribute="trailing" secondItem="297-Md-xix" secondAttribute="trailing" id="MvA-mR-pxb"/>
-                            <constraint firstItem="297-Md-xix" firstAttribute="leading" secondItem="fy8-8K-KPw" secondAttribute="leading" id="OgK-hm-HYB"/>
-                            <constraint firstAttribute="trailing" secondItem="qjA-n0-uvR" secondAttribute="trailing" id="OgQ-Aa-pWp"/>
-                            <constraint firstItem="b1l-Cc-p1a" firstAttribute="leading" secondItem="fy8-8K-KPw" secondAttribute="leading" id="Ypg-Oy-yRN"/>
-                            <constraint firstItem="qjA-n0-uvR" firstAttribute="height" secondItem="b1l-Cc-p1a" secondAttribute="height" id="Ze1-W3-mSg"/>
+                            <constraint firstAttribute="trailing" secondItem="jYG-OR-HPz" secondAttribute="trailing" id="53E-YN-UKi"/>
+                            <constraint firstItem="qjA-n0-uvR" firstAttribute="height" secondItem="fy8-8K-KPw" secondAttribute="height" multiplier="0.25" id="Ent-qW-5hm"/>
+                            <constraint firstItem="jYG-OR-HPz" firstAttribute="leading" secondItem="fy8-8K-KPw" secondAttribute="leading" id="Gyw-Kj-wOu"/>
+                            <constraint firstAttribute="trailing" secondItem="qjA-n0-uvR" secondAttribute="trailing" id="RbR-Un-XnN"/>
+                            <constraint firstItem="297-Md-xix" firstAttribute="top" secondItem="b1l-Cc-p1a" secondAttribute="bottom" id="WUJ-NM-810"/>
+                            <constraint firstItem="297-Md-xix" firstAttribute="leading" secondItem="fy8-8K-KPw" secondAttribute="leading" id="YEZ-hl-6yV"/>
+                            <constraint firstItem="qjA-n0-uvR" firstAttribute="leading" secondItem="fy8-8K-KPw" secondAttribute="leading" id="acZ-wZ-KMw"/>
+                            <constraint firstItem="qjA-n0-uvR" firstAttribute="top" secondItem="jYG-OR-HPz" secondAttribute="bottom" id="anr-NJ-0fJ"/>
+                            <constraint firstItem="b1l-Cc-p1a" firstAttribute="height" secondItem="fy8-8K-KPw" secondAttribute="height" multiplier="0.25" id="cPd-Jk-R1I"/>
+                            <constraint firstItem="297-Md-xix" firstAttribute="height" secondItem="fy8-8K-KPw" secondAttribute="height" multiplier="0.25" id="eLu-8X-F8b"/>
+                            <constraint firstAttribute="bottom" secondItem="297-Md-xix" secondAttribute="bottom" id="i0P-H2-YTk"/>
                             <constraint firstAttribute="height" constant="160" id="okq-6f-cFr"/>
-                            <constraint firstItem="b1l-Cc-p1a" firstAttribute="height" secondItem="fy8-8K-KPw" secondAttribute="height" multiplier="0.333333" id="qc8-9X-cF1"/>
-                            <constraint firstItem="qjA-n0-uvR" firstAttribute="top" secondItem="b1l-Cc-p1a" secondAttribute="bottom" id="wa7-Ga-hMO"/>
-                            <constraint firstItem="297-Md-xix" firstAttribute="top" secondItem="qjA-n0-uvR" secondAttribute="bottom" id="yX0-Kg-aV9"/>
+                            <constraint firstItem="b1l-Cc-p1a" firstAttribute="top" secondItem="qjA-n0-uvR" secondAttribute="bottom" id="pKp-Yi-U69"/>
+                            <constraint firstItem="b1l-Cc-p1a" firstAttribute="leading" secondItem="fy8-8K-KPw" secondAttribute="leading" id="rFS-yx-hHC"/>
+                            <constraint firstAttribute="trailing" secondItem="b1l-Cc-p1a" secondAttribute="trailing" id="rTY-Yd-DtG"/>
+                            <constraint firstItem="jYG-OR-HPz" firstAttribute="top" secondItem="fy8-8K-KPw" secondAttribute="top" id="sLV-U6-fHM"/>
+                            <constraint firstAttribute="trailing" secondItem="297-Md-xix" secondAttribute="trailing" id="uJi-FU-OOu"/>
                             <constraint firstAttribute="width" constant="60" id="yv7-lJ-w64"/>
-                            <constraint firstItem="qjA-n0-uvR" firstAttribute="leading" secondItem="fy8-8K-KPw" secondAttribute="leading" id="zzW-B8-jTh"/>
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vql-HF-nqf" userLabel="ContainterView">
@@ -83,7 +95,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="---" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xpl-Hl-sTc" userLabel="客户内容">
-                                <rect key="frame" x="53" y="10.5" width="297" height="17"/>
+                                <rect key="frame" x="53" y="10" width="297" height="17"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <nil key="highlightedColor"/>
@@ -243,4 +255,10 @@
             <point key="canvasLocation" x="311" y="59"/>
         </collectionViewCell>
     </objects>
+    <resources>
+        <image name="customerCall_normal" width="22" height="22"/>
+        <image name="customerEdit_normal" width="22" height="22"/>
+        <image name="vistEdit_normal" width="21" height="23"/>
+        <image name="vistShow_normal" width="20" height="22"/>
+    </resources>
 </document>

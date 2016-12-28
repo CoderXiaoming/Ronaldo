@@ -97,7 +97,7 @@ class SAMOrderDetailController: UIViewController {
         //设置金额
         priceLabel.text = String(format: "%.1f元", orderInfoModel!.actualMoney)
     }
-
+    
     //MARK: - 对外提供加载订单详情的方法
     func loadOrderDetailModel(_ success: @escaping ()->(), noData: @escaping ()->(), error: @escaping ()->()) {
         

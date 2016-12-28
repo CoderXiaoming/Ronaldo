@@ -32,8 +32,8 @@ class SAMComOperationController: UIViewController {
         //设置ScrollView
         setupScrollView()
         
-        //设置导航栏指示控制器
-        setupNavIndicaterView()
+        //隐藏导航栏
+        navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     //MARK: - 初始化UI
@@ -120,25 +120,29 @@ class SAMComOperationController: UIViewController {
         }
     }
     
-    //MARK: - 设置导航栏指示器
-    fileprivate func setupNavIndicaterView() {
-        navIndicaterView!.delegate = self
-        navigationItem.titleView = navIndicaterView
-    }
-    
-    //MARK: - viewWillAppear
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        UIView.animate(withDuration: 0.1) {
-            self.navIndicaterView!.alpha = 1
-        }
+        
+        //设置导航栏指示控制器
+        setupNavIndicaterView()
+        navigationController!.setNavigationBarHidden(true, animated: true)
     }
     
-    //MARK: - viewWillDisappear
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        UIView.animate(withDuration: 0.3) {
-            self.navIndicaterView!.alpha = 0.0000001
+        navigationController!.setNavigationBarHidden(false, animated: false)
+    }
+    
+    //MARK: - 设置导航栏指示器
+    fileprivate func setupNavIndicaterView() {
+        
+        if navIndicaterView?.superview == nil {
+            navIndicaterView!.delegate = self
+            
+            view.addSubview(navIndicaterView!)
+            
+            navIndicaterView?.frame = CGRect(x: 0, y: 20, width: ScreenW, height: 55)
         }
     }
 
@@ -372,10 +376,7 @@ class SAMComOperationController: UIViewController {
     
     ///导航栏指示器
     fileprivate lazy var navIndicaterView: SAMComOperationIndicaterView? = {
-        let navBar = self.navigationController!.navigationBar
         let indicaterView = SAMComOperationIndicaterView.instance()
-        indicaterView.frame = navBar.bounds
-        navBar.addSubview(indicaterView)
         return indicaterView
     }()
     

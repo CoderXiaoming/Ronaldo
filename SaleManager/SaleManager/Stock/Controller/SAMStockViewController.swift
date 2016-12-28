@@ -38,6 +38,7 @@ class SAMStockViewController: UIViewController {
                 
                 //当前可以操作产品Cell
                 vc.couldOperateCell = true
+                NotificationCenter.default.addObserver(vc, selector: #selector(SAMStockViewController.receiveProductNameFromQRCodeView(notification:)), name: NSNotification.Name.init(SAMQRCodeViewGetProductNameNotification), object: nil)
                 return vc
             case .requestStock:
                 
@@ -108,6 +109,19 @@ class SAMStockViewController: UIViewController {
         
         //隐藏滑动条
         collectionView.showsVerticalScrollIndicator = false
+    }
+    
+    //MARK: - 从二维码扫描收到产品名
+    func receiveProductNameFromQRCodeView(notification: Notification) {
+    
+        let productIDName = notification.userInfo!["productIDName"] as! String
+        
+        //记录获取到的搜索字符串
+        productNameSearchStr = productIDName
+        
+        //记录控制器状态
+        hasOutRequest = true
+        isProductNameSearch = true
     }
     
     //MARK: - 搜索按钮点击
@@ -250,6 +264,9 @@ class SAMStockViewController: UIViewController {
                     let model = self.stockProductModels[0] as! SAMStockProductModel
                     self.shoppingCarListModel?.stockCountP = model.countP
                     self.shoppingCarListModel?.stockCountM = model.countM
+                    if self.shoppingCarListModel?.thumbURL == nil {
+                        self.shoppingCarListModel?.thumbURL = model.thumbURL1
+                    }
                     self.shoppingCarListModel = nil
                 }
             }
