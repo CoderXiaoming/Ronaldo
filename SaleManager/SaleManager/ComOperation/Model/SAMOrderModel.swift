@@ -11,17 +11,63 @@ import UIKit
 class SAMOrderModel: NSObject {
 
     ///销售日期
-    var startDate: String?
+    var startDate = "" {
+        didSet{
+            startDate = ((startDate == "") ? "---" : startDate)
+        }
+    }
     ///备注
-    var memoInfo: String?
+    var memoInfo = "" {
+        didSet{
+            memoInfo = ((memoInfo == "") ? "---" : memoInfo)
+        }
+    }
     ///客户ID
-    var CGUnitID: String?
+    var CGUnitID = "" {
+        didSet{
+            CGUnitID = ((CGUnitID == "") ? "---" : CGUnitID)
+        }
+    }
     ///客户名称
-    var CGUnitName: String?
-    ///订单状态
-    var orderStatus: String?
+    var CGUnitName = "" {
+        didSet{
+            CGUnitName = ((CGUnitName == "") ? "---" : CGUnitName)
+        }
+    }
     ///订单单号
     var billNumber: String?
+    ///订单状态
+    var orderStatus: String? {
+        didSet{
+            if isAgreeSend != nil {
+                setStateImage()
+            }
+        }
+    }
+    ///是否已经发货
+    var isAgreeSend: String? {
+        didSet{
+            if orderStatus != nil {
+                setStateImage()
+            }
+        }
+    }
+    
+    //MARK: - 设置状态图片
+    fileprivate func setStateImage() {
+        
+        if orderStateImage != nil {
+            return
+        }
+        
+        if isAgreeSend! != "是" {
+            orderStateImage = UIImage(named: "orderManageNotSend")
+        }else if orderStatus! == "未开单" {
+            orderStateImage = UIImage(named: "orderManageNotCompletion")
+        }else {
+            orderStateImage = UIImage(named: "orderManageCompletion")
+        }
+    }
     
     //MARK: - 对外提供的加载详情订单详情的数据模型
     func loadMoreInfo(success: @escaping ()->(), defeat: @escaping ()->()) {
@@ -68,9 +114,6 @@ class SAMOrderModel: NSObject {
                                                ["订单状态", model!.orderStatus!],
                                                ["是否已经生成码单", model!.isMakeBill!],
                                                ["是否同意发货", model!.isAgreeSend!]]]
-            
-                //记录订单状态
-                self.isAgreeSend = (model!.isAgreeSend! == "是") ? true : false
                 
                 //发送请求，获取订单产品数据模型数组
                 SAMNetWorker.sharedNetWorker().get("getOrderDetailData.ashx", parameters: ["billNumber": self.billNumber!], progress: nil, success: { (Task, json) in
@@ -118,7 +161,7 @@ class SAMOrderModel: NSObject {
     ///订单产品数据模型数组
     var productListModels = [SAMShoppingCarListModel]()
     
-    ///是否同意发货
-    var isAgreeSend: Bool = false
+    ///状态图片
+    var orderStateImage: UIImage?
 }
 

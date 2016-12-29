@@ -136,25 +136,16 @@
                             <constraint firstAttribute="height" constant="1" id="B4c-9G-5UV"/>
                         </constraints>
                     </view>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="backGround_01" translatesAutoresizingMaskIntoConstraints="NO" id="Dk7-sW-iAa">
-                        <rect key="frame" x="0.0" y="75" width="459" height="800"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="800" id="75B-nP-an0"/>
-                        </constraints>
-                    </imageView>
                 </subviews>
             </view>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="8QT-he-2jo" secondAttribute="trailing" id="4xU-Cv-lJ9"/>
                 <constraint firstItem="jDd-HN-Vfd" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="Gq8-Jt-d2n"/>
                 <constraint firstAttribute="trailing" secondItem="Y0K-pc-lwV" secondAttribute="trailing" id="JZB-Kt-apM"/>
-                <constraint firstItem="Dk7-sW-iAa" firstAttribute="top" secondItem="Y0K-pc-lwV" secondAttribute="bottom" id="Kpz-du-IXf"/>
                 <constraint firstAttribute="bottom" secondItem="jDd-HN-Vfd" secondAttribute="bottom" id="U8b-jp-sx6"/>
                 <constraint firstItem="8QT-he-2jo" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="Wbc-gg-pYE"/>
                 <constraint firstItem="Y0K-pc-lwV" firstAttribute="top" secondItem="8QT-he-2jo" secondAttribute="bottom" id="gdY-Xr-8eb"/>
                 <constraint firstItem="Y0K-pc-lwV" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="gxn-gg-N0Q"/>
-                <constraint firstAttribute="trailing" secondItem="Dk7-sW-iAa" secondAttribute="trailing" id="jVH-sN-kTG"/>
-                <constraint firstItem="Dk7-sW-iAa" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="jzP-tY-D1a"/>
                 <constraint firstAttribute="trailing" secondItem="jDd-HN-Vfd" secondAttribute="trailing" id="mue-3I-14z"/>
                 <constraint firstItem="8QT-he-2jo" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="yXD-1w-0bZ"/>
             </constraints>
@@ -172,7 +163,6 @@
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="backGround_01" width="376" height="802"/>
         <image name="productAddToShoppingCar_disable" width="23" height="21"/>
         <image name="productAddToShoppingCar_normal" width="23" height="21"/>
         <image name="warning_disable" width="22" height="20"/>

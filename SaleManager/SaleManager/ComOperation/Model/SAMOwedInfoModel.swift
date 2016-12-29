@@ -12,27 +12,73 @@ class SAMOwedInfoModel: NSObject {
 
 
     ///缺货记录的id
-    var id: String?
+    var id = "" {
+        didSet{
+            id = ((id == "") ? "---" : id)
+        }
+    }
     ///起始日期
-    var startDate: String?
+    var startDate = "" {
+        didSet{
+            startDate = ((startDate == "") ? "---" : startDate)
+        }
+    }
     ///交货日期
-    var endDate: String?
+    var endDate = "" {
+        didSet{
+            endDate = ((endDate == "") ? "---" : endDate)
+        }
+    }
     ///客户ID
-    var CGUnitID: String?
+    var CGUnitID = "" {
+        didSet{
+            CGUnitID = ((CGUnitID == "") ? "---" : CGUnitID)
+        }
+    }
     ///客户名称
-    var CGUnitName: String?
+    var CGUnitName = "" {
+        didSet{
+            CGUnitName = ((CGUnitName == "") ? "---" : CGUnitName)
+        }
+    }
     ///产品编号ID
-    var productID: String?
+    var productID = "" {
+        didSet{
+            productID = ((productID == "") ? "---" : productID)
+        }
+    }
     ///产品编号名称
-    var productIDName: String?
+    var productIDName = "" {
+        didSet{
+            productIDName = ((productIDName == "") ? "---" : productIDName)
+        }
+    }
     ///缺货数量
     var countM = 0.0
     ///缺货匹数
     var countP = 0
     ///备注
-    var memoInfo: String?
+    var memoInfo = "" {
+        didSet{
+            memoInfo = ((memoInfo == "") ? "---" : memoInfo)
+        }
+    }
     ///状态：欠货中，已完成，已删除
-    var iState: String?
+    var iState = "" {
+        didSet{
+            //设置状态指示图片
+            switch iState {
+                case "欠货中":
+                    orderStateImage = UIImage(named: "oweding")
+                case "已完成":
+                    orderStateImage = UIImage(named: "owedCompletion")
+                case "已删除":
+                    orderStateImage = UIImage(named: "owedDelete")
+                default:
+                    break
+            }
+        }
+    }
     
     //MARK: - 附加属性
     ///用户数据模型
@@ -53,4 +99,6 @@ class SAMOwedInfoModel: NSObject {
         return model
     }
     
+    ///状态图片
+    var orderStateImage: UIImage?
 }

@@ -19,7 +19,7 @@ class SAMStockCodeSearchCell: UICollectionViewCell {
             
             //设置照片
             if codeModel?.thumbURL != nil {
-                productImage.sd_setImage(with: codeModel?.thumbURL! as URL!, placeholderImage: UIImage(named: "clothSale")!, options: .retryFailed)
+                productImage.sd_setImage(with: codeModel?.thumbURL! as URL!, placeholderImage: UIImage(named: "photo_loadding")!, options: .retryFailed)
             }
     }
     }

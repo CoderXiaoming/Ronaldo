@@ -26,19 +26,44 @@ class SAMComOperationController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //初始化UI
-        setupBasicUI()
+        //设置导航栏指示控制器
+        setupNavIndicaterView()
+        
+        //设置时间按钮控件
+        setupDateButtonView()
+        
+        ///设置文本
+        setupTextField()
         
         //设置ScrollView
-        setupScrollView()
+        setupScrollCollectionView()
         
-        //隐藏导航栏
-        navigationController?.setNavigationBarHidden(true, animated: false)
+        //设置其他
+        setupOtherUI()
     }
     
-    //MARK: - 初始化UI
-    fileprivate func setupBasicUI() {
+    ///设置导航栏指示器
+    fileprivate func setupNavIndicaterView() {
         
+        if navIndicaterView?.superview == nil {
+            navIndicaterView!.delegate = self
+            
+            view.addSubview(navIndicaterView!)
+            
+            //布局navIndicaterView
+            navIndicaterView!.translatesAutoresizingMaskIntoConstraints = false
+            var cons = [NSLayoutConstraint]()
+            let dict = ["navIndicaterView" : navIndicaterView!] as [String : AnyObject]
+            
+            cons += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[navIndicaterView]-0-|", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
+            cons += NSLayoutConstraint.constraints(withVisualFormat: "V:|-20-[navIndicaterView(55)]", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
+            
+            view.addConstraints(cons)
+        }
+    }
+    
+    ///设置时间按钮控件
+    fileprivate func setupDateButtonView() {
         //设置时间选择器最大时间
         datePicker!.maximumDate = Date()
         
@@ -49,8 +74,10 @@ class SAMComOperationController: UIViewController {
         
         //设置时间按钮控件边框
         dateBtnContentView.layer.cornerRadius = 5
-        
-        //设置文本框
+    }
+    
+    ///设置文本框
+    fileprivate func setupTextField() {
         let arr = NSArray(array: [beginDateTF, endDateTF, customerSearchTF, stateSearchTF])
         arr.enumerateObjects({ (obj, _, _) in
             let textField = obj as! UITextField
@@ -74,19 +101,10 @@ class SAMComOperationController: UIViewController {
                 textField.addTarget(self, action: #selector(SAMComOperationController.textFieldidChangeText), for: .editingChanged)
             }
         })
-        
-        //设置hudView
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(SAMComOperationController.hudViewDidClick))
-        hudView.addGestureRecognizer(tapGesture)
-        
-        //设置返回按钮
-        let backItem = UIBarButtonItem()
-        backItem.title = ""
-        navigationItem.backBarButtonItem = backItem
     }
     
-    //MARK: - 设置ScrollView
-    fileprivate func setupScrollView() {
+    ///设置ScrollCollectionView
+    fileprivate func setupScrollCollectionView() {
         
         
         let colectionViewArr = [orderManageColView, forSaleColView, owedColView, saleHistoryColView, customerRankColView, productRankColView]
@@ -108,10 +126,11 @@ class SAMComOperationController: UIViewController {
             
             //设置上拉下拉
             collectionView.mj_header = MJRefreshNormalHeader.init(refreshingTarget: self, refreshingAction: collectionViewsMjheaderSelectors[index])
-            collectionView.mj_footer = MJRefreshBackNormalFooter(refreshingTarget: self, refreshingAction: collectionViewsMjfooterSelectors[index])
-            
-            //没有数据自动隐藏footer
-            collectionView.mj_footer.isAutomaticallyHidden = true
+            if collectionView != forSaleColView {
+                collectionView.mj_footer = MJRefreshBackNormalFooter(refreshingTarget: self, refreshingAction: collectionViewsMjfooterSelectors[index])
+                //没有数据自动隐藏footer
+                collectionView.mj_footer.isAutomaticallyHidden = true
+            }
             
             //添加collectionView
             comScrollView.addSubview(collectionView)
@@ -120,32 +139,30 @@ class SAMComOperationController: UIViewController {
         }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    ///设置其他UI
+    fileprivate func setupOtherUI() {
         
-        //设置导航栏指示控制器
-        setupNavIndicaterView()
-        navigationController!.setNavigationBarHidden(true, animated: true)
+        //设置hudView
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(SAMComOperationController.hudViewDidClick))
+        hudView.addGestureRecognizer(tapGesture)
+        
+        //设置返回按钮
+        let backItem = UIBarButtonItem()
+        backItem.title = ""
+        navigationItem.backBarButtonItem = backItem
     }
     
+    //MARK: - viewWillAppear , Disappear 设置导航栏
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController!.setNavigationBarHidden(true, animated: false)
+    }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController!.setNavigationBarHidden(false, animated: false)
     }
     
-    //MARK: - 设置导航栏指示器
-    fileprivate func setupNavIndicaterView() {
-        
-        if navIndicaterView?.superview == nil {
-            navIndicaterView!.delegate = self
-            
-            view.addSubview(navIndicaterView!)
-            
-            navIndicaterView?.frame = CGRect(x: 0, y: 20, width: ScreenW, height: 55)
-        }
-    }
-
     //MARK: - viewDidAppear
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -170,7 +187,8 @@ class SAMComOperationController: UIViewController {
         return (searchStr?.components(separatedBy: " ")[0])!
     }
     
-    //MARK: - 点击时间下拉按钮
+    //MARK: - 用户点击事件
+    ///时间控件按钮展示
     @IBAction func dropDownBtnClick(_ sender: UIButton) {
         
         //退出第一相应textField
@@ -202,7 +220,7 @@ class SAMComOperationController: UIViewController {
         }
     }
     
-    //MARK: - 搜索按钮点击
+    ///搜索按钮点击
     @IBAction func searchBtnClick(_ sender: AnyObject) {
         
         //结束当前第一响应者编辑状态
@@ -227,7 +245,7 @@ class SAMComOperationController: UIViewController {
         }
     }
     
-    //MARK: - 4个时间按钮的点击
+    ///4个时间按钮的点击
     @IBAction func todayBtnClick(_ sender: AnyObject) {
         
         dateBtnViewdidClick(0.0)
@@ -286,6 +304,13 @@ class SAMComOperationController: UIViewController {
         }
     }
     
+    //MARK: - 结束textField编辑状态
+    fileprivate func endFirstTextFieldEditing() {
+        if firstTF != nil {
+            firstTF?.resignFirstResponder()
+        }
+    }
+    
     //MARK: - 点击了hudView
     func hudViewDidClick() {
         
@@ -298,13 +323,6 @@ class SAMComOperationController: UIViewController {
         }
     }
     
-    //MARK: - 结束textField编辑状态
-    fileprivate func endFirstTextFieldEditing() {
-        if firstTF != nil {
-            firstTF?.resignFirstResponder()
-        }
-    }
-    
     //MARK: - 隐藏HUDView
     fileprivate func hideHUDView() {
         if firstTF == nil && dropDownBtn.isSelected == false {
@@ -312,9 +330,10 @@ class SAMComOperationController: UIViewController {
         }
     }
     
-    //MARK: - 导航控制器push其他控制器的时候调
-    
     //MARK: - 属性懒加载
+    ///当前collectionView的序号
+    fileprivate var currentColIndex = 0
+    
     ///订单管理collectionView
     fileprivate let orderManageColView = UICollectionView(frame: CGRect.zero, collectionViewLayout: SAMComOperationColletionViewFlowlayout())
     ///待售布匹collectionView
@@ -328,22 +347,6 @@ class SAMComOperationController: UIViewController {
     ///产品排行collectionView
     fileprivate let productRankColView = UICollectionView(frame: CGRect.zero, collectionViewLayout: SAMComOperationColletionViewFlowlayout())
     
-    ///当前collectionView的序号
-    fileprivate var currentColIndex = 0
-    
-    ///订单管理collectionView数据模型数组
-    fileprivate var orderManageModels = NSMutableArray()
-    ///待售布匹collectionView数据模型数组
-    fileprivate var forSaleModels = NSMutableArray()
-    ///缺货登记collectionView数据模型数组
-    fileprivate var owedModels = NSMutableArray()
-    ///销售历史collectionView数据模型数组
-    fileprivate var saleHistoryModels = NSMutableArray()
-    ///客户排行collectionView数据模型数组
-    fileprivate var customerRankModels = NSMutableArray()
-    ///产品排行collectionView数据模型数组
-    fileprivate var productRankModels = NSMutableArray()
-    
     ///各collectionView下拉刷新触动的方法
     fileprivate let collectionViewsMjheaderSelectors = [#selector(SAMComOperationController.loadNewOrderModels), #selector(SAMComOperationController.loadNewforSaleModels), #selector(SAMComOperationController.loadNewOwedModels), #selector(SAMComOperationController.loadNewSaleHistoryModels), #selector(SAMComOperationController.loadNewCustomerRankModels), #selector(SAMComOperationController.loadNewProductRankModels)]
     
@@ -355,11 +358,6 @@ class SAMComOperationController: UIViewController {
     
     ///所有接口字符串
     fileprivate let requestURLStrs = ["getOrderMainData.ashx", "getReadySellProductList.ashx", "getOOSRecordList.ashx", "getSellMainData.ashx", "SAMOrderManagerCell", "SAMOrderManagerCell"]
-    
-    ///当前数据的页码数组
-    fileprivate var requestSearchPageIndexs = [0, 0, 0, 0, 0, 0]
-    ///一次数据请求获取的数据最大条数
-    fileprivate let requestSearchPageSize = 15
     
     ///订单请求参数
     fileprivate var orderRequestParameters: [String: String]?
@@ -373,6 +371,26 @@ class SAMComOperationController: UIViewController {
     fileprivate var customerRankRequestParameters: [String: String]?
     ///产品排行请求参数
     fileprivate var productRankRequestParameters: [String: String]?
+    
+    ///当前数据的页码数组
+    fileprivate var requestSearchPageIndexs = [0, 0, 0, 0, 0, 0]
+    ///一次数据请求获取的数据最大条数
+    fileprivate let requestSearchPageSize = 15
+    ///当前数据的页码
+    fileprivate var requestSearchPageIndex = 1
+    
+    ///订单管理collectionView数据模型数组
+    fileprivate var orderManageModels = NSMutableArray()
+    ///待售布匹collectionView数据模型数组
+    fileprivate var forSaleModels = NSMutableArray()
+    ///缺货登记collectionView数据模型数组
+    fileprivate var owedModels = NSMutableArray()
+    ///销售历史collectionView数据模型数组
+    fileprivate var saleHistoryModels = NSMutableArray()
+    ///客户排行collectionView数据模型数组
+    fileprivate var customerRankModels = NSMutableArray()
+    ///产品排行collectionView数据模型数组
+    fileprivate var productRankModels = NSMutableArray()
     
     ///导航栏指示器
     fileprivate lazy var navIndicaterView: SAMComOperationIndicaterView? = {
@@ -402,17 +420,6 @@ class SAMComOperationController: UIViewController {
     ///第一响应者
     fileprivate var firstTF: UITextField?
     
-    ///条件搜索请求URLStr
-    fileprivate let orderInfoRequestURLStr = "getOrderMainData.ashx"
-    ///条件搜索参数字典
-    fileprivate var orderInfoRequestParameters: [String: AnyObject]?
-    
-    ///当前数据的页码
-    fileprivate var requestSearchPageIndex = 1
-    
-    ///数据模型数组
-    fileprivate let InfoModels = NSMutableArray()
-    
     //MARK: - XIB链接属性
     @IBOutlet weak var searchConView: UIView!
     @IBOutlet weak var beginDateTF: SAMLoginTextField!
@@ -429,7 +436,6 @@ class SAMComOperationController: UIViewController {
     @IBOutlet weak var comScrollView: UIScrollView!
     
     @IBOutlet weak var collectionView: UICollectionView!
-    
     
     //MARK: - 其他方法
     fileprivate init() { //重写该方法，为单例服务
@@ -601,8 +607,8 @@ extension SAMComOperationController: UICollectionViewDataSource {
         case self.forSaleColView:
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: rigisterReuseNames[1], for: indexPath) as! SAMComOperationCell
-            let model = forSaleModels[indexPath.row] as! SAMOrderModel
-            cell.orderInfoModel = model
+            let model = forSaleModels[indexPath.row] as! SAMForSaleModel
+            cell.forSaleInfoModel = model
             return cell
             
         case self.owedColView:
@@ -829,16 +835,14 @@ extension SAMComOperationController {
     
     func loadNewforSaleModels() {
         
-        //结束下拉刷新
-        forSaleColView.mj_footer.endRefreshing()
-        
+        //创建请求参数
         let userID = SAMUserAuth.shareUser()!.id!
         let strFilter = searchConIn(textField: customerSearchTF)
         let orderBillNumber = searchConIn(textField: stateSearchTF)
         let parameters = ["userID": userID, "strFilter": strFilter, "orderBillNumber": orderBillNumber]
         
         //发送请求
-        SAMNetWorker.sharedNetWorker().get(requestURLStrs[currentColIndex], parameters: parameters, progress: nil, success: {[weak self] (Task, json) in
+        SAMNetWorker.sharedNetWorker().get(requestURLStrs[1], parameters: parameters, progress: nil, success: {[weak self] (Task, json) in
             
             //清空原先数据
             self!.forSaleModels.removeAllObjects()
@@ -853,8 +857,8 @@ extension SAMComOperationController {
                 let _ = SAMHUD.showMessage("没有符合条件的数据", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
                 
             }else { //有数据模型
-                let arr = SAMOrderModel.mj_objectArray(withKeyValuesArray: dictArr)!
-                self!.InfoModels.addObjects(from: arr as [AnyObject])
+                let arr = SAMForSaleModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                self!.forSaleModels.addObjects(from: arr as [AnyObject])
             }
             
             //回主线程
@@ -889,6 +893,7 @@ extension SAMComOperationController {
         let endDate = endDateTF.text!
         let iState = searchConIn(textField: stateSearchTF)
         oweRequestParameters = ["userID": userID, "CGUnitName": CGUnitName, "startDate": startDate, "endDate": endDate, "iState": iState]
+        
         //发送请求
         SAMNetWorker.sharedNetWorker().get(requestURLStrs[2], parameters: oweRequestParameters!, progress: nil, success: {[weak self] (Task, json) in
             
@@ -1048,7 +1053,7 @@ extension SAMComOperationController {
     
     //加载数据
     func loadNewCustomerRankModels() {
-        
+        /*
         //结束下拉刷新
         collectionView.mj_footer.endRefreshing()
         
@@ -1112,11 +1117,12 @@ extension SAMComOperationController {
             self!.collectionView.mj_header.endRefreshing()
             let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
+ */
     }
     
     //加载更多数据
     func loadMoreCustomerRankModels() {
-        
+        /*
         //结束下拉刷新
         collectionView.mj_header.endRefreshing()
         
@@ -1169,6 +1175,7 @@ extension SAMComOperationController {
             self!.collectionView.mj_footer.endRefreshing()
             let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
+ */
     }
 }
 
@@ -1177,7 +1184,7 @@ extension SAMComOperationController {
     
     //加载数据
     func loadNewProductRankModels() {
-        
+        /*
         //结束下拉刷新
         collectionView.mj_footer.endRefreshing()
         
@@ -1241,11 +1248,12 @@ extension SAMComOperationController {
             self!.collectionView.mj_header.endRefreshing()
             let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
+ */
     }
     
     //加载更多数据
     func loadMoreProductRankModels() {
-        
+        /*
         //结束下拉刷新
         collectionView.mj_header.endRefreshing()
         
@@ -1298,6 +1306,7 @@ extension SAMComOperationController {
             self!.collectionView.mj_footer.endRefreshing()
             let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
+ */
     }
 }
 

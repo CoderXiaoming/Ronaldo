@@ -33,23 +33,19 @@ class SAMStockProductCell: UICollectionViewCell {
             
             //设置产品图片
             if stockProductModel?.thumbURL1 != nil {
-                productImageBtn.sd_setBackgroundImage(with: stockProductModel?.thumbURL1!, for: UIControlState(), placeholderImage: UIImage(named: "photo_loadding"))
+                productImageBtn.sd_setBackgroundImage(with: stockProductModel?.thumbURL1!, for: .normal, placeholderImage: UIImage(named: "photo_loadding"))
             }else {
                 productImageBtn.setBackgroundImage(UIImage(named: "photo_loadding"), for: UIControlState())
             }
             
             //设置产品名称
-            if stockProductModel!.productIDName != "" {
-                productNameLabel.text = stockProductModel!.productIDName
-            }else {
-                productNameLabel.text = "---"
-            }
+            productNameLabel.text = stockProductModel!.productIDName
             
             //设置米数
-            mishuLabel.text = String(format: "%.1f", stockProductModel!.countM)
+            mishuLabel.text = stockProductModel!.countMText
             
             //设置匹数
-            pishuLabel.text = String(format: "%d", stockProductModel!.countP)
+            pishuLabel.text = stockProductModel!.countPText
             
             //设置警告，购物车按钮状态
             stockWarningBtn.isEnabled = couldOperateWarningAndCar
@@ -73,10 +69,9 @@ class SAMStockProductCell: UICollectionViewCell {
         
         //设置数据源、代理
         collectionView.dataSource = self
-        collectionView.delegate = self
         
         //设置背景色
-        collectionView.backgroundColor = UIColor.clear
+        collectionView.backgroundColor = customBlueColor
         
         //注册cell
         collectionView.register(UINib(nibName: "SAMStockProductDetailCell", bundle: nil), forCellWithReuseIdentifier: SAMStockProductDetailCellReuseIdentifier)
@@ -150,10 +145,6 @@ extension SAMStockProductCell: UICollectionViewDataSource {
         cell.productDetailModel = model
         return cell
     }
-}
-
-//MARK: - UICollectionViewDelegate
-extension SAMStockProductCell: UICollectionViewDelegate {
 }
 
 //MARK: - 产品详情布局里用到的FlowLayout

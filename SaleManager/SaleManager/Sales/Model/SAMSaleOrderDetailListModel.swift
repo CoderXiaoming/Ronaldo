@@ -29,12 +29,12 @@ class SAMSaleOrderDetailListModel: NSObject {
     ///每匹米数列表
     var meterList: String? {
         didSet{
+            
             let listStr = meterList?.lxm_stringByTrimmingWhitespace()
             if listStr != "" { //字符串有内容
                 
-                if listStr!.contains("，") { //逗号分隔
-                    
-                    meterArr = (listStr?.components(separatedBy: "，"))!
+                if listStr!.contains(",") { //逗号分隔
+                    meterArr = (listStr?.components(separatedBy: ","))!
                 }else if listStr!.contains("|") { // |分隔
                     
                     meterArr = (listStr?.components(separatedBy: "|"))!
@@ -47,6 +47,4 @@ class SAMSaleOrderDetailListModel: NSObject {
     
     //MARK: - 辅助属性
     var meterArr = [String]()
-    
-    let arr = ["123", "3134", "1324", "12", "23", "123"]
 }

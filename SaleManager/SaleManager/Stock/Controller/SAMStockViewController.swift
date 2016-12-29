@@ -21,7 +21,6 @@ var SAMStockHasUnloadProductImage = false
 
 ///产品cell重用标识符
 private let SAMStockProductCellReuseIdentifier = "SAMStockProductCellReuseIdentifier"
-
 ///产品cell正常状态size
 private let SAMStockProductCellNormalSize = CGSize(width: ScreenW, height: SAMStockProductCellNormalHeight)
 
@@ -36,16 +35,13 @@ class SAMStockViewController: UIViewController {
         switch type {
             case .normal:
                 
-                //当前可以操作产品Cell
-                vc.couldOperateCell = true
+                //监听来自二维码扫描界面的通知
                 NotificationCenter.default.addObserver(vc, selector: #selector(SAMStockViewController.receiveProductNameFromQRCodeView(notification:)), name: NSNotification.Name.init(SAMQRCodeViewGetProductNameNotification), object: nil)
                 return vc
             case .requestStock:
                 
                 //购物车数据模型
                 vc.shoppingCarListModel = shoppingCarListModel
-                //当前是产品名搜索状态
-                vc.isProductNameSearch = true
                 //当前有外部查询请求
                 vc.hasOutRequest = true
                 //当前不可以操作产品Cell
@@ -53,8 +49,7 @@ class SAMStockViewController: UIViewController {
                 return vc
             case .requestBuildOrder:
                 
-                //当前可以操作产品Cell
-                vc.couldOperateCell = true
+                //记录控制器状态
                 vc.isFromBuildOrder = true
                 return vc
         }
@@ -65,26 +60,26 @@ class SAMStockViewController: UIViewController {
         super.viewDidLoad()
         
         //初始化UI
-        setupUI()
+        setupBasicUI()
+        
+        //设置导航栏右边按钮
+        setupRightNavBarItem()
         
         //设置展示库存的collectionView
         setupCollectionView()
     }
     
     //MARK: - 初始化UI
-    fileprivate func setupUI() {
+    fileprivate func setupBasicUI() {
         
         //设置标题
         navigationItem.title = "库存查询"
-        
-        //设置导航栏右边按钮
-        setupRightNavBarItem()
         
         //设置textField监听方法
         productNameTF.addTarget(self, action: #selector(SAMStockViewController.textFieldDidEditChange(_:)), for: .editingChanged)
     }
     
-    //MARK: - 设置导航栏右边按钮
+    ///设置导航栏右边按钮
     fileprivate func setupRightNavBarItem() {
         
         let conSearchBtn = UIButton()
@@ -95,7 +90,7 @@ class SAMStockViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: conSearchBtn)
     }
     
-    //MARK: - 初始化collectionView
+    ///初始化collectionView
     fileprivate func setupCollectionView() {
         
         //注册cell
@@ -104,16 +99,17 @@ class SAMStockViewController: UIViewController {
         //设置上拉下拉
         collectionView.mj_header = MJRefreshNormalHeader.init(refreshingTarget: self, refreshingAction: #selector(SAMStockViewController.loadConSearchNewInfo))
         collectionView.mj_footer = MJRefreshBackNormalFooter(refreshingTarget: self, refreshingAction: #selector(SAMStockViewController.loadConSearchMoreInfo))
+        
         //没有数据自动隐藏footer
         collectionView.mj_footer.isAutomaticallyHidden = true
-        
         //隐藏滑动条
         collectionView.showsVerticalScrollIndicator = false
     }
     
-    //MARK: - 从二维码扫描收到产品名
+    //MARK: - 从二维码扫描界面收到通知调用的方法
     func receiveProductNameFromQRCodeView(notification: Notification) {
     
+        //获取产品名
         let productIDName = notification.userInfo!["productIDName"] as! String
         
         //记录获取到的搜索字符串
@@ -121,14 +117,30 @@ class SAMStockViewController: UIViewController {
         
         //记录控制器状态
         hasOutRequest = true
-        isProductNameSearch = true
+    }
+    
+    //MARK: - viewDidAppear
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        //判断是否刚上传图片成功 或者是否有外界请求，如果有则触发下拉刷新。
+        if SAMStockHasUnloadProductImage || hasOutRequest {
+            
+            collectionView.mj_header.beginRefreshing()
+            
+            if hasOutRequest { //如果有外界请求，赋值产品名搜索文本框
+                
+                //赋值文本框
+                productNameTF.text = productNameSearchStr
+            }
+        }
     }
     
     //MARK: - 搜索按钮点击
     func searchBtnClick() {
         
         //判断当前是产品名搜索状态还是条件搜索状态
-        if isProductNameSearch { //产品名搜索状态
+        if productNameSearchStr != "" { //产品名搜索状态
             
             //退出编辑
             endProductNameTFEditing(false)
@@ -172,23 +184,6 @@ class SAMStockViewController: UIViewController {
         }
     }
     
-    //MARK: - viewDidAppear
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        //判断是否刚上传图片成功 或者是否有外界请求，如果有则触发下拉刷新。
-        if SAMStockHasUnloadProductImage || hasOutRequest {
-            
-            collectionView.mj_header.beginRefreshing()
-            
-            if hasOutRequest { //如果有外界请求，赋值产品名搜索文本框
-                
-                //赋值文本框
-                productNameTF.text = productNameSearchStr
-            }
-        }
-    }
-    
     //MARK: - 加载数据
     func loadConSearchNewInfo() {
         
@@ -199,15 +194,16 @@ class SAMStockViewController: UIViewController {
         SAMStockHasUnloadProductImage = false
         hasOutRequest = false
         
-        //如果当前不是产品名搜索而且没有请求参数直接返回
-        if !isProductNameSearch && (conSearchParameters == nil) {
-            collectionView.mj_header.endRefreshing()
-            return
+        //如果是产品名搜索，设置请求参数
+        if productNameSearchStr != "" {
+            conSearchParameters = ["productIDName": productNameSearchStr as AnyObject, "minCountM": "0" as AnyObject, "parentID": "-1" as AnyObject, "storehouseID": "-1" as AnyObject]
         }
         
-        //如果是产品名搜索，设置请求参数
-        if isProductNameSearch {
-            conSearchParameters = ["productIDName": productNameSearchStr! as AnyObject, "minCountM": "0" as AnyObject, "parentID": "-1" as AnyObject, "storehouseID": "-1" as AnyObject]
+        //如果此时conSearchParemeters为空，说明为空搜索名下拉，而且没有之前的搜索条件
+        if conSearchParameters == nil {
+            let _ = SAMHUD.showMessage("你想搜什么？", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
+            collectionView.mj_header.endRefreshing()
+            return
         }
         
         //请求所有数据
@@ -222,12 +218,12 @@ class SAMStockViewController: UIViewController {
         conSearchParameters!["showAlert"] = false as AnyObject?
         
         //发送请求
-        SAMNetWorker.sharedNetWorker().get(conSearchURLStr, parameters: conSearchParameters!, progress: nil, success: { (Task, json) in
+        SAMNetWorker.sharedNetWorker().get("getStock.ashx", parameters: conSearchParameters!, progress: nil, success: { (Task, json) in
             
             //清空原先数据
             self.stockProductModels.removeAllObjects()
             
-            //清空条件搜索控制器
+            //销毁条件搜索控制器
             self.conditionalSearchVC = nil
             
             //清空选中index
@@ -301,7 +297,7 @@ class SAMStockViewController: UIViewController {
         let staticParameters = ["productIDName": productIDName, "storehouseID": "-1", "parentID": "-1", "minCountM": "0"]
         
         //发送请求
-        SAMNetWorker.sharedNetWorker().get(statisticSearchURLStr, parameters: staticParameters, progress: nil, success: { (Task, json) in
+        SAMNetWorker.sharedNetWorker().get("getStockStatic.ashx", parameters: staticParameters, progress: nil, success: { (Task, json) in
             
             //获取模型数组
             let Json = json as! [String: AnyObject]
@@ -341,7 +337,7 @@ class SAMStockViewController: UIViewController {
         conSearchParameters!["pageIndex"] = index as AnyObject?
         
         //发送请求
-        SAMNetWorker.sharedNetWorker().get(conSearchURLStr, parameters: conSearchParameters!, progress: nil, success: { (Task, json) in
+        SAMNetWorker.sharedNetWorker().get("getStock.ashx", parameters: conSearchParameters!, progress: nil, success: { (Task, json) in
             
             //获取模型数组
             let Json = json as! [String: AnyObject]
@@ -360,7 +356,7 @@ class SAMStockViewController: UIViewController {
                 })
             }else {//有数据模型
                 
-                let arr = SAMStockCodeModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                let arr = SAMStockProductModel.mj_objectArray(withKeyValuesArray: dictArr)!
                 
                 //判断是否还有更多数据
                 if arr.count < self.conSearchPageSize { //没有更多数据
@@ -394,36 +390,6 @@ class SAMStockViewController: UIViewController {
             })
         }
     }
-    
-    //MARK: - 添加到购物车之后的动画方法
-    fileprivate func addToShoppingCarSuccess(_ productImage: UIImage) {
-        
-        //设置用户界面不可交互
-        tabBarController?.view.isUserInteractionEnabled = false
-        
-        //设置动画layer
-        productAnimlayer!.contents = productImage.cgImage
-        KeyWindow?.layer.addSublayer(productAnimlayer!)
-        productAnimlayer?.add(groupAnimation, forKey: "group")
-    }
-    
-    //MARK: - 文本框监听的方法
-    func textFieldDidEditChange(_ textField: UITextField) {
-        
-        //获取搜索字符串
-        productNameSearchStr = textField.text!.lxm_stringByTrimmingWhitespace()
-        
-        //设置是否产品名称搜索状态
-        isProductNameSearch = (productNameSearchStr != "") ? true : false
-    }
-    
-    //MARK: - 结束产品文本框编辑状态
-    fileprivate func endProductNameTFEditing(_ clear: Bool) {
-        if clear {
-            productNameTF.text = ""
-        }
-        let _ = productNameTF.resignFirstResponder()
-    }
 
     //MARK: - 懒加载属性
     ///条件搜索控制器
@@ -432,13 +398,9 @@ class SAMStockViewController: UIViewController {
     ///条件搜索参数字典
     var conSearchParameters: [String: AnyObject]?
     
-    ///条件搜索请求URLStr
-    fileprivate let conSearchURLStr = "getStock.ashx"
-    ///总库存搜索请求URLStr
-    fileprivate let statisticSearchURLStr = "getStockStatic.ashx"
     ///一次数据请求获取的数据最大条数
     fileprivate let conSearchPageSize = 15
-    ///当前数据的页码
+    ///当前产品名搜索获取数据的页码
     fileprivate var conSearchPageIndex = 1
     
     ///当前是否有外界查询请求
@@ -446,24 +408,22 @@ class SAMStockViewController: UIViewController {
     ///当前是否可以操作产品Cell
     fileprivate var couldOperateCell: Bool = true
     
-    ///当前是否为单独产品名搜索
-    fileprivate var isProductNameSearch: Bool = false
     ///当前是否为来自创建订单控制器
     fileprivate var isFromBuildOrder: Bool = false
     
-    ///单独产品名搜索字符串
-    fileprivate var productNameSearchStr: String?
+    ///产品名搜索字符串
+    fileprivate var productNameSearchStr = ""
     
     ///购物车穿过来的数据模型
     fileprivate var shoppingCarListModel: SAMShoppingCarListModel? {
         didSet{
             if shoppingCarListModel != nil {
-                productNameSearchStr = shoppingCarListModel?.productIDName
+                productNameSearchStr = shoppingCarListModel!.productIDName!
             }
         }
     }
     
-    ///数据模型数组
+    ///库存数据模型数组
     let stockProductModels = NSMutableArray()
     
     ///当前选中IndexPath
@@ -567,7 +527,7 @@ class SAMStockViewController: UIViewController {
     @IBOutlet weak var indicaterView: UIView!
     
     //MARK: - 其他方法
-    fileprivate init() { //重写该方法，为单例服务
+    fileprivate init() {
         super.init(nibName: nil, bundle: nil)
     }
     fileprivate override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -580,6 +540,9 @@ class SAMStockViewController: UIViewController {
     override func loadView() {
         //从xib加载view
         view = Bundle.main.loadNibNamed("SAMStockViewController", owner: self, options: nil)![0] as! UIView
+    }
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }
 
@@ -611,7 +574,12 @@ extension SAMStockViewController: UICollectionViewDataSource {
 extension SAMStockViewController: UICollectionViewDelegate {
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        
         endProductNameTFEditing(false)
+        
+        if selectedIndexPath != nil {
+            collectionView(collectionView, didSelectItemAt: selectedIndexPath!)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -667,7 +635,7 @@ extension SAMStockViewController: UICollectionViewDelegateFlowLayout {
     } 
 }
 
-//MARK: - 条件搜索控制器的动画代理UIViewControllerTransitioningDelegate
+//MARK: - 条件搜索控制器的转场动画代理
 extension SAMStockViewController: UIViewControllerTransitioningDelegate {
     
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
@@ -706,7 +674,7 @@ extension SAMStockViewController: SAMStockProductCellDelegate {
     }
 }
 
-//MARK: - 购物车控件代理SAMProductOperationViewDelegate
+//MARK: - 购物车控件代理
 extension SAMStockViewController: SAMProductOperationViewDelegate {
 
     func operationViewDidClickDismissButton() {
@@ -830,9 +798,21 @@ extension SAMStockViewController: SAMProductOperationViewDelegate {
             })
         }) 
     }
+    
+    //添加到购物车之后的产品图片动画方法
+    fileprivate func addToShoppingCarSuccess(_ productImage: UIImage) {
+        
+        //设置用户界面不可交互
+        tabBarController?.view.isUserInteractionEnabled = false
+        
+        //设置动画layer
+        productAnimlayer!.contents = productImage.cgImage
+        KeyWindow?.layer.addSublayer(productAnimlayer!)
+        productAnimlayer?.add(groupAnimation, forKey: "group")
+    }
 }
 
-//MARK: - CAAnimationDelegate
+//MARK: - 添加产品至购物车成功后，产品图片动画的监听代理
 extension SAMStockViewController: CAAnimationDelegate {
     
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
@@ -854,7 +834,7 @@ extension SAMStockViewController: CAAnimationDelegate {
     }
 }
 
-//MARK: - UITextFieldDelegate
+//MARK: - 文本框相关方法
 extension SAMStockViewController: UITextFieldDelegate {
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -865,6 +845,24 @@ extension SAMStockViewController: UITextFieldDelegate {
         //触发collectionView下拉
         collectionView.mj_header.beginRefreshing()
         return true
+    }
+    
+    
+    
+    
+    ///文本框监听的方法
+    func textFieldDidEditChange(_ textField: UITextField) {
+        
+        //获取搜索字符串
+        productNameSearchStr = textField.text!.lxm_stringByTrimmingWhitespace()!
+    }
+    
+    ///结束产品文本框编辑状态
+    fileprivate func endProductNameTFEditing(_ clear: Bool) {
+        if clear {
+            productNameTF.text = ""
+        }
+        let _ = productNameTF.resignFirstResponder()
     }
 }
 

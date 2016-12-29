@@ -44,7 +44,7 @@ class SAMOrderOwedOperationController: UIViewController {
         vc.productToOrderModels = orderInfoModel.productListModels
         
         //记录控制器状态
-        vc.couldEdit = !orderInfoModel.isAgreeSend
+        vc.couldEdit = (orderInfoModel.isAgreeSend! != "是")
         
         vc.hidesBottomBarWhenPushed = true
         return vc
@@ -69,7 +69,7 @@ class SAMOrderOwedOperationController: UIViewController {
         
         //记录控制器状态
         vc.controllerType = type
-        vc.couldEdit = (oweInfoModel.iState! == "欠货中") ? true : false
+        vc.couldEdit = (oweInfoModel.iState == "欠货中") ? true : false
         
         vc.hidesBottomBarWhenPushed = true
         return vc
@@ -145,10 +145,10 @@ class SAMOrderOwedOperationController: UIViewController {
             //设置用户
             self.orderCustomerModel = self.orderInfoModel?.orderCustomerModel!
         }, buildOwe: { 
-            self.titles = [[["客户", ""], ["交货日期", ""]], [["产品型号", self.stockModel!.productIDName!], ["匹数", "0"], ["米数", "0"]], [["备注", ""]]]
+            self.titles = [[["客户", ""], ["交货日期", ""]], [["产品型号", self.stockModel!.productIDName], ["匹数", "0"], ["米数", "0"]], [["备注", ""]]]
             self.saveUrlStr = "OOSRecordAdd.ashx"
         }) {
-            self.titles = [[["客户", self.oweModel!.CGUnitName!], ["交货日期", self.oweModel!.endDate!]], [["产品型号", self.oweModel!.productIDName!], ["匹数", String(format: "%d", self.oweModel!.countP)], ["米数", String(format: "%.1f", self.oweModel!.countM)]], [["备注", self.oweModel!.memoInfo!], ["状态", self.oweModel!.iState!]]]
+            self.titles = [[["客户", self.oweModel!.CGUnitName], ["交货日期", self.oweModel!.endDate]], [["产品型号", self.oweModel!.productIDName], ["匹数", String(format: "%d", self.oweModel!.countP)], ["米数", String(format: "%.1f", self.oweModel!.countM)]], [["备注", self.oweModel!.memoInfo], ["状态", self.oweModel!.iState]]]
             self.saveUrlStr = "OOSRecordEdit.ashx"
             //设置用户
             self.orderCustomerModel = self.oweModel?.orderCustomerModel!
@@ -189,7 +189,7 @@ class SAMOrderOwedOperationController: UIViewController {
         }, checkOrder: {
             //展示编辑按钮父控件
             self.editBtnView.isHidden = false
-            if !self.orderInfoModel!.isAgreeSend { //还未发货
+            if self.orderInfoModel!.isAgreeSend! != "是" { //还未发货
                 
                 self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "发货", style: .plain, target: self, action: #selector(SAMOrderOwedOperationController.orderAgreeToSend))
                 self.navigationItem.title = "订单详情(未发货)"
@@ -377,7 +377,7 @@ class SAMOrderOwedOperationController: UIViewController {
         }
         
         if controllerType! == OrderOwedOperationControllerType.checkOwe {
-            MainData!["id"] = oweModel!.id!
+            MainData!["id"] = oweModel!.id
         }
         
         //转换为Json字符串
@@ -448,7 +448,7 @@ class SAMOrderOwedOperationController: UIViewController {
                 parameters = ["billNumber": self.orderInfoModel!.billNumber!]
             case OrderOwedOperationControllerType.checkOwe:
                 requestURLStr = "OOSRecordDelete.ashx"
-                parameters = ["id": self.oweModel!.id!]
+                parameters = ["id": self.oweModel!.id]
             default:
                 break
             }

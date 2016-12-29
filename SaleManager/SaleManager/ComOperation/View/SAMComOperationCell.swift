@@ -18,44 +18,24 @@ class SAMComOperationCell: UICollectionViewCell {
             }
             
             //设置订单状态图片
-            if orderInfoModel!.orderStatus == "未开单" {
-                sateImageView.image = UIImage(named: "orderManageNotCompletion")
-            }else {
-                sateImageView.image = UIImage(named: "orderManageCompletion")
-            }
+            sateImageView.image = orderInfoModel?.orderStateImage!
             
             //设置客户名称
-            if orderInfoModel!.CGUnitName != "" {
-                customerLabel.text = orderInfoModel!.CGUnitName
-            }else {
-                customerLabel.text = "---"
-            }
+            customerLabel.text = orderInfoModel!.CGUnitName
             
             //设置订单编号
             firstInfoTitleLabel.text = "订单编号："
-            if orderInfoModel!.billNumber != "" {
-                fitstInfoContentLabel.text = orderInfoModel!.billNumber
-            }else {
-                fitstInfoContentLabel.text = "---"
-            }
+            fitstInfoContentLabel.text = orderInfoModel!.billNumber
             
             //设置备注
             secondInfoTitleLabel.text = "备注："
-            if orderInfoModel!.memoInfo != "" {
-                secondInfoContentLabel.text = orderInfoModel!.memoInfo
-            }else {
-                secondInfoContentLabel.text = "---"
-            }
+            secondInfoContentLabel.text = orderInfoModel!.memoInfo
             
             thirdInfoTitleLabel.text = ""
             thirdInfoContentLabel.text = ""
             
             //设置时间
-            if orderInfoModel!.startDate != "" {
-                startDateLabel.text = orderInfoModel!.startDate
-            }else {
-                startDateLabel.text = "---"
-            }
+            startDateLabel.text = orderInfoModel!.startDate
             endDateLabel.text = ""
         }
     }
@@ -68,43 +48,28 @@ class SAMComOperationCell: UICollectionViewCell {
             }
             
             //设置图片
-            sateImageView.image = UIImage(named: "indicater_forSale_selected")
+            sateImageView.image = forSaleInfoModel!.orderStateImage
             
             //设置客户名称
-            if forSaleInfoModel!.CGUnitName != "" {
-                customerLabel.text = forSaleInfoModel!.CGUnitName
-            }else {
-                customerLabel.text = "---"
-            }
+            customerLabel.text = forSaleInfoModel!.CGUnitName
             
             //设置产品名称
             firstInfoTitleLabel.text = ""
-            if forSaleInfoModel!.productIDName != "" {
-                fitstInfoContentLabel.text = forSaleInfoModel!.productIDName
-            }else {
-                fitstInfoContentLabel.text = "---"
-            }
+            fitstInfoContentLabel.text = forSaleInfoModel!.productIDName
+            
             //设置数量数
             secondInfoTitleLabel.text = "数量："
-            secondInfoContentLabel.text = forSaleInfoModel!.meter! + forSaleInfoModel!.unit!
+            secondInfoContentLabel.text = forSaleInfoModel!.meter + forSaleInfoModel!.unit
             
             //设置米数
             thirdInfoTitleLabel.text = ""
             thirdInfoContentLabel.text = ""
             
             //设置扫码人
-            if forSaleInfoModel!.employeeName != "" {
-                startDateLabel.text = forSaleInfoModel!.employeeName
-            }else {
-                startDateLabel.text = "---"
-            }
+            startDateLabel.text = forSaleInfoModel!.employeeName
             
             //设置交货日期
-            if forSaleInfoModel!.orderBillNumber != "" {
-                endDateLabel.text = forSaleInfoModel!.orderBillNumber
-            }else {
-                endDateLabel.text = "---"
-            }
+            endDateLabel.text = forSaleInfoModel!.orderBillNumber
         }
     }
     
@@ -115,32 +80,16 @@ class SAMComOperationCell: UICollectionViewCell {
                 return
             }
             
-            //设置状态指示图片
-            switch owedInfoModel!.iState! {
-            case "欠货中":
-                sateImageView.image = UIImage(named: "oweding")
-            case "已完成":
-                sateImageView.image = UIImage(named: "owedCompletion")
-            case "已删除":
-                sateImageView.image = UIImage(named: "owedDelete")
-            default:
-                break
-            }
+            //设置图片
+            sateImageView.image = owedInfoModel!.orderStateImage
             
             //设置客户名称
-            if owedInfoModel!.CGUnitName != "" {
-                customerLabel.text = owedInfoModel!.CGUnitName
-            }else {
-                customerLabel.text = "---"
-            }
+            customerLabel.text = owedInfoModel!.CGUnitName
             
             //设置产品名称
             firstInfoTitleLabel.text = ""
-            if owedInfoModel!.productIDName != "" {
-                fitstInfoContentLabel.text = owedInfoModel!.productIDName
-            }else {
-                fitstInfoContentLabel.text = "---"
-            }
+            fitstInfoContentLabel.text = owedInfoModel!.productIDName
+            
             //设置匹数
             secondInfoTitleLabel.text = "匹数："
             secondInfoContentLabel.text = String(format: "%d", owedInfoModel!.countP)
@@ -150,18 +99,10 @@ class SAMComOperationCell: UICollectionViewCell {
             thirdInfoContentLabel.text = String(format: "%.1f", owedInfoModel!.countM)
             
             //设置起始日期
-            if owedInfoModel!.startDate != "" {
-                startDateLabel.text = owedInfoModel!.startDate
-            }else {
-                startDateLabel.text = "---"
-            }
+            startDateLabel.text = owedInfoModel!.startDate
             
             //设置交货日期
-            if owedInfoModel!.endDate != "" {
-                endDateLabel.text = owedInfoModel!.endDate
-            }else {
-                endDateLabel.text = "---"
-            }
+            endDateLabel.text = owedInfoModel!.endDate
         }
     }
     
@@ -173,22 +114,14 @@ class SAMComOperationCell: UICollectionViewCell {
             }
             
             //设置图片
-            sateImageView.image = UIImage(named: "indicater_saleHistory_selected")
+            sateImageView.image = saleOrderInfoModel!.orderStateImage
             
             //设置客户名称
-            if saleOrderInfoModel!.CGUnitName != "" {
-                customerLabel.text = saleOrderInfoModel!.CGUnitName
-            }else {
-                customerLabel.text = "---"
-            }
+            customerLabel.text = saleOrderInfoModel!.CGUnitName
             
             //设置订单编号
             firstInfoTitleLabel.text = "订单编号："
-            if saleOrderInfoModel!.billNumber != "" {
-                fitstInfoContentLabel.text = saleOrderInfoModel!.billNumber
-            }else {
-                fitstInfoContentLabel.text = "---"
-            }
+            fitstInfoContentLabel.text = saleOrderInfoModel!.billNumber
             
             //设置金额
             secondInfoTitleLabel.text = "金额："
@@ -198,11 +131,7 @@ class SAMComOperationCell: UICollectionViewCell {
             thirdInfoContentLabel.text = ""
             
             //设置时间
-            if saleOrderInfoModel!.startDate != "" {
-                startDateLabel.text = saleOrderInfoModel!.startDate
-            }else {
-                startDateLabel.text = "---"
-            }
+            startDateLabel.text = saleOrderInfoModel!.startDate
             endDateLabel.text = ""
         }
     }

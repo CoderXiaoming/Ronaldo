@@ -22,18 +22,10 @@ class SAMStockProductDetailCell: UICollectionViewCell {
         didSet{
             
             //设置该卷布编号
-            if productDetailModel?.storePositionName != "" {
-                storePositionLabel.text = productDetailModel?.storePositionName
-            }else {
-                storePositionLabel.text = "---"
-            }
+            storePositionLabel.text = productDetailModel?.storePositionName
             
             //设置该卷布米数
-            if productDetailModel?.meter != "" {
-                meterLabel.text = productDetailModel?.meter
-            }else {
-                meterLabel.text = "---"
-            }
+            meterLabel.text = productDetailModel?.meter
         }
     }
 

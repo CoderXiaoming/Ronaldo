@@ -25,5 +25,4 @@ class SAMStockCodeModel: NSObject {
     
     ///大图1的地址
     var imageUrl1: String?
-    
 }

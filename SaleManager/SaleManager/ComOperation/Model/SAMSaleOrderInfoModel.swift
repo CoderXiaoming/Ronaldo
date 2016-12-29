@@ -11,12 +11,30 @@ import UIKit
 class SAMSaleOrderInfoModel: NSObject {
 
     ///销售日期
-    var startDate: String?
+    var startDate = "" {
+        didSet{
+            startDate = ((startDate == "") ? "---" : startDate)
+        }
+    }
     ///销售金额
-    var actualMoney: Double = 0.0
+    var actualMoney = "" {
+        didSet{
+            actualMoney = ((actualMoney == "") ? "---" : actualMoney)
+        }
+    }
     ///客户名称
-    var CGUnitName: String?
+    var CGUnitName = "" {
+        didSet{
+            CGUnitName = ((CGUnitName == "") ? "---" : CGUnitName)
+        }
+    }
     ///销售单号
-    var billNumber: String?
+    var billNumber = "" {
+        didSet{
+            billNumber = ((billNumber == "") ? "---" : billNumber)
+        }
+    }
     
+    //MARK: - 辅助属性
+    let orderStateImage = UIImage(named: "indicater_saleHistory_selected")
 }

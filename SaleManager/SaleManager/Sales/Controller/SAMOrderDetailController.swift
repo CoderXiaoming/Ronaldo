@@ -102,7 +102,7 @@ class SAMOrderDetailController: UIViewController {
     func loadOrderDetailModel(_ success: @escaping ()->(), noData: @escaping ()->(), error: @escaping ()->()) {
         
         //创建请求参数
-        let parameters = ["billNumber": orderInfoModel!.billNumber!]
+        let parameters = ["billNumber": orderInfoModel!.billNumber]
         
         //发送请求
         SAMNetWorker.sharedNetWorker().get("getSellMainDataByBillNumber.ashx", parameters: parameters, progress: nil, success: { (Task, json) in
@@ -135,7 +135,7 @@ class SAMOrderDetailController: UIViewController {
         orderDetailListModels.removeAllObjects()
         
         //创建请求参数
-        let parameters = ["billNumber": orderInfoModel!.billNumber!]
+        let parameters = ["billNumber": orderInfoModel!.billNumber]
         
         //发送请求
         SAMNetWorker.sharedNetWorker().get("getSellDetailDataByBillNumber.ashx", parameters: parameters, progress: nil, success: { (Task, json) in

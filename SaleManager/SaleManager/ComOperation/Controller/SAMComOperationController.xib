@@ -132,7 +132,7 @@
                             <state key="disabled" image="saleInfoMirror_disabled">
                                 <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
-                            <state key="highlighted" image="saleInfoMirror_highlighted">
+                            <state key="highlighted" image="saleInfoMirror">
                                 <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
                             <connections>
@@ -319,11 +319,10 @@
     <resources>
         <image name="dateButtonBGImage" width="60" height="35"/>
         <image name="dateButtonBGImage_highlighted" width="60" height="35"/>
-        <image name="dateButtonImage" width="23" height="22"/>
-        <image name="dateButtonImage_selected" width="23" height="22"/>
+        <image name="dateButtonImage" width="22" height="22"/>
+        <image name="dateButtonImage_selected" width="22" height="22"/>
         <image name="dateButtonViewTriggle" width="80" height="4"/>
-        <image name="saleInfoMirror" width="24" height="24"/>
-        <image name="saleInfoMirror_disabled" width="24" height="24"/>
-        <image name="saleInfoMirror_highlighted" width="24" height="24"/>
+        <image name="saleInfoMirror" width="22" height="22"/>
+        <image name="saleInfoMirror_disabled" width="22" height="22"/>
     </resources>
 </document>
