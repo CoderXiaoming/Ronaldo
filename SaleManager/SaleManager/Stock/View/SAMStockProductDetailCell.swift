@@ -12,7 +12,7 @@ import UIKit
 let SAMStockProductDetailCellWidth: CGFloat = 100
 //CELL的高度
 let SAMStockProductDetailCellHeight: CGFloat = 40
-//CELL的高度
+//CELL的间距
 let SAMStockProductDetailCellMinimumLineSpacing: CGFloat = 5
 
 class SAMStockProductDetailCell: UICollectionViewCell {

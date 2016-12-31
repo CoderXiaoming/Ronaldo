@@ -25,6 +25,14 @@ class SAMProductImageOpetationView: UIView {
         return view
     }
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        if !hasTP_SZ_Auth {
+            selectImageButton.isEnabled = false
+            cameraButton.isEnabled = false
+        }
+    }
+    
     //MARK: - 点击事件
     @IBAction func cameraBtnClick(_ sender: AnyObject) {
         delegate?.opetationViewDidClickCameraBtn()
@@ -38,4 +46,12 @@ class SAMProductImageOpetationView: UIView {
     @IBAction func cancelBtnClick(_ sender: AnyObject) {
         delegate?.opetationViewDidClickCancelBtn()
     }
+    
+    //MARK: - XIB链接属性
+    @IBOutlet weak var selectImageButton: UIButton!
+    @IBOutlet weak var cameraButton: UIButton!
+    
+    //MARK: - 属性
+    ///新增图片权限
+    fileprivate lazy var hasTP_SZ_Auth: Bool = SAMUserAuth.checkAuth(["TP_SZ_APP"])
 }

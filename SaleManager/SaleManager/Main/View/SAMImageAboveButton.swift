@@ -18,7 +18,7 @@ class SAMImageAboveButton: UIButton {
     }
     
     //imageView的高度比例
-    fileprivate var imgHeightScale: CGFloat = 0.6
+    fileprivate var imgHeightScale: CGFloat = 0.65
     
     override func layoutSubviews() {
         super.layoutSubviews()

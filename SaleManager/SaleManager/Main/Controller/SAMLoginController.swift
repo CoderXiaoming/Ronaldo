@@ -14,6 +14,8 @@ import MBProgressHUD
 private let severAddStrKey = "severAddStrKey"
 ///用于读写 用户名 的Key
 private let userNameStrKey = "userNameStrKey"
+///用于读写 密码 的Key
+private let passWordStrKey = "passWordStrKey"
 ///登录界面用到动画的基础时长
 private let animationDuration = 0.7
 
@@ -56,6 +58,14 @@ class SAMLoginController: UIViewController {
                 userNameTF.text = userNameStr
                 remNameBtn.isSelected = true
             }
+            //判断 是否有密码
+            PWDStr = UserDefaults.standard.string(forKey: passWordStrKey)
+            if PWDStr != nil { //有密码
+                
+                PwdTF.text = PWDStr
+                remPwdBtn.isSelected = true
+                loginBtn.isEnabled = true
+            }
             
             //检查按钮状态
             checkBtnState(serverAddTF)
@@ -85,7 +95,17 @@ class SAMLoginController: UIViewController {
     //记住名字按钮点击
     @IBAction func remNameBtnClick(_ sender: AnyObject) {
         remNameBtn.isSelected = !remNameBtn.isSelected
+        if !remNameBtn.isSelected {
+            remPwdBtn.isSelected = false
+        }
     }
+    @IBAction func remPwdBtnClick(_ sender: UIButton) {
+        remPwdBtn.isSelected = !remPwdBtn.isSelected
+        if remPwdBtn.isSelected {
+            remNameBtn.isSelected = true
+        }
+    }
+    
     
     //登录按钮点击
     @IBAction func loginBtnClick(_ sender: AnyObject) {
@@ -293,6 +313,11 @@ class SAMLoginController: UIViewController {
             }else {
                 UserDefaults.standard.set(nil, forKey: userNameStrKey)
             }
+            if self.remPwdBtn.isSelected == true {
+                UserDefaults.standard.set(self.PWDStr, forKey: passWordStrKey)
+            }else {
+                UserDefaults.standard.set(nil, forKey: passWordStrKey)
+            }
             UserDefaults.standard.synchronize()
             
             //创建全局使用的netWorker单例
@@ -330,6 +355,7 @@ class SAMLoginController: UIViewController {
     @IBOutlet weak var loginBtn: UIButton!
     
     @IBOutlet weak var remNameBtn: UIButton!
+    @IBOutlet weak var remPwdBtn: UIButton!
     
     @IBOutlet weak var serverView: UIView!
     @IBOutlet weak var serverAddTF: UITextField!

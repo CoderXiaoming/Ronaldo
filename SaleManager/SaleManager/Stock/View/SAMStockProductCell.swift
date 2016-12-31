@@ -19,7 +19,8 @@ private let SAMStockProductDetailCellReuseIdentifier = "SAMStockProductDetailCel
 protocol SAMStockProductCellDelegate: NSObjectProtocol {
     func productCellDidClickShoppingCarButton(_ stockProductModel: SAMStockProductModel, stockProductImage: UIImage)
     func productCellDidClickStockWarnningButton(_ stockProductModel: SAMStockProductModel)
-    func productCellDidClickProductImageButton(_ stockProductModel: SAMStockProductModel)
+    func productCellDidClickProductImage(_ stockProductModel: SAMStockProductModel)
+    func productCellDidLongPressProductImage(_ stockProductModel: SAMStockProductModel)
 }
 
 class SAMStockProductCell: UICollectionViewCell {
@@ -33,9 +34,9 @@ class SAMStockProductCell: UICollectionViewCell {
             
             //设置产品图片
             if stockProductModel?.thumbURL1 != nil {
-                productImageBtn.sd_setBackgroundImage(with: stockProductModel?.thumbURL1!, for: .normal, placeholderImage: UIImage(named: "photo_loadding"))
+                productImageView.sd_setImage(with: stockProductModel?.thumbURL1!, placeholderImage: UIImage(named: "photo_loadding"))
             }else {
-                productImageBtn.setBackgroundImage(UIImage(named: "photo_loadding"), for: UIControlState())
+                productImageView.image = UIImage(named: "photo_loadding")
             }
             
             //设置产品名称
@@ -58,10 +59,16 @@ class SAMStockProductCell: UICollectionViewCell {
         super.awakeFromNib()
         
         //设置图片圆角
-        productImageBtn.layer.cornerRadius = 10
+        productImageView.layer.cornerRadius = 10
         
         //设置CollectionView
         setupCollectionView()
+        
+        //设置产品图片监听事件
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(SAMStockProductCell.productImageViewDidTap))
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(SAMStockProductCell.productImageViewDidLongPress))
+        productImageView.addGestureRecognizer(tapGesture)
+        productImageView.addGestureRecognizer(longPressGesture)
     }
     
     //MARK: - 设置collectionView
@@ -100,12 +107,21 @@ class SAMStockProductCell: UICollectionViewCell {
     @IBAction func stockWaringBtnClick(_ sender: AnyObject) {
         delegate?.productCellDidClickStockWarnningButton(stockProductModel!)
     }
-    @IBAction func shoppingCarBtnClick(_ sender: AnyObject) {
-        delegate?.productCellDidClickShoppingCarButton(stockProductModel!, stockProductImage: productImageBtn.backgroundImage(for: UIControlState())!)
+    
+    //点击了产品图片
+    func productImageViewDidTap() {
+        delegate?.productCellDidClickProductImage(stockProductModel!)
     }
-    @IBAction func productImageBtnClick(_ sender: AnyObject) {
-        
-        delegate?.productCellDidClickProductImageButton(stockProductModel!)
+    
+    //长按了产品图片
+    func productImageViewDidLongPress(gesture: UILongPressGestureRecognizer) {
+        if gesture.state == .began {
+            delegate?.productCellDidLongPressProductImage(stockProductModel!)
+        }
+    }
+    
+    @IBAction func shoppingCarBtnClick(_ sender: AnyObject) {
+        delegate?.productCellDidClickShoppingCarButton(stockProductModel!, stockProductImage: productImageView.image!)
     }
     
     //MARK: - 属性懒加载
@@ -120,7 +136,7 @@ class SAMStockProductCell: UICollectionViewCell {
     
     //MARK: - XIB链接属性
     @IBOutlet weak var topContentView: UIView!
-    @IBOutlet weak var productImageBtn: UIButton!
+    @IBOutlet weak var productImageView: UIImageView!
     @IBOutlet weak var productNameLabel: UILabel!
     @IBOutlet weak var pishuLabel: UILabel!
     @IBOutlet weak var mishuLabel: UILabel!

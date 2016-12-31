@@ -30,15 +30,12 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Y0K-pc-lwV" userLabel="contentView">
                         <rect key="frame" x="0.0" y="1" width="459" height="74"/>
                         <subviews>
-                            <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a8e-bE-TkY">
+                            <imageView clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="X46-6i-Xq5" userLabel="ProductImage">
                                 <rect key="frame" x="10" y="5" width="64" height="64"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="a8e-bE-TkY" secondAttribute="height" multiplier="1:1" id="Fma-vJ-bJj"/>
+                                    <constraint firstAttribute="width" secondItem="X46-6i-Xq5" secondAttribute="height" multiplier="1:1" id="m0k-V8-eNz"/>
                                 </constraints>
-                                <connections>
-                                    <action selector="productImageBtnClick:" destination="gTV-IL-0wX" eventType="touchUpInside" id="Y2V-0u-2Lj"/>
-                                </connections>
-                            </button>
+                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dxP-Hd-GRI">
                                 <rect key="frame" x="409" y="0.0" width="50" height="37"/>
                                 <constraints>
@@ -111,22 +108,22 @@
                             <constraint firstItem="Rbo-DK-ViC" firstAttribute="leading" secondItem="HFO-Fu-U56" secondAttribute="trailing" id="72H-A0-nMf"/>
                             <constraint firstAttribute="bottom" secondItem="kne-ly-Fg8" secondAttribute="bottom" id="7AJ-PO-FVv"/>
                             <constraint firstAttribute="height" constant="74" id="7m6-KI-q7m"/>
-                            <constraint firstItem="a8e-bE-TkY" firstAttribute="top" secondItem="Y0K-pc-lwV" secondAttribute="top" constant="5" id="9BJ-UY-sg8"/>
                             <constraint firstItem="HFO-Fu-U56" firstAttribute="leading" secondItem="Nw8-Uh-chz" secondAttribute="leading" id="CV5-70-3Gp"/>
-                            <constraint firstAttribute="bottom" secondItem="a8e-bE-TkY" secondAttribute="bottom" constant="5" id="Cla-tk-lAo"/>
                             <constraint firstItem="S0e-ku-UAk" firstAttribute="leading" secondItem="Nw8-Uh-chz" secondAttribute="trailing" id="Dh1-yc-l8u"/>
                             <constraint firstItem="dxP-Hd-GRI" firstAttribute="top" secondItem="Y0K-pc-lwV" secondAttribute="top" id="FJA-xE-r9T"/>
-                            <constraint firstItem="a8e-bE-TkY" firstAttribute="leading" secondItem="Y0K-pc-lwV" secondAttribute="leading" constant="10" id="J8b-ao-aNo"/>
+                            <constraint firstItem="ddC-3K-ehE" firstAttribute="leading" secondItem="X46-6i-Xq5" secondAttribute="trailing" constant="10" id="KWF-RV-owc"/>
                             <constraint firstItem="HFO-Fu-U56" firstAttribute="top" secondItem="Nw8-Uh-chz" secondAttribute="bottom" constant="5" id="OP6-Ws-5RK"/>
                             <constraint firstItem="ddC-3K-ehE" firstAttribute="top" secondItem="Y0K-pc-lwV" secondAttribute="top" constant="5" id="RDE-QM-r5l"/>
+                            <constraint firstItem="X46-6i-Xq5" firstAttribute="top" secondItem="Y0K-pc-lwV" secondAttribute="top" constant="5" id="RKU-Ha-eeY"/>
                             <constraint firstAttribute="trailing" secondItem="kne-ly-Fg8" secondAttribute="trailing" id="UDg-U2-Dh3"/>
                             <constraint firstItem="kne-ly-Fg8" firstAttribute="height" secondItem="dxP-Hd-GRI" secondAttribute="height" id="W9q-iw-geR"/>
+                            <constraint firstItem="X46-6i-Xq5" firstAttribute="leading" secondItem="Y0K-pc-lwV" secondAttribute="leading" constant="10" id="X7e-ek-ChB"/>
                             <constraint firstItem="Rbo-DK-ViC" firstAttribute="centerY" secondItem="HFO-Fu-U56" secondAttribute="centerY" id="XqM-mK-8Mo"/>
                             <constraint firstAttribute="trailing" secondItem="dxP-Hd-GRI" secondAttribute="trailing" id="ZBO-TB-i02"/>
                             <constraint firstItem="Nw8-Uh-chz" firstAttribute="top" secondItem="ddC-3K-ehE" secondAttribute="bottom" constant="5" id="dfX-kZ-8Oc"/>
                             <constraint firstItem="S0e-ku-UAk" firstAttribute="centerY" secondItem="Nw8-Uh-chz" secondAttribute="centerY" id="fWs-WU-UEu"/>
+                            <constraint firstAttribute="bottom" secondItem="X46-6i-Xq5" secondAttribute="bottom" constant="5" id="mMP-Hy-hB4"/>
                             <constraint firstItem="Nw8-Uh-chz" firstAttribute="leading" secondItem="ddC-3K-ehE" secondAttribute="leading" id="o3y-BR-IvX"/>
-                            <constraint firstItem="ddC-3K-ehE" firstAttribute="leading" secondItem="a8e-bE-TkY" secondAttribute="trailing" constant="10" id="oJA-bt-Ffe"/>
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jDd-HN-Vfd" userLabel="BottomSeperaterView">
@@ -153,7 +150,7 @@
             <connections>
                 <outlet property="mishuLabel" destination="Rbo-DK-ViC" id="wG4-mz-vpB"/>
                 <outlet property="pishuLabel" destination="S0e-ku-UAk" id="4uc-Uc-z6h"/>
-                <outlet property="productImageBtn" destination="a8e-bE-TkY" id="eMA-tf-VMl"/>
+                <outlet property="productImageView" destination="X46-6i-Xq5" id="Q6b-PZ-0pF"/>
                 <outlet property="productNameLabel" destination="ddC-3K-ehE" id="BNy-Dq-GBe"/>
                 <outlet property="shoppingCarBtn" destination="kne-ly-Fg8" id="Md0-cU-6ml"/>
                 <outlet property="stockWarningBtn" destination="dxP-Hd-GRI" id="rka-Q7-UQj"/>

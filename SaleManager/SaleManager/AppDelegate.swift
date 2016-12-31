@@ -19,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
          设置窗口根控制器，并显示
          目前设置的是每次重新启动都要输入密码，所以启动时候的根控制器都是登录控制器。
          */
+        
         window = UIWindow.init(frame: UIScreen.main.bounds)
         window?.rootViewController = SAMLoginController()
         window?.makeKeyAndVisible()

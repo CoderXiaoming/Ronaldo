@@ -40,7 +40,7 @@ class SAMStockConditionalSearchController: UIViewController {
         super.viewDidLoad()
         
         //初始化UI
-        setupUI()
+        setupBasicUI()
         
         //设置collectionView
         setupCollectionView()
@@ -49,15 +49,14 @@ class SAMStockConditionalSearchController: UIViewController {
         setupTextfield()
     }
     
-    //MARK: - 初始化UI
-    fileprivate func setupUI() {
+    ///初始化UI
+    fileprivate func setupBasicUI() {
         
         //设置圆角
         view.layer.cornerRadius = 8
         
         //设置 分类/仓库 选择器
         categoryTF.inputView = categoryPickerView
-        
         
         storehouseTF.inputView = storehousePickerView
         
@@ -72,7 +71,7 @@ class SAMStockConditionalSearchController: UIViewController {
         searchTF.leftViewMode = UITextFieldViewMode.always
     }
     
-    //MARK: - 初始化collectionView
+    ///初始化collectionView
     fileprivate func setupCollectionView() {
         
         //设置代理数据源
@@ -89,7 +88,7 @@ class SAMStockConditionalSearchController: UIViewController {
         collectionView.mj_footer.isAutomaticallyHidden = true
     }
     
-    //MARK: - 初始化Textfield
+    ///初始化Textfield
     fileprivate func setupTextfield() {
         
         let arr = NSArray(array: [categoryTF, numberTF, storehouseTF, stockTF, searchTF])
@@ -108,7 +107,6 @@ class SAMStockConditionalSearchController: UIViewController {
         //加载所有分类、仓库列表
         loadCategoryStorehouseList()
         
-        //TODO: 这些数据时网上加载的所以暂时午饭提前赋值
         //赋值文本框
         let arr = NSArray(array: [categoryTF, numberTF, storehouseTF])
         arr.enumerateObjects({ (obj, ind, nil) in
@@ -486,17 +484,19 @@ class SAMStockConditionalSearchController: UIViewController {
     @IBOutlet weak var endEditingBtn: UIButton!
     @IBOutlet weak var searchBtn: UIButton!
     
-    
     //MARK: - 其他方法
-    //MARK: - 其他方法
-    fileprivate init() { //重写该方法，为单例服务
+    fileprivate init() { 
         super.init(nibName: nil, bundle: nil)
     }
     fileprivate override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: "SAMStockConditionalSearchController", bundle: nibBundleOrNil)
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    override func loadView() {
+        //从xib加载view
+        view = Bundle.main.loadNibNamed("SAMStockConditionalSearchController", owner: self, options: nil)![0] as! UIView
     }
 }
 

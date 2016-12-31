@@ -250,13 +250,8 @@ class SAMCustomerViewController: UIViewController {
         //结束下拉刷新
         customerCollectionView.mj_footer.endRefreshing()
         
-        //判断搜索条件，如果没有搜索条件，提示用户并返回
+        //获取搜索条件
         let searchStr = searchCon(textField: customerSearchTF)
-        if searchStr == "" {
-            let _ = SAMHUD.showMessage("请输入客户", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
-            customerCollectionView.mj_header.endRefreshing()
-            return
-        }
         
         //恢复形变CELL
         if self.selectedCustomerCell != nil {

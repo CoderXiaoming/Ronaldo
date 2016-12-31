@@ -17,11 +17,7 @@ class SAMSaleOrderInfoModel: NSObject {
         }
     }
     ///销售金额
-    var actualMoney = "" {
-        didSet{
-            actualMoney = ((actualMoney == "") ? "---" : actualMoney)
-        }
-    }
+    var actualMoney = 0.0
     ///客户名称
     var CGUnitName = "" {
         didSet{

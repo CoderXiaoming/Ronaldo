@@ -563,6 +563,9 @@ extension SAMStockViewController: UICollectionViewDataSource {
         let model = stockProductModels[indexPath.row] as! SAMStockProductModel
         cell.stockProductModel = model
         
+        if indexPath == selectedIndexPath {
+            cell.reloadCollectionView()
+        }
         //设置代理
         cell.delegate = self
         
@@ -576,10 +579,6 @@ extension SAMStockViewController: UICollectionViewDelegate {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         
         endProductNameTFEditing(false)
-        
-        if selectedIndexPath != nil {
-            collectionView(collectionView, didSelectItemAt: selectedIndexPath!)
-        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -649,6 +648,20 @@ extension SAMStockViewController: UIViewControllerTransitioningDelegate {
 
 //MARK: - 库存产品CELL的代理SAMStockProductCellDelegate
 extension SAMStockViewController: SAMStockProductCellDelegate {
+    //点击了产品图片
+    func productCellDidClickProductImage(_ stockProductModel: SAMStockProductModel) {
+        //展示产品详情控制器
+        let productInfoVC = SAMStockProductInfoController.instance()
+        productInfoVC!.stockProductModel = stockProductModel
+        navigationController!.pushViewController(productInfoVC!, animated: true)
+    }
+    
+    //长按了产品图片
+    func productCellDidLongPressProductImage(_ stockProductModel: SAMStockProductModel) {
+        let vc = SAMProductImageController.instance()
+        vc.stockProductModel = stockProductModel
+        navigationController?.pushViewController(vc, animated: true)
+    }
     
     //点击了购物车
     func productCellDidClickShoppingCarButton(_ stockProductModel: SAMStockProductModel, stockProductImage: UIImage) {
@@ -662,15 +675,6 @@ extension SAMStockViewController: SAMStockProductCellDelegate {
     
         let owedVC = SAMOrderOwedOperationController.buildOwe(productModel: stockProductModel, type: .buildOwe)
         navigationController!.pushViewController(owedVC, animated: true)
-    }
-    
-    //点击了产品图片
-    func productCellDidClickProductImageButton(_ stockProductModel: SAMStockProductModel) {
-        
-        //展示产品详情控制器
-        let productInfoVC = SAMStockProductInfoController.instance()
-        productInfoVC!.stockProductModel = stockProductModel
-        navigationController!.pushViewController(productInfoVC!, animated: true)
     }
 }
 

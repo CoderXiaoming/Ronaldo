@@ -29,7 +29,9 @@ class SAMProductImageController: UIViewController {
     
     ///对外提供的类工厂方法
     class func instance() -> SAMProductImageController {
-        return SAMProductImageController()
+        let vc = SAMProductImageController()
+        vc.hidesBottomBarWhenPushed = true
+        return vc
     }
     
     //MARK: - viewDidLoad
@@ -39,10 +41,8 @@ class SAMProductImageController: UIViewController {
         //初始化UI
         setupUI()
         
-        //根据权限添加右上角按钮
-        if hasTP_SZ_Auth {
-            setupRightItem()
-        }
+        //添加右上角按钮
+        setupRightItem()
     }
 
     //MARK: - 初始化UI
@@ -66,9 +66,9 @@ class SAMProductImageController: UIViewController {
     
     //MARK: - 添加右上角按钮，有权限才添加
     fileprivate func setupRightItem() {
-        let btn = UIButton()
+        let btn = UIButton(type: .custom)
         btn.addTarget(self, action: #selector(SAMProductImageController.moreInfoBtnClick), for: .touchUpInside)
-        btn.setTitle("更多操作", for: UIControlState())
+        btn.setImage(UIImage(named: "productImageMoreOperetionImage"), for: UIControlState())
         btn.sizeToFit()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: btn)
@@ -78,13 +78,11 @@ class SAMProductImageController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if hasTP_SZ_Auth {
-            //设置hudView
-            setupHUDView()
-            
-            //设置oprationView
-            setupOperationView()
-        }
+        //设置hudView
+        setupHUDView()
+        
+        //设置oprationView
+        setupOperationView()
     }
     
     //MARK: - 初始化设置HUDView
@@ -240,13 +238,11 @@ class SAMProductImageController: UIViewController {
         //恢复scrollView的缩放
         scrollView?.zoomScale = 1
         
-        if hasTP_SZ_Auth {
-            //移除operationView、hudView
-            operationView?.removeFromSuperview()
-            hudView?.removeFromSuperview()
-            operationView = nil
-            hudView = nil
-        }
+        //移除operationView、hudView
+        operationView?.removeFromSuperview()
+        hudView?.removeFromSuperview()
+        operationView = nil
+        hudView = nil
     }
     
     //MARK: - 懒加载属性
@@ -254,7 +250,7 @@ class SAMProductImageController: UIViewController {
     fileprivate lazy var scrollView: UIScrollView? = {
         let scrollView = UIScrollView()
         
-        scrollView.backgroundColor = UIColor.black
+        scrollView.backgroundColor = UIColor(red: 241 / 255.0, green: 240 / 255.0, blue: 255 / 255.0, alpha: 1.0)
         
         //设置缩放比例
         scrollView.maximumZoomScale = 2.0
@@ -268,9 +264,6 @@ class SAMProductImageController: UIViewController {
     
     ///展示的大图
     fileprivate lazy var productImage: UIImageView? = UIImageView()
-    
-    ///新增图片权限
-    fileprivate lazy var hasTP_SZ_Auth: Bool = SAMUserAuth.checkAuth(["TP_SZ_APP"])
     
     ///oprationView
     fileprivate var operationView: SAMProductImageOpetationView?

@@ -18,16 +18,16 @@
             <subviews>
                 <button autoresizesSubviews="NO" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lKW-0T-t5Q" customClass="SAMImageAboveButton" customModule="SaleManager" customModuleProvider="target">
                     <rect key="frame" x="0.0" y="0.0" width="62.5" height="44"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" red="0.14509803921568626" green="0.58823529411764708" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                    <state key="normal" title="订单管理" image="indicater_order_normal">
+                    <state key="normal" title="订单管理" image="indicater_order_normal" backgroundImage="indicaterBtnBG_normal">
                         <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
-                    <state key="selected" image="indicater_order_selected">
-                        <color key="titleColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <state key="selected" image="indicater_order_selected" backgroundImage="indicaterBtnBG_selected">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
-                    <state key="highlighted" image="indicater_order_selected">
-                        <color key="titleColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <state key="highlighted" image="indicater_order_selected" backgroundImage="indicaterBtnBG_selected">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
                         <action selector="orderManageBtnClick:" destination="iN0-l3-epB" eventType="touchUpInside" id="aWs-qW-Gai"/>
@@ -37,14 +37,14 @@
                     <rect key="frame" x="250" y="0.0" width="62.5" height="44"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                    <state key="normal" title="客户排行" image="indicater_customerRank_normal">
+                    <state key="normal" title="客户排行" image="indicater_customerRank_normal" backgroundImage="indicaterBtnBG_normal">
                         <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
-                    <state key="selected" image="indicater_customerRank_selected">
-                        <color key="titleColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <state key="selected" image="indicater_customerRank_selected" backgroundImage="indicaterBtnBG_selected">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
-                    <state key="highlighted" image="indicater_customerRank_selected">
-                        <color key="titleColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <state key="highlighted" image="indicater_customerRank_selected" backgroundImage="indicaterBtnBG_selected">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
                         <action selector="customerRankBtnClick:" destination="iN0-l3-epB" eventType="touchUpInside" id="Myh-Fi-LkU"/>
@@ -54,14 +54,14 @@
                     <rect key="frame" x="187.5" y="0.0" width="62.5" height="44"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                    <state key="normal" title="销售历史" image="indicater_saleHistory_normal">
+                    <state key="normal" title="销售历史" image="indicater_saleHistory_normal" backgroundImage="indicaterBtnBG_normal">
                         <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
-                    <state key="selected" image="indicater_saleHistory_selected">
-                        <color key="titleColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <state key="selected" image="indicater_saleHistory_selected" backgroundImage="indicaterBtnBG_selected">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
-                    <state key="highlighted" image="indicater_saleHistory_selected">
-                        <color key="titleColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <state key="highlighted" image="indicater_saleHistory_selected" backgroundImage="indicaterBtnBG_selected">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
                         <action selector="saleHistoryBtnClick:" destination="iN0-l3-epB" eventType="touchUpInside" id="iyU-fI-mZa"/>
@@ -71,62 +71,62 @@
                     <rect key="frame" x="125" y="0.0" width="62.5" height="44"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                    <state key="normal" title="缺货记录" image="indicater_owe_normal">
+                    <state key="normal" title="缺货记录" image="indicater_owe_normal" backgroundImage="indicaterBtnBG_normal">
                         <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
-                    <state key="selected" image="indicater_owe_selected">
-                        <color key="titleColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <state key="selected" image="indicater_owe_selected" backgroundImage="indicaterBtnBG_selected">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
-                    <state key="highlighted" image="indicater_owe_selected">
-                        <color key="titleColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <state key="highlighted" image="indicater_owe_selected" backgroundImage="indicaterBtnBG_selected">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
                         <action selector="oweBtnClick:" destination="iN0-l3-epB" eventType="touchUpInside" id="6sH-rx-zli"/>
                     </connections>
                 </button>
                 <button autoresizesSubviews="NO" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q8J-bT-IS1" customClass="SAMImageAboveButton" customModule="SaleManager" customModuleProvider="target">
-                    <rect key="frame" x="62.5" y="0.0" width="62.5" height="44"/>
+                    <rect key="frame" x="62" y="0.0" width="62.5" height="44"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                    <state key="normal" title="待售布匹" image="indicater_forSale_normal">
+                    <state key="normal" title="待售布匹" image="indicater_forSale_normal" backgroundImage="indicaterBtnBG_normal">
                         <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
-                    <state key="selected" image="indicater_forSale_selected">
-                        <color key="titleColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <state key="selected" image="indicater_forSale_selected" backgroundImage="indicaterBtnBG_selected">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
-                    <state key="highlighted" image="indicater_forSale_selected">
-                        <color key="titleColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <state key="highlighted" image="indicater_forSale_selected" backgroundImage="indicaterBtnBG_selected">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
                         <action selector="forSaleBtnClick:" destination="iN0-l3-epB" eventType="touchUpInside" id="aRS-ep-Wto"/>
                     </connections>
                 </button>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ocn-bM-rTA">
-                    <rect key="frame" x="0.0" y="42" width="62.5" height="2"/>
-                    <color key="backgroundColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="2" id="X6U-PV-JN5"/>
-                    </constraints>
-                </view>
                 <button autoresizesSubviews="NO" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P4m-AS-cXV" customClass="SAMImageAboveButton" customModule="SaleManager" customModuleProvider="target">
                     <rect key="frame" x="312" y="0.0" width="62.5" height="44"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                    <state key="normal" title="产品排行" image="indicater_productRank_normal">
+                    <state key="normal" title="产品排行" image="indicater_productRank_normal" backgroundImage="indicaterBtnBG_normal">
                         <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
-                    <state key="selected" image="indicater_productRank_selected">
-                        <color key="titleColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <state key="selected" image="indicater_productRank_selected" backgroundImage="indicaterBtnBG_selected">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
-                    <state key="highlighted" image="indicater_productRank_selected">
-                        <color key="titleColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <state key="highlighted" image="indicater_productRank_selected" backgroundImage="indicaterBtnBG_selected">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
                     <connections>
                         <action selector="productRankBtnClick:" destination="iN0-l3-epB" eventType="touchUpInside" id="KUA-tT-Bbm"/>
                     </connections>
                 </button>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ocn-bM-rTA">
+                    <rect key="frame" x="0.0" y="42" width="62.5" height="2"/>
+                    <color key="backgroundColor" red="1" green="0.89019607840000003" blue="0.51764705879999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="2" id="X6U-PV-JN5"/>
+                    </constraints>
+                </view>
             </subviews>
-            <color key="backgroundColor" red="0.69019607839999997" green="0.87843137250000003" blue="0.90196078430000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="Ocn-bM-rTA" firstAttribute="width" secondItem="lKW-0T-t5Q" secondAttribute="width" id="5hg-7s-xdY"/>
                 <constraint firstAttribute="bottom" secondItem="eDT-xj-cME" secondAttribute="bottom" id="8MV-Ms-JmX"/>
@@ -171,17 +171,19 @@
         </view>
     </objects>
     <resources>
-        <image name="indicater_customerRank_normal" width="20" height="16"/>
-        <image name="indicater_customerRank_selected" width="20" height="16"/>
-        <image name="indicater_forSale_normal" width="20" height="18"/>
-        <image name="indicater_forSale_selected" width="20" height="18"/>
-        <image name="indicater_order_normal" width="16" height="21"/>
+        <image name="indicaterBtnBG_normal" width="63" height="55"/>
+        <image name="indicaterBtnBG_selected" width="63" height="55"/>
+        <image name="indicater_customerRank_normal" width="30" height="24"/>
+        <image name="indicater_customerRank_selected" width="30" height="24"/>
+        <image name="indicater_forSale_normal" width="30" height="26"/>
+        <image name="indicater_forSale_selected" width="30" height="26"/>
+        <image name="indicater_order_normal" width="23" height="29"/>
         <image name="indicater_order_selected" width="16" height="21"/>
-        <image name="indicater_owe_normal" width="18" height="18"/>
-        <image name="indicater_owe_selected" width="18" height="18"/>
-        <image name="indicater_productRank_normal" width="20" height="16"/>
-        <image name="indicater_productRank_selected" width="20" height="16"/>
-        <image name="indicater_saleHistory_normal" width="20" height="19"/>
-        <image name="indicater_saleHistory_selected" width="20" height="19"/>
+        <image name="indicater_owe_normal" width="27" height="27"/>
+        <image name="indicater_owe_selected" width="27" height="27"/>
+        <image name="indicater_productRank_normal" width="30" height="24"/>
+        <image name="indicater_productRank_selected" width="30" height="24"/>
+        <image name="indicater_saleHistory_normal" width="30" height="28"/>
+        <image name="indicater_saleHistory_selected" width="30" height="28"/>
     </resources>
 </document>

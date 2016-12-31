@@ -1053,6 +1053,8 @@ extension SAMComOperationController {
     
     //加载数据
     func loadNewCustomerRankModels() {
+        let _ = SAMHUD.showMessage("敬请期待", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
+        customerRankColView.mj_header.endRefreshing()
         /*
         //结束下拉刷新
         collectionView.mj_footer.endRefreshing()
@@ -1184,6 +1186,8 @@ extension SAMComOperationController {
     
     //加载数据
     func loadNewProductRankModels() {
+        let _ = SAMHUD.showMessage("敬请期待", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
+        productRankColView.mj_header.endRefreshing()
         /*
         //结束下拉刷新
         collectionView.mj_footer.endRefreshing()

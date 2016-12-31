@@ -47,7 +47,6 @@
                                 <rect key="frame" x="0.0" y="0.0" width="60" height="40"/>
                                 <state key="normal" image="vistShow_normal"/>
                                 <connections>
-                                    <action selector="visitBtnClick:" destination="gTV-IL-0wX" eventType="touchUpInside" id="voD-xk-quy"/>
                                     <action selector="visitShowBtnClick:" destination="gTV-IL-0wX" eventType="touchUpInside" id="h5q-hg-Mvo"/>
                                 </connections>
                             </button>
