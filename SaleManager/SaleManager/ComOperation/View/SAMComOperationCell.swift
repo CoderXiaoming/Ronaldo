@@ -135,7 +135,7 @@ class SAMComOperationCell: UICollectionViewCell {
             endDateLabel.text = ""
         }
     }
-    
+        
     //MARK: - awakeFromNib
     override func awakeFromNib() {
         super.awakeFromNib()

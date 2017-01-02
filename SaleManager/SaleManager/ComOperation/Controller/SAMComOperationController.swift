@@ -137,6 +137,9 @@ class SAMComOperationController: UIViewController {
             
             collectionView.backgroundColor = customBGWhiteColor
         }
+        
+        //赋值第一个collectionView
+        currentCollectionView = orderManageColView
     }
     
     ///设置其他UI
@@ -333,6 +336,8 @@ class SAMComOperationController: UIViewController {
     //MARK: - 属性懒加载
     ///当前collectionView的序号
     fileprivate var currentColIndex = 0
+    ///当前collectionView
+    fileprivate var currentCollectionView: UICollectionView?
     
     ///订单管理collectionView
     fileprivate let orderManageColView = UICollectionView(frame: CGRect.zero, collectionViewLayout: SAMComOperationColletionViewFlowlayout())
@@ -343,9 +348,9 @@ class SAMComOperationController: UIViewController {
     ///销售历史collectionView
     fileprivate let saleHistoryColView = UICollectionView(frame: CGRect.zero, collectionViewLayout: SAMComOperationColletionViewFlowlayout())
     ///客户排行collectionView
-    fileprivate let customerRankColView = UICollectionView(frame: CGRect.zero, collectionViewLayout: SAMComOperationColletionViewFlowlayout())
+    fileprivate let customerRankColView = UICollectionView(frame: CGRect.zero, collectionViewLayout: SAMComOperationRankColletionViewFlowlayout())
     ///产品排行collectionView
-    fileprivate let productRankColView = UICollectionView(frame: CGRect.zero, collectionViewLayout: SAMComOperationColletionViewFlowlayout())
+    fileprivate let productRankColView = UICollectionView(frame: CGRect.zero, collectionViewLayout: SAMComOperationRankColletionViewFlowlayout())
     
     ///各collectionView下拉刷新触动的方法
     fileprivate let collectionViewsMjheaderSelectors = [#selector(SAMComOperationController.loadNewOrderModels), #selector(SAMComOperationController.loadNewforSaleModels), #selector(SAMComOperationController.loadNewOwedModels), #selector(SAMComOperationController.loadNewSaleHistoryModels), #selector(SAMComOperationController.loadNewCustomerRankModels), #selector(SAMComOperationController.loadNewProductRankModels)]
@@ -354,10 +359,10 @@ class SAMComOperationController: UIViewController {
     fileprivate let collectionViewsMjfooterSelectors = [#selector(SAMComOperationController.loadMoreOrderModels), #selector(SAMComOperationController.loadMoreforSaleModels), #selector(SAMComOperationController.loadMoreOwedModels), #selector(SAMComOperationController.loadMoreSaleHistoryModels), #selector(SAMComOperationController.loadMoreCustomerRankModels), #selector(SAMComOperationController.loadMoreProductRankModels)]
     
     ///所有collectionView注册的nibName
-    fileprivate let rigisterReuseNames = ["SAMComOperationCell", "SAMComOperationCell", "SAMComOperationCell", "SAMComOperationCell", "SAMOrderManagerCell", "SAMOrderManagerCell"]
+    fileprivate let rigisterReuseNames = ["SAMComOperationCell", "SAMComOperationCell", "SAMComOperationCell", "SAMComOperationCell", "SAMComOperationViewRankCell", "SAMComOperationViewRankCell"]
     
     ///所有接口字符串
-    fileprivate let requestURLStrs = ["getOrderMainData.ashx", "getReadySellProductList.ashx", "getOOSRecordList.ashx", "getSellMainData.ashx", "SAMOrderManagerCell", "SAMOrderManagerCell"]
+    fileprivate let requestURLStrs = ["getOrderMainData.ashx", "getReadySellProductList.ashx", "getOOSRecordList.ashx", "getSellMainData.ashx", "getSellStaticCGUnit.ashx", "getSellStaticProduct.ashx"]
     
     ///订单请求参数
     fileprivate var orderRequestParameters: [String: String]?
@@ -485,6 +490,10 @@ extension SAMComOperationController: UICollectionViewDelegate {
         
         //记录当前位置
         currentColIndex = Int(scrollView.contentOffset.x) / Int(ScreenW)
+        
+        //记录当前collectionView
+        currentCollectionView = [orderManageColView, forSaleColView, owedColView, saleHistoryColView, customerRankColView, productRankColView][currentColIndex]
+        
         //检查navIndicaterView当前选中按钮
         navIndicaterView?.checkSelectedIndex(shouldSelectedIndex: currentColIndex)
         
@@ -525,17 +534,15 @@ extension SAMComOperationController: UICollectionViewDelegate {
                 beginDateTF.isEnabled = true
                 endDateTF.isEnabled = true
                 customerSearchTF.placeholder = "客户名称"
-                stateSearchTF.isEnabled = true
                 stateSearchTF.placeholder = "部门"
-                stateSearchTF.inputView = stateSearchPickerView
+                stateSearchTF.isEnabled = false
             
             case 5:
                 beginDateTF.isEnabled = true
                 endDateTF.isEnabled = true
                 customerSearchTF.placeholder = "产品名称"
-                stateSearchTF.isEnabled = true
                 stateSearchTF.placeholder = "分类"
-                stateSearchTF.inputView = stateSearchPickerView
+                stateSearchTF.isEnabled = false
             
             default:
                 break
@@ -563,9 +570,9 @@ extension SAMComOperationController: UICollectionViewDelegate {
         case self.saleHistoryColView:
             saleHistoryColViewdidSelected(indexpath: indexPath)
         case self.customerRankColView:
-            break
+            customerRankColViewdidSelected(indexpath: indexPath)
         case self.productRankColView:
-            break
+            productRankColViewdidSelected(indexpath: indexPath)
         default :
             break
         }
@@ -627,16 +634,16 @@ extension SAMComOperationController: UICollectionViewDataSource {
             
         case self.customerRankColView:
             
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: rigisterReuseNames[4], for: indexPath) as! SAMComOperationCell
-            let model = customerRankModels[indexPath.row] as! SAMOrderModel
-            cell.orderInfoModel = model
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: rigisterReuseNames[4], for: indexPath) as! SAMComOperationViewRankCell
+            let model = customerRankModels[indexPath.row] as! SAMCustomerRankModel
+            cell.customerRankModel = model
             return cell
             
         case self.productRankColView:
             
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: rigisterReuseNames[5], for: indexPath) as! SAMComOperationCell
-            let model = productRankModels[indexPath.row] as! SAMOrderModel
-            cell.orderInfoModel = model
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: rigisterReuseNames[5], for: indexPath) as! SAMComOperationViewRankCell
+            let model = productRankModels[indexPath.row] as! SAMProductRankModel
+            cell.productRankModel = model
             return cell
             
         default :
@@ -656,6 +663,9 @@ extension SAMComOperationController: SAMComOperationIndicaterViewDelegate {
 //MARK: - UITextFieldDelegate
 extension SAMComOperationController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
+        
+        //停止滚动
+        currentCollectionView!.setContentOffset(currentCollectionView!.contentOffset, animated: true)
         
         //展现hudView
         hudView.isHidden = false
@@ -1053,30 +1063,26 @@ extension SAMComOperationController {
     
     //加载数据
     func loadNewCustomerRankModels() {
-        let _ = SAMHUD.showMessage("敬请期待", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
-        customerRankColView.mj_header.endRefreshing()
-        /*
+        
         //结束下拉刷新
-        collectionView.mj_footer.endRefreshing()
+        customerRankColView.mj_footer.endRefreshing()
         
         //创建请求参数
-        requestSearchPageIndex = 1
-        
-        
-        let employeeID = SAMUserAuth.shareUser()!.employeeID!
+        requestSearchPageIndexs[4] = 1
         let CGUnitName = searchConIn(textField: customerSearchTF)
+        let deptName = ""
         let pageSize = String(format: "%d", requestSearchPageSize)
-        let pageIndex = String(format: "%d", requestSearchPageIndex)
+        let pageIndex = String(format: "%d", requestSearchPageIndexs[4])
         let startDate = beginDateTF.text!
         let endDate = endDateTF.text!
-        let statusStr = searchConIn(textField: stateSearchTF)
-        let parameters = ["employeeID": employeeID, "CGUnitName": CGUnitName, "pageSize": pageSize, "pageIndex": pageIndex, "startDate": startDate, "endDate": endDate, "status": statusStr]
+        let userID = SAMUserAuth.shareUser()!.id!
+        customerRankRequestParameters = ["CGUnitName": CGUnitName, "deptName": deptName, "pageSize": pageSize, "pageIndex": pageIndex, "startDate": startDate, "endDate": endDate, "userID": userID]
         
         //发送请求
-        SAMNetWorker.sharedNetWorker().get(requestURLStrs[currentColIndex], parameters: parameters, progress: nil, success: {[weak self] (Task, json) in
+        SAMNetWorker.sharedNetWorker().get(requestURLStrs[4], parameters: customerRankRequestParameters, progress: nil, success: {[weak self] (Task, json) in
             
             //清空原先数据
-            self!.InfoModels.removeAllObjects()
+            self!.customerRankModels.removeAllObjects()
             
             //获取模型数组
             let Json = json as! [String: AnyObject]
@@ -1086,54 +1092,51 @@ extension SAMComOperationController {
             //判断是否有模型数据
             if count == 0 { //没有模型数据
                 
-                let _ = SAMHUD.showMessage("没有符合条件的订单", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("没有数据", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
             }else { //有数据模型
                 
-                let arr = SAMOrderModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                let arr = SAMCustomerRankModel.mj_objectArray(withKeyValuesArray: dictArr)!
                 if arr.count < self!.requestSearchPageSize { //设置footer状态，提示用户没有更多信息
                     
-                    self!.collectionView.mj_footer.endRefreshingWithNoMoreData()
+                    self!.customerRankColView.mj_footer.endRefreshingWithNoMoreData()
                 }else { //设置pageIndex，可能还有更多信息
                     
-                    self!.requestSearchPageIndex += 1
-                    self!.orderInfoRequestParameters = parameters as [String : AnyObject]?
+                    self!.requestSearchPageIndexs[4] += 1
                 }
-                self!.InfoModels.addObjects(from: arr as [AnyObject])
+                self!.customerRankModels.addObjects(from: arr as [AnyObject])
             }
             
             //回主线程
             DispatchQueue.main.async(execute: {
                 
                 //结束上拉
-                self!.collectionView.mj_header.endRefreshing()
+                self!.customerRankColView.mj_header.endRefreshing()
                 
                 UIView.animate(withDuration: 0, animations: {
                     
                     //刷新数据
-                    self!.collectionView.reloadData()
+                    self!.customerRankColView.reloadData()
                 }, completion: { (_) in
                 })
             })
         }) {[weak self] (Task, Error) in
             //处理上拉
-            self!.collectionView.mj_header.endRefreshing()
+            self!.customerRankColView.mj_header.endRefreshing()
             let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
- */
     }
     
     //加载更多数据
     func loadMoreCustomerRankModels() {
-        /*
         //结束下拉刷新
-        collectionView.mj_header.endRefreshing()
+        customerRankColView.mj_header.endRefreshing()
         
         //创建请求参数
-        let index = String(format: "%d", requestSearchPageIndex)
-        orderInfoRequestParameters!["pageIndex"] = index as AnyObject?
+        let index = String(format: "%d", requestSearchPageIndexs[4])
+        customerRankRequestParameters!["pageIndex"] = index
         
         //发送请求
-        SAMNetWorker.sharedNetWorker().get(orderInfoRequestURLStr, parameters: orderInfoRequestParameters!, progress: nil, success: {[weak self] (Task, json) in
+        SAMNetWorker.sharedNetWorker().get(requestURLStrs[4], parameters: customerRankRequestParameters!, progress: nil, success: {[weak self] (Task, json) in
             
             //获取模型数组
             let Json = json as! [String: AnyObject]
@@ -1144,40 +1147,39 @@ extension SAMComOperationController {
             if count == 0 { //没有模型数据
                 
                 //提示用户
-                let _ = SAMHUD.showMessage("没有更多订单", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("没有更多数据", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
                 
                 //设置footer
-                self!.collectionView.mj_footer.endRefreshingWithNoMoreData()
+                self!.customerRankColView.mj_footer.endRefreshingWithNoMoreData()
             }else {//有数据模型
                 
-                let arr = SAMOrderModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                let arr = SAMCustomerRankModel.mj_objectArray(withKeyValuesArray: dictArr)!
                 
                 //判断是否还有更多数据
                 if arr.count < self!.requestSearchPageSize { //没有更多数据
                     
                     //设置footer状态
-                    self!.collectionView.mj_footer.endRefreshingWithNoMoreData()
+                    self!.customerRankColView.mj_footer.endRefreshingWithNoMoreData()
                 }else { //可能有更多数据
                     
                     //设置pageIndex
-                    self!.requestSearchPageIndex += 1
+                    self!.requestSearchPageIndexs[4] += 1
                     
                     //处理下拉
-                    self!.collectionView.mj_footer.endRefreshing()
+                    self!.customerRankColView.mj_footer.endRefreshing()
                 }
-                self!.InfoModels.addObjects(from: arr as [AnyObject])
+                self!.customerRankModels.addObjects(from: arr as [AnyObject])
                 
                 //刷新数据
                 DispatchQueue.main.async(execute: {
-                    self!.collectionView.reloadData()
+                    self!.customerRankColView.reloadData()
                 })
             }
         }) {[weak self] (Task, Error) in
             //处理下拉
-            self!.collectionView.mj_footer.endRefreshing()
+            self!.customerRankColView.mj_footer.endRefreshing()
             let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
- */
     }
 }
 
@@ -1186,30 +1188,25 @@ extension SAMComOperationController {
     
     //加载数据
     func loadNewProductRankModels() {
-        let _ = SAMHUD.showMessage("敬请期待", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
-        productRankColView.mj_header.endRefreshing()
-        /*
+        
         //结束下拉刷新
-        collectionView.mj_footer.endRefreshing()
+        productRankColView.mj_footer.endRefreshing()
         
         //创建请求参数
-        requestSearchPageIndex = 1
-        
-        
-        let employeeID = SAMUserAuth.shareUser()!.employeeID!
-        let CGUnitName = searchConIn(textField: customerSearchTF)
+        requestSearchPageIndexs[5] = 1
+        let categoryName = ""
+        let productIDName = searchConIn(textField: customerSearchTF)
         let pageSize = String(format: "%d", requestSearchPageSize)
-        let pageIndex = String(format: "%d", requestSearchPageIndex)
+        let pageIndex = String(format: "%d", requestSearchPageIndexs[5])
         let startDate = beginDateTF.text!
         let endDate = endDateTF.text!
-        let statusStr = searchConIn(textField: stateSearchTF)
-        let parameters = ["employeeID": employeeID, "CGUnitName": CGUnitName, "pageSize": pageSize, "pageIndex": pageIndex, "startDate": startDate, "endDate": endDate, "status": statusStr]
+        productRankRequestParameters = ["categoryName": categoryName, "productIDName": productIDName, "pageSize": pageSize, "pageIndex": pageIndex, "startDate": startDate, "endDate": endDate]
         
         //发送请求
-        SAMNetWorker.sharedNetWorker().get(requestURLStrs[currentColIndex], parameters: parameters, progress: nil, success: {[weak self] (Task, json) in
+        SAMNetWorker.sharedNetWorker().get(requestURLStrs[5], parameters: productRankRequestParameters, progress: nil, success: {[weak self] (Task, json) in
             
             //清空原先数据
-            self!.InfoModels.removeAllObjects()
+            self!.productRankModels.removeAllObjects()
             
             //获取模型数组
             let Json = json as! [String: AnyObject]
@@ -1219,54 +1216,51 @@ extension SAMComOperationController {
             //判断是否有模型数据
             if count == 0 { //没有模型数据
                 
-                let _ = SAMHUD.showMessage("没有符合条件的订单", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("没有数据", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
             }else { //有数据模型
                 
-                let arr = SAMOrderModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                let arr = SAMProductRankModel.mj_objectArray(withKeyValuesArray: dictArr)!
                 if arr.count < self!.requestSearchPageSize { //设置footer状态，提示用户没有更多信息
                     
-                    self!.collectionView.mj_footer.endRefreshingWithNoMoreData()
+                    self!.productRankColView.mj_footer.endRefreshingWithNoMoreData()
                 }else { //设置pageIndex，可能还有更多信息
                     
-                    self!.requestSearchPageIndex += 1
-                    self!.orderInfoRequestParameters = parameters as [String : AnyObject]?
+                    self!.requestSearchPageIndexs[5] += 1
                 }
-                self!.InfoModels.addObjects(from: arr as [AnyObject])
+                self!.productRankModels.addObjects(from: arr as [AnyObject])
             }
             
             //回主线程
             DispatchQueue.main.async(execute: {
                 
                 //结束上拉
-                self!.collectionView.mj_header.endRefreshing()
+                self!.productRankColView.mj_header.endRefreshing()
                 
                 UIView.animate(withDuration: 0, animations: {
                     
                     //刷新数据
-                    self!.collectionView.reloadData()
+                    self!.productRankColView.reloadData()
                 }, completion: { (_) in
                 })
             })
         }) {[weak self] (Task, Error) in
             //处理上拉
-            self!.collectionView.mj_header.endRefreshing()
+            self!.productRankColView.mj_header.endRefreshing()
             let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
- */
     }
     
     //加载更多数据
     func loadMoreProductRankModels() {
-        /*
         //结束下拉刷新
-        collectionView.mj_header.endRefreshing()
+        productRankColView.mj_header.endRefreshing()
         
         //创建请求参数
-        let index = String(format: "%d", requestSearchPageIndex)
-        orderInfoRequestParameters!["pageIndex"] = index as AnyObject?
+        let index = String(format: "%d", requestSearchPageIndexs[5])
+        productRankRequestParameters!["pageIndex"] = index
         
         //发送请求
-        SAMNetWorker.sharedNetWorker().get(orderInfoRequestURLStr, parameters: orderInfoRequestParameters!, progress: nil, success: {[weak self] (Task, json) in
+        SAMNetWorker.sharedNetWorker().get(requestURLStrs[5], parameters: productRankRequestParameters!, progress: nil, success: {[weak self] (Task, json) in
             
             //获取模型数组
             let Json = json as! [String: AnyObject]
@@ -1277,44 +1271,42 @@ extension SAMComOperationController {
             if count == 0 { //没有模型数据
                 
                 //提示用户
-                let _ = SAMHUD.showMessage("没有更多订单", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("没有更多数据", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
                 
                 //设置footer
-                self!.collectionView.mj_footer.endRefreshingWithNoMoreData()
+                self!.productRankColView.mj_footer.endRefreshingWithNoMoreData()
             }else {//有数据模型
                 
-                let arr = SAMOrderModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                let arr = SAMProductRankModel.mj_objectArray(withKeyValuesArray: dictArr)!
                 
                 //判断是否还有更多数据
                 if arr.count < self!.requestSearchPageSize { //没有更多数据
                     
                     //设置footer状态
-                    self!.collectionView.mj_footer.endRefreshingWithNoMoreData()
+                    self!.productRankColView.mj_footer.endRefreshingWithNoMoreData()
                 }else { //可能有更多数据
                     
                     //设置pageIndex
-                    self!.requestSearchPageIndex += 1
+                    self!.requestSearchPageIndexs[5] += 1
                     
                     //处理下拉
-                    self!.collectionView.mj_footer.endRefreshing()
+                    self!.productRankColView.mj_footer.endRefreshing()
                 }
-                self!.InfoModels.addObjects(from: arr as [AnyObject])
+                self!.productRankModels.addObjects(from: arr as [AnyObject])
                 
                 //刷新数据
                 DispatchQueue.main.async(execute: {
-                    self!.collectionView.reloadData()
+                    self!.productRankColView.reloadData()
                 })
             }
         }) {[weak self] (Task, Error) in
             //处理下拉
-            self!.collectionView.mj_footer.endRefreshing()
+            self!.productRankColView.mj_footer.endRefreshing()
             let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
-        }
- */
-    }
+        }    }
 }
 
-//MARK: - 控制器里所有collectionView用到的FlowLayout
+//MARK: - 控制器里前四个collectionView用到的FlowLayout
 private class SAMComOperationColletionViewFlowlayout: UICollectionViewFlowLayout {
     
     override func prepare() {
@@ -1324,6 +1316,19 @@ private class SAMComOperationColletionViewFlowlayout: UICollectionViewFlowLayout
         scrollDirection = UICollectionViewScrollDirection.vertical
         collectionView?.showsVerticalScrollIndicator = false
         itemSize = CGSize(width: ScreenW, height: 95)
+    }
+}
+
+//MARK: - 控制器里排行collectionView用到的FlowLayout
+private class SAMComOperationRankColletionViewFlowlayout: UICollectionViewFlowLayout {
+    
+    override func prepare() {
+        super.prepare()
+        minimumLineSpacing = 0
+        minimumInteritemSpacing = 0
+        scrollDirection = UICollectionViewScrollDirection.vertical
+        collectionView?.showsVerticalScrollIndicator = false
+        itemSize = CGSize(width: ScreenW, height: 55)
     }
 }
 
@@ -1409,10 +1414,46 @@ extension SAMComOperationController {
     //客户排行
     fileprivate func customerRankColViewdidSelected(indexpath: IndexPath) {
         
+        //设置加载hud
+        let hud = SAMHUD.showAdded(to: KeyWindow, animated: true)
+        hud!.labelText = NSLocalizedString("", comment: "HUD loading title")
+        
+        let model = customerRankModels[indexpath.item] as! SAMCustomerRankModel
+        let vc = SAMRankDetailController.instance(customerRankModel: model, productRankModel: nil)
+        vc.willSearchRankDetailInfo(startDateStr: beginDateTF.text!, endDateStr: endDateTF.text!, success: {
+            hud?.hide(true)
+            self.navigationController!.present(vc, animated: true, completion: nil)
+            
+        }, noData: {
+            hud?.hide(true)
+            let _ = SAMHUD.showMessage("没有数据", superView: self.view!, hideDelay: SAMHUDNormalDuration, animated: true)
+            
+        }) {
+            hud?.hide(true)
+            let _ = SAMHUD.showMessage("请检查网络", superView: self.view!, hideDelay: SAMHUDNormalDuration, animated: true)
+        }
     }
     //产品排行
     fileprivate func productRankColViewdidSelected(indexpath: IndexPath) {
         
+        //设置加载hud
+        let hud = SAMHUD.showAdded(to: KeyWindow, animated: true)
+        hud!.labelText = NSLocalizedString("", comment: "HUD loading title")
+        
+        let model = productRankModels[indexpath.item] as! SAMProductRankModel
+        let vc = SAMRankDetailController.instance(customerRankModel: nil, productRankModel: model)
+        vc.willSearchRankDetailInfo(startDateStr: beginDateTF.text!, endDateStr: endDateTF.text!, success: {
+            hud?.hide(true)
+            self.navigationController!.present(vc, animated: true, completion: nil)
+            
+        }, noData: {
+            hud?.hide(true)
+            let _ = SAMHUD.showMessage("没有数据", superView: self.view!, hideDelay: SAMHUDNormalDuration, animated: true)
+            
+        }) {
+            hud?.hide(true)
+            let _ = SAMHUD.showMessage("请检查网络", superView: self.view!, hideDelay: SAMHUDNormalDuration, animated: true)
+        }
     }
 }
 
