@@ -9,11 +9,12 @@
 import UIKit
 import MBProgressHUD
 
+///控制器类型枚举定义
 enum OrderOwedOperationControllerType {
-    case buildOrder
-    case checkOrder
-    case buildOwe
-    case checkOwe
+    case buildOrder //创建订单
+    case checkOrder //查看订单
+    case buildOwe   //创建缺货登记
+    case checkOwe   //查看缺货登记
 }
 
 ///小cell重用标识符
@@ -22,10 +23,9 @@ fileprivate let SAMOrderBuildSmallCellReuseIdentifier = "SAMOrderBuildSmallCellR
 fileprivate let SAMOrderBuildBigCellReuseIdentifier = "SAMOrderBuildBigCellReuseIdentifier"
 
 class SAMOrderOwedOperationController: UIViewController {
-
+    
     //MARK: - 对外提供的类方法，接收产品数据模型，添加到订单中
     class func buildOrder(productModels: [SAMShoppingCarListModel]?, type: OrderOwedOperationControllerType) -> SAMOrderOwedOperationController {
-        
         let vc = SAMOrderOwedOperationController()
         vc.controllerType = type
         vc.productToOrderModels = productModels!
@@ -36,7 +36,6 @@ class SAMOrderOwedOperationController: UIViewController {
     
     //MARK: - 对外提供的类方法，接收产品数据模型，查询订单
     class func checkOrder(orderInfoModel: SAMOrderModel, type: OrderOwedOperationControllerType) -> SAMOrderOwedOperationController {
-        
         let vc = SAMOrderOwedOperationController()
         vc.controllerType = type
         vc.orderInfoModel = orderInfoModel
@@ -52,7 +51,6 @@ class SAMOrderOwedOperationController: UIViewController {
     
     //MARK: - 对外提供的类方法，接收库存产品数据模型，新建缺货登记
     class func buildOwe(productModel: SAMStockProductModel, type: OrderOwedOperationControllerType) -> SAMOrderOwedOperationController {
-    
         let vc = SAMOrderOwedOperationController()
         vc.controllerType = type
         vc.stockModel = productModel
@@ -63,7 +61,6 @@ class SAMOrderOwedOperationController: UIViewController {
     
     //MARK: - 对外提供的类方法，接收缺货登记数据模型，查看缺货登记
     class func checkOwe(oweInfoModel: SAMOwedInfoModel, type: OrderOwedOperationControllerType) -> SAMOrderOwedOperationController {
-        
         let vc = SAMOrderOwedOperationController()
         vc.oweModel = oweInfoModel
         
@@ -126,11 +123,9 @@ class SAMOrderOwedOperationController: UIViewController {
         setupNotification()
     }
     
-    //MARK: - viewWillAppear
+    //MARK: - viewWillAppear，修改后返回界面刷新数据
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        //刷新数据
         tableView.reloadData()
     }
     
@@ -139,14 +134,19 @@ class SAMOrderOwedOperationController: UIViewController {
         
         //设置title，请求路径
         performByControllerType(buildOrder: {
+            self.titles = [[["客户", ""], ["备注", ""]], [], [["优惠", "0"], ["其他金额", "0"], ["总金额", "0"], ["已收定金", "0"]]]
+            self.saveUrlStr = "OrderBillAdd.ashx"
+            
         }, checkOrder: { 
             self.titles = self.orderInfoModel!.orderDetailContentArr
             self.saveUrlStr = "OrderBillEdit.ashx"
             //设置用户
             self.orderCustomerModel = self.orderInfoModel?.orderCustomerModel!
+            
         }, buildOwe: { 
             self.titles = [[["客户", ""], ["交货日期", ""]], [["产品型号", self.stockModel!.productIDName], ["匹数", "0"], ["米数", "0"]], [["备注", ""]]]
             self.saveUrlStr = "OOSRecordAdd.ashx"
+            
         }) {
             self.titles = [[["客户", self.oweModel!.CGUnitName], ["交货日期", self.oweModel!.endDate]], [["产品型号", self.oweModel!.productIDName], ["匹数", String(format: "%d", self.oweModel!.countP)], ["米数", String(format: "%.1f", self.oweModel!.countM)]], [["备注", self.oweModel!.memoInfo], ["状态", self.oweModel!.iState]]]
             self.saveUrlStr = "OOSRecordEdit.ashx"
@@ -156,25 +156,26 @@ class SAMOrderOwedOperationController: UIViewController {
             self.stockModel = self.oweModel?.stockModel!
         }
         
-        for section in 0...(titles.count - 1) {
+        //创建数据模型数组
+        titleModels = [[SAMOrderBuildTitleModel?]]()
+        
+        for section in 0...(titles!.count - 1) {
             
             //获取当前标题小数组
-            let strArrArr = titles[section] as [[String]]
-            
+            let strArrArr = titles![section] as [[String?]]
+
             //如果数组为空返回
             if strArrArr.count == 0 {
-                
-                titleModels.append([])
+                titleModels!.append([])
             }else {
                 //遍历数组，创建数据源数组
-                var modelArr = [SAMOrderBuildTitleModel]()
+                var modelArr =  [SAMOrderBuildTitleModel?]()
                 for item in 0...(strArrArr.count - 1) {
                     let strArr = strArrArr[item]
-                    
-                    let model = SAMOrderBuildTitleModel.titleModel(title: strArr[0], content: strArr[1])
+                    let model = SAMOrderBuildTitleModel.titleModel(title: strArr[0]!, content: strArr[1])
                     modelArr.append(model)
                 }
-                titleModels.append(modelArr)
+                titleModels!.append(modelArr)
             }
         }
     }
@@ -190,11 +191,11 @@ class SAMOrderOwedOperationController: UIViewController {
             //展示编辑按钮父控件
             self.editBtnView.isHidden = false
             if self.orderInfoModel!.isAgreeSend! != "是" { //还未发货
-                
-                self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "发货", style: .plain, target: self, action: #selector(SAMOrderOwedOperationController.orderAgreeToSend))
                 self.navigationItem.title = "订单详情(未发货)"
+                
             }else { //已发货
                 self.saveEditButton.isEnabled = false
+                self.deleteButton.isEnabled = false
                 self.navigationItem.title = "订单详情(已发货)"
             }
             
@@ -227,47 +228,7 @@ class SAMOrderOwedOperationController: UIViewController {
         tableView.register(UINib.init(nibName: "SAMOrderBuildSmallCell", bundle: nil), forCellReuseIdentifier: SAMOrderBuildSmallCellReuseIdentifier)
         tableView.register(UINib.init(nibName: "SAMOrderBuildBigCell", bundle: nil), forCellReuseIdentifier: SAMOrderBuildBigCellReuseIdentifier)
     }
-    
-    //MARK: - 订单同意发货调用的方法
-    func orderAgreeToSend() {
         
-        let alertVC = UIAlertController(title: "确定发货？", message: nil, preferredStyle: .alert)
-        alertVC.addAction(UIAlertAction(title: "取消", style: .cancel, handler: nil))
-        alertVC.addAction(UIAlertAction(title: "确定", style: .destructive, handler: { (_) in
-            
-            //设置加载hud
-            let hud = SAMHUD.showAdded(to: KeyWindow, animated: true)!
-            hud.labelText = NSLocalizedString("请等待...", comment: "HUD loading title")
-            
-            SAMNetWorker.sharedNetWorker().get("OrderBillAgreeSend.ashx", parameters: ["billNumber": self.orderInfoModel!.billNumber!], progress: nil, success: { (task, json) in
-                
-                //获取状态字符串
-                let Json = json as! [String: AnyObject]
-                let dict = Json["head"] as! [String: String]
-                let state = dict["status"]
-                
-                if state == "success" { //发货成功
-                    
-                    hud.hide(true)
-                    let hud = SAMHUD.showMessage("发货成功", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
-                    hud?.delegate = self
-                    
-                }else { //发货失败
-                    
-                    hud.hide(true)
-                    let _ = SAMHUD.showMessage("发货失败", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
-                }
-            }) { (task, error) in
-                
-                hud.hide(true)
-                let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
-            }
-        })
-        )
-        
-        present(alertVC, animated: true, completion: nil)
-    }
-    
     //MARK: - 监听的三个方法
     fileprivate func setupNotification() {
         
@@ -290,8 +251,8 @@ class SAMOrderOwedOperationController: UIViewController {
         }
         
         //赋值用户名
-        let orderTitleModel = self.titleModels[0][0]!
-        orderTitleModel.cellContent = orderCustomerModel!.CGUnitName!
+        let orderTitleModel = self.titleModels![0][0]!
+        orderTitleModel.cellContent = orderCustomerModel!.CGUnitName
         
         //设置按钮状态
         saveButton.isEnabled = true
@@ -304,7 +265,7 @@ class SAMOrderOwedOperationController: UIViewController {
         
         //添加购物车模型
         let model = notification.userInfo!["model"] as! SAMShoppingCarListModel
-        productToOrderModels.append(model)
+        productToOrderModels!.append(model)
         
         //刷新数据
         tableView.reloadData()
@@ -320,7 +281,7 @@ class SAMOrderOwedOperationController: UIViewController {
         var countMishu = 0.0
         var countPrice = 0.0
         
-        for model in productToOrderModels {
+        for model in productToOrderModels! {
             countMashu += model.countMA
             countMishu += model.countM
             countPrice += model.countPrice
@@ -338,36 +299,36 @@ class SAMOrderOwedOperationController: UIViewController {
         
         //创建主请求参数
         var MainData: [String: String]?
-        let CGUnitID = orderCustomerModel!.id!
+        let CGUnitID = orderCustomerModel!.id
         let dateStr = Date().yyyyMMddStr()
         let userID = SAMUserAuth.shareUser()!.id!
         
         switch controllerType! {
         case OrderOwedOperationControllerType.buildOrder, OrderOwedOperationControllerType.checkOrder:
             let employeeID = SAMUserAuth.shareUser()!.employeeID!
-            let memoInfo = self.titleModels[0][1]!.cellContent
-            let cutMoney = self.titleModels[2][0]!.cellContent
-            let otherMoney = self.titleModels[2][1]!.cellContent
-            let totalMoney = self.titleModels[2][2]!.cellContent
-            let receiveMoney = self.titleModels[2][3]!.cellContent
+            let memoInfo = self.titleModels![0][1]!.cellContent
+            let cutMoney = self.titleModels![2][0]!.cellContent
+            let otherMoney = self.titleModels![2][1]!.cellContent
+            let totalMoney = self.titleModels![2][2]!.cellContent
+            let receiveMoney = self.titleModels![2][3]!.cellContent
             
             MainData = ["startDate": dateStr, "CGUnitID": CGUnitID, "employeeID": employeeID, "memoInfo": memoInfo, "cutMoney": cutMoney, "otherMoney": otherMoney, "totalMoney": totalMoney, "receiveMoney": receiveMoney, "userID": userID]
             
         case OrderOwedOperationControllerType.buildOwe, OrderOwedOperationControllerType.checkOwe:
-            let endDate = self.titleModels[0][1]!.cellContent
+            let endDate = self.titleModels![0][1]!.cellContent
             if endDate == "" {
                 let _ = SAMHUD.showMessage("交货日期不能为空", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                 return
             }
-            let productID = self.stockModel!.id!
-            let countP = self.titleModels[1][1]!.cellContent
-            let countM = self.titleModels[1][2]!.cellContent
+            let productID = self.stockModel!.id
+            let countP = self.titleModels![1][1]!.cellContent
+            let countM = self.titleModels![1][2]!.cellContent
             let mishu = Double.init(countM)!
             if mishu == 0 {
                 let _ = SAMHUD.showMessage("米数必须大于0", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                 return
             }
-            let memoInfo = self.titleModels[2][0]!.cellContent
+            let memoInfo = self.titleModels![2][0]!.cellContent
             
             MainData = ["CGUnitID": CGUnitID, "startDate": dateStr, "endDate": endDate, "productID": productID, "countP": countP, "countM": countM, "memoInfo": memoInfo, "userID": userID]
         }
@@ -390,8 +351,8 @@ class SAMOrderOwedOperationController: UIViewController {
         if controllerType == OrderOwedOperationControllerType.buildOrder || controllerType == OrderOwedOperationControllerType.checkOrder {
             
             let DetailData = NSMutableArray()
-            for model in productToOrderModels {
-                let patemeter = ["id": model.id!, "productIDName": model.productIDName!, "countP": model.countP, "countM": model.countM, "price": model.price, "smallMoney": model.countPrice, "productStatus": "", "productID": model.productID!, "memoInfo": model.memoInfo!] as [String : Any]
+            for model in productToOrderModels! {
+                let patemeter = ["id": model.id, "productIDName": model.productIDName, "countP": model.countP, "countM": model.countM, "price": model.price, "smallMoney": model.countPrice, "productStatus": "", "productID": model.productID, "memoInfo": model.memoInfo] as [String : Any]
                 DetailData.add(patemeter)
             }
             let detailJsonData = try! JSONSerialization.data(withJSONObject: DetailData, options: JSONSerialization.WritingOptions.prettyPrinted)
@@ -406,7 +367,7 @@ class SAMOrderOwedOperationController: UIViewController {
         let hud = SAMHUD.showAdded(to: KeyWindow, animated: true)
         hud!.labelText = NSLocalizedString("正在保存...", comment: "HUD loading title")
         //发送服务器请求
-        SAMNetWorker.sharedNetWorker().post(saveUrlStr, parameters: parameters, progress: nil, success: { (task, json) in
+        SAMNetWorker.sharedNetWorker().post(saveUrlStr!, parameters: parameters, progress: nil, success: {[weak self] (task, json) in
             
             //隐藏HUD
             hud?.hide(true)
@@ -418,13 +379,13 @@ class SAMOrderOwedOperationController: UIViewController {
             
             if state == "success" { //保存成功
             
-                let hud = SAMHUD.showMessage("保存成功", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let hud = SAMHUD.showMessage("保存成功", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                 hud?.delegate = self
             }else { //保存失败
-                let _ = SAMHUD.showMessage("保存失败", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("保存失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
             }
-        }) { (task, error) in
-            let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+        }) {[weak self] (task, error) in
+            let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     
@@ -453,7 +414,7 @@ class SAMOrderOwedOperationController: UIViewController {
                 break
             }
             
-            SAMNetWorker.sharedNetWorker().get(requestURLStr!, parameters: parameters!, progress: nil, success: { (task, json) in
+            SAMNetWorker.sharedNetWorker().get(requestURLStr!, parameters: parameters!, progress: nil, success: {[weak self] (task, json) in
                 
                 //获取状态字符串
                 let Json = json as! [String: AnyObject]
@@ -468,12 +429,12 @@ class SAMOrderOwedOperationController: UIViewController {
                 }else { //删除失败
                     
                     hud.hide(true)
-                    let _ = SAMHUD.showMessage("删除失败", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                    let _ = SAMHUD.showMessage("删除失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                 }
-            }) { (task, error) in
+            }) {[weak self] (task, error) in
                 
                 hud.hide(true)
-                let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
             }
         })
         )
@@ -490,12 +451,12 @@ class SAMOrderOwedOperationController: UIViewController {
     ///控制器类型
     fileprivate var controllerType: OrderOwedOperationControllerType?
     ///tableView标题、内容数组
-    fileprivate var titles = [[["客户", ""], ["备注", ""]], [], [["优惠", "0"], ["其他金额", "0"], ["总金额", "0"], ["已收定金", "0"]]]
+    fileprivate var titles: [[[String?]]]?
     ///标题cell的数据模型
-    fileprivate var titleModels = [[SAMOrderBuildTitleModel?]]()
+    fileprivate var titleModels: [[SAMOrderBuildTitleModel?]]?
     
     ///接收的购物车中物品模型
-    fileprivate var productToOrderModels = [SAMShoppingCarListModel]()
+    fileprivate var productToOrderModels: [SAMShoppingCarListModel]?
     ///当前查看的订单数据模型
     fileprivate var orderInfoModel: SAMOrderModel?
     
@@ -505,7 +466,7 @@ class SAMOrderOwedOperationController: UIViewController {
     fileprivate var oweModel: SAMOwedInfoModel?
     
     ///保存URL (新建保存，和编辑保存，其他URL在各自方法中)
-    fileprivate var saveUrlStr = "OrderBillAdd.ashx"
+    fileprivate var saveUrlStr: String?
     
     ///当前是否可以编辑订单
     fileprivate var couldEdit: Bool = true
@@ -572,10 +533,10 @@ extension SAMOrderOwedOperationController: UITableViewDataSource {
         switch controllerType! {
             case OrderOwedOperationControllerType.buildOrder, OrderOwedOperationControllerType.checkOrder:
                 self.updateCountData()
-                return titleModels.count
+                return titleModels!.count
             
             case OrderOwedOperationControllerType.buildOwe, OrderOwedOperationControllerType.checkOwe:
-                return titleModels.count
+                return titleModels!.count
         }
     }
     
@@ -583,13 +544,13 @@ extension SAMOrderOwedOperationController: UITableViewDataSource {
         switch controllerType! {
             case OrderOwedOperationControllerType.buildOrder, OrderOwedOperationControllerType.checkOrder:
                 if section == 1 { //产品列表组
-                    return self.productToOrderModels.count
+                    return self.productToOrderModels!.count
                 }else { //订单内容组
-                    return self.titleModels[section].count
+                    return self.titleModels![section].count
                 }
             
             case OrderOwedOperationControllerType.buildOwe, OrderOwedOperationControllerType.checkOwe:
-                return self.titleModels[section].count
+                return self.titleModels![section].count
         }
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -601,17 +562,17 @@ extension SAMOrderOwedOperationController: UITableViewDataSource {
                     let cell = tableView.dequeueReusableCell(withIdentifier: SAMOrderBuildBigCellReuseIdentifier, for: indexPath) as! SAMOrderBuildBigCell
                     
                     //取出模型，传递模型
-                    cell.productAddToOrderModel = productToOrderModels[indexPath.row] as SAMShoppingCarListModel
+                    cell.productAddToOrderModel = productToOrderModels![indexPath.row] as SAMShoppingCarListModel
                     return cell
                 }else { //订单内容组
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: SAMOrderBuildSmallCellReuseIdentifier, for: indexPath) as! SAMOrderBuildSmallCell
                     
                     //取出模型，传递模型
-                    cell.titleModel = titleModels[indexPath.section][indexPath.row]! as SAMOrderBuildTitleModel
+                    cell.titleModel = titleModels![indexPath.section][indexPath.row]! as SAMOrderBuildTitleModel
                     
                     //如果该订单已经发货，则不可编辑，或者最后一组不可编辑
-                    if !couldEdit || (indexPath.section == titleModels.count - 1) {
+                    if !couldEdit || (indexPath.section == titleModels!.count - 1) {
                         cell.setCellEditDisabledStyle()
                     }else {
                         cell.setCellEditEnabledStyle()
@@ -624,7 +585,7 @@ extension SAMOrderOwedOperationController: UITableViewDataSource {
                 let cell = tableView.dequeueReusableCell(withIdentifier: SAMOrderBuildSmallCellReuseIdentifier, for: indexPath) as! SAMOrderBuildSmallCell
                 
                 //取出模型，传递模型
-                cell.titleModel = titleModels[indexPath.section][indexPath.row]! as SAMOrderBuildTitleModel
+                cell.titleModel = titleModels![indexPath.section][indexPath.row]! as SAMOrderBuildTitleModel
                 
                 //如果该订单已经发货，则不可编辑，或者是转台栏
                 if !couldEdit || cell.titleModel?.cellTitle == "状态" {
@@ -672,7 +633,7 @@ extension SAMOrderOwedOperationController: UITableViewDelegate {
                 }
                 
             case OrderOwedOperationControllerType.buildOwe, OrderOwedOperationControllerType.checkOwe:
-                if section != (titleModels.count - 1) {
+                if section != (titleModels!.count - 1) {
                     return 20
                 }else {
                     return 0
@@ -682,7 +643,7 @@ extension SAMOrderOwedOperationController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         
-        if section == (titleModels.count - 1) {
+        if section == (titleModels!.count - 1) {
             return 20
         }else {
             return 0
@@ -733,16 +694,16 @@ extension SAMOrderOwedOperationController: UITableViewDelegate {
             
         }else {
             //点击cell的标题
-            let cellTitle = titleModels[indexPath.section][indexPath.row]!.cellTitle
+            let cellTitle = titleModels![indexPath.section][indexPath.row]!.cellTitle
             if (cellTitle == "状态") || (cellTitle == "产品型号") {
                 tableView.deselectRow(at: indexPath, animated: true)
                 
-            }else if cellTitle == "客户" {
+            }else if cellTitle == "客户" { 
                 navigationController!.pushViewController(SAMCustomerViewController.instance(controllerType: .OrderBuild), animated: true)
                 
             }else {
                 //取出模型，跳转编辑界面
-                let model = titleModels[indexPath.section][indexPath.row]!
+                let model = titleModels![indexPath.section][indexPath.row]!
                 let editVC = SAMOrderInfoEditController.editInfo(orderTitleModel: model)
                 navigationController!.pushViewController(editVC, animated: true)
             }
@@ -800,10 +761,10 @@ extension SAMOrderOwedOperationController: UITableViewDelegate {
             let deleteAction = UITableViewRowAction(style: .normal, title: "删除") { (action, indexPath) in
                 
                 //获取数据模型对应的数组编号
-                let index = self.productToOrderModels.index(of: model)!
+                let index = self.productToOrderModels!.index(of: model)!
                 
                 //从源数组中删除
-                self.productToOrderModels.remove(at: index)
+                self.productToOrderModels!.remove(at: index)
                 
                 //动画删除该行CELL
                 self.tableView.deleteRows(at: [IndexPath(row: index, section: 1)], with: .left)
@@ -811,7 +772,7 @@ extension SAMOrderOwedOperationController: UITableViewDelegate {
             deleteAction.backgroundColor = UIColor(red: 255 / 255.0, green: 69 / 255.0, blue: 0, alpha: 1.0)
             
             //如果只有这组只有一个产品了，不显示删除按钮
-            if self.productToOrderModels.count == 1 {
+            if self.productToOrderModels!.count == 1 {
                 return [editAction, equiryAction]
             }else {
                 return [editAction, equiryAction, deleteAction]
@@ -864,7 +825,7 @@ extension SAMOrderOwedOperationController {
     func showShoppingCar(editModel: SAMShoppingCarListModel) {
         
         //设置购物车控件的目标frame
-        self.productOperationView = SAMProductOperationView.operationViewWillShow(nil, editProductModel: editModel, postModelAfterOperationSuccess: false)
+        self.productOperationView = SAMProductOperationView.operationViewWillShow(nil, editProductModel: editModel, isFromeCheckOrder: true, postModelAfterOperationSuccess: false)
         
         self.productOperationView!.delegate = self
         self.productOperationView!.frame = CGRect(x: 0, y: ScreenH, width: ScreenW, height: 350)

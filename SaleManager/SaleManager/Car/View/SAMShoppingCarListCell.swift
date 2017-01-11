@@ -21,18 +21,14 @@ class SAMShoppingCarListCell: UITableViewCell {
             }
             
             //设置产品图片
-            if listModel?.thumbURL != nil {
-                productImageView.sd_setImage(with: listModel?.thumbURL!, placeholderImage: UIImage(named: "photo_loadding"))
+            if listModel!.thumbUrl != "" {
+                productImageView.sd_setImage(with: URL.init(string: listModel!.thumbUrl), placeholderImage: UIImage(named: "photo_loadding"))
             }else {
                 productImageView.image = UIImage(named: "photo_loadding")
             }
             
             //设置产品名称
-            if listModel!.productIDName != "" {
-                productName.text = listModel!.productIDName
-            }else {
-                productName.text = "---"
-            }
+            productName.text = listModel!.productIDName
             
             //设置米数，价格
             var str: String?
@@ -51,11 +47,7 @@ class SAMShoppingCarListCell: UITableViewCell {
             pishuLabel.text = String(format: "%d", listModel!.countP)
             
             //设置备注
-            if listModel!.memoInfo != "" {
-                remarkLabel.text = listModel!.memoInfo
-            }else {
-                remarkLabel.text = "---"
-            }
+            remarkLabel.text = listModel!.memoInfo
         }
     }
     

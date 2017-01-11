@@ -45,21 +45,18 @@ class SAMComOperationController: UIViewController {
     ///设置导航栏指示器
     fileprivate func setupNavIndicaterView() {
         
-        if navIndicaterView?.superview == nil {
-            navIndicaterView!.delegate = self
-            
-            view.addSubview(navIndicaterView!)
-            
-            //布局navIndicaterView
-            navIndicaterView!.translatesAutoresizingMaskIntoConstraints = false
-            var cons = [NSLayoutConstraint]()
-            let dict = ["navIndicaterView" : navIndicaterView!] as [String : AnyObject]
-            
-            cons += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[navIndicaterView]-0-|", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
-            cons += NSLayoutConstraint.constraints(withVisualFormat: "V:|-20-[navIndicaterView(55)]", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
-            
-            view.addConstraints(cons)
-        }
+        //设置代理
+        navIndicaterView!.delegate = self
+        //添加到父控件
+        view.addSubview(navIndicaterView!)
+        
+        //布局navIndicaterView
+        navIndicaterView!.translatesAutoresizingMaskIntoConstraints = false
+        var cons = [NSLayoutConstraint]()
+        let dict = ["navIndicaterView" : navIndicaterView!] as [String : AnyObject]
+        cons += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[navIndicaterView]-0-|", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
+        cons += NSLayoutConstraint.constraints(withVisualFormat: "V:|-20-[navIndicaterView(55)]", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
+        view.addConstraints(cons)
     }
     
     ///设置时间按钮控件
@@ -67,7 +64,7 @@ class SAMComOperationController: UIViewController {
         //设置时间选择器最大时间
         datePicker!.maximumDate = Date()
         
-        //设置dateBtnView的锚点, transform
+        //设置dateBtnView的锚点, 初始化transform
         dateBtnView.layer.anchorPoint = CGPoint(x: 1, y: 0)
         dateBtnView.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
         dateBtnView.alpha = 0.00001
@@ -96,16 +93,12 @@ class SAMComOperationController: UIViewController {
                 
                 //设置inputView
                 textField.inputView = datePicker
-                
-                //监听事件
-                textField.addTarget(self, action: #selector(SAMComOperationController.textFieldidChangeText), for: .editingChanged)
             }
         })
     }
     
     ///设置ScrollCollectionView
     fileprivate func setupScrollCollectionView() {
-        
         
         let colectionViewArr = [orderManageColView, forSaleColView, owedColView, saleHistoryColView, customerRankColView, productRankColView]
         
@@ -153,6 +146,12 @@ class SAMComOperationController: UIViewController {
         let backItem = UIBarButtonItem()
         backItem.title = ""
         navigationItem.backBarButtonItem = backItem
+        
+        //设置起止日期为今天
+        let todayDate = Date()
+        endDateTF.text = todayDate.yyyyMMddStr()
+        let disDate = todayDate.beforeOrAfter(1, before: true)
+        beginDateTF.text = disDate.yyyyMMddStr()
     }
     
     //MARK: - viewWillAppear , Disappear 设置导航栏
@@ -283,9 +282,6 @@ class SAMComOperationController: UIViewController {
         //设置字符串
         endDateTF.text = todayStr
         beginDateTF.text = disStr
-        
-        //调用文本框内容监听方法
-        textFieldidChangeText()
     }
     
     //时间选择器 选择时间
@@ -293,18 +289,6 @@ class SAMComOperationController: UIViewController {
         
         //设置文本框时间
         firstTF?.text = datePicker.date.yyyyMMddStr()
-        
-        //调用文本框内容监听方法
-        textFieldidChangeText()
-    }
-    
-    //MARK: - 文本框改变内容
-    func textFieldidChangeText() {
-        if beginDateTF.hasText && endDateTF.hasText { //起始和截止时间文本框都有时间才让搜索按钮可用
-            searchBtn.isEnabled = true
-        }else {
-            searchBtn.isEnabled = false
-        }
     }
     
     //MARK: - 结束textField编辑状态
@@ -385,17 +369,17 @@ class SAMComOperationController: UIViewController {
     fileprivate var requestSearchPageIndex = 1
     
     ///订单管理collectionView数据模型数组
-    fileprivate var orderManageModels = NSMutableArray()
+    fileprivate let orderManageModels = NSMutableArray()
     ///待售布匹collectionView数据模型数组
-    fileprivate var forSaleModels = NSMutableArray()
+    fileprivate let forSaleModels = NSMutableArray()
     ///缺货登记collectionView数据模型数组
-    fileprivate var owedModels = NSMutableArray()
+    fileprivate let owedModels = NSMutableArray()
     ///销售历史collectionView数据模型数组
-    fileprivate var saleHistoryModels = NSMutableArray()
+    fileprivate let saleHistoryModels = NSMutableArray()
     ///客户排行collectionView数据模型数组
-    fileprivate var customerRankModels = NSMutableArray()
+    fileprivate let customerRankModels = NSMutableArray()
     ///产品排行collectionView数据模型数组
-    fileprivate var productRankModels = NSMutableArray()
+    fileprivate let productRankModels = NSMutableArray()
     
     ///导航栏指示器
     fileprivate lazy var navIndicaterView: SAMComOperationIndicaterView? = {
@@ -432,7 +416,6 @@ class SAMComOperationController: UIViewController {
     @IBOutlet weak var dropDownBtn: UIButton!
     @IBOutlet weak var customerSearchTF: SAMLoginTextField!
     @IBOutlet weak var stateSearchTF: SAMLoginTextField!
-    @IBOutlet weak var searchBtn: UIButton!
     
     @IBOutlet weak var dateBtnView: UIView!
     @IBOutlet weak var dateBtnContentView: UIView!
@@ -664,7 +647,7 @@ extension SAMComOperationController: SAMComOperationIndicaterViewDelegate {
 extension SAMComOperationController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
-        //停止滚动
+        //停止当前collectionView的滚动
         currentCollectionView!.setContentOffset(currentCollectionView!.contentOffset, animated: true)
         
         //展现hudView
@@ -753,7 +736,7 @@ extension SAMComOperationController {
             
             //判断是否有模型数据
             if count == 0 { //没有模型数据
-                let _ = SAMHUD.showMessage("没有符合条件的客户", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("没有数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
             }else { //有数据模型
                 
                 let arr = SAMOrderModel.mj_objectArray(withKeyValuesArray: dictArr)!
@@ -779,7 +762,7 @@ extension SAMComOperationController {
         }) {[weak self] (Task, Error) in
             //处理上拉
             self!.orderManageColView.mj_header.endRefreshing()
-            let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     
@@ -804,7 +787,7 @@ extension SAMComOperationController {
             if count == 0 { //没有模型数据
                 
                 //提示用户
-                let _ = SAMHUD.showMessage("没有更多订单", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("没有更多数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                 
                 //设置footer
                 self!.orderManageColView.mj_footer.endRefreshingWithNoMoreData()
@@ -835,7 +818,7 @@ extension SAMComOperationController {
         }) {[weak self] (Task, Error) in
             //处理下拉
             self!.orderManageColView.mj_footer.endRefreshing()
-            let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
 }
@@ -864,7 +847,7 @@ extension SAMComOperationController {
             
             //判断是否有模型数据
             if count == 0 { //没有模型数据
-                let _ = SAMHUD.showMessage("没有符合条件的数据", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("没有数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                 
             }else { //有数据模型
                 let arr = SAMForSaleModel.mj_objectArray(withKeyValuesArray: dictArr)!
@@ -881,7 +864,7 @@ extension SAMComOperationController {
         }) {[weak self] (Task, Error) in
             //处理上拉
             self!.forSaleColView.mj_header.endRefreshing()
-            let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     
@@ -917,7 +900,7 @@ extension SAMComOperationController {
             
             //判断是否有模型数据
             if count == 0 { //没有模型数据
-                let _ = SAMHUD.showMessage("暂无数据", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("没有数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
             }else { //有数据模型
                 
                 let arr = SAMOwedInfoModel.mj_objectArray(withKeyValuesArray: dictArr)!
@@ -933,7 +916,7 @@ extension SAMComOperationController {
         }) {[weak self] (Task, Error) in
             //处理上拉
             self!.owedColView.mj_header.endRefreshing()
-            let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     
@@ -972,7 +955,7 @@ extension SAMComOperationController {
             //判断是否有模型数据
             if count == 0 { //没有模型数据
                 
-                let _ = SAMHUD.showMessage("没有符合条件的订单", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("没有数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
             }else { //有数据模型
                 
                 let arr = SAMSaleOrderInfoModel.mj_objectArray(withKeyValuesArray: dictArr)!
@@ -997,7 +980,7 @@ extension SAMComOperationController {
         }) {[weak self] (Task, Error) in
             //处理上拉
             self!.saleHistoryColView.mj_header.endRefreshing()
-            let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     
@@ -1022,7 +1005,7 @@ extension SAMComOperationController {
             if count == 0 { //没有模型数据
                 
                 //提示用户
-                let _ = SAMHUD.showMessage("没有更多订单", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("没有更多数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                 
                 //设置footer
                 self!.saleHistoryColView.mj_footer.endRefreshingWithNoMoreData()
@@ -1053,7 +1036,7 @@ extension SAMComOperationController {
         }) {[weak self] (Task, Error) in
             //处理下拉
             self!.saleHistoryColView.mj_footer.endRefreshing()
-            let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
 }
@@ -1092,7 +1075,7 @@ extension SAMComOperationController {
             //判断是否有模型数据
             if count == 0 { //没有模型数据
                 
-                let _ = SAMHUD.showMessage("没有数据", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("没有数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
             }else { //有数据模型
                 
                 let arr = SAMCustomerRankModel.mj_objectArray(withKeyValuesArray: dictArr)!
@@ -1122,7 +1105,7 @@ extension SAMComOperationController {
         }) {[weak self] (Task, Error) in
             //处理上拉
             self!.customerRankColView.mj_header.endRefreshing()
-            let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     
@@ -1147,7 +1130,7 @@ extension SAMComOperationController {
             if count == 0 { //没有模型数据
                 
                 //提示用户
-                let _ = SAMHUD.showMessage("没有更多数据", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("没有更多数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                 
                 //设置footer
                 self!.customerRankColView.mj_footer.endRefreshingWithNoMoreData()
@@ -1178,7 +1161,7 @@ extension SAMComOperationController {
         }) {[weak self] (Task, Error) in
             //处理下拉
             self!.customerRankColView.mj_footer.endRefreshing()
-            let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
 }
@@ -1216,7 +1199,7 @@ extension SAMComOperationController {
             //判断是否有模型数据
             if count == 0 { //没有模型数据
                 
-                let _ = SAMHUD.showMessage("没有数据", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("没有数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
             }else { //有数据模型
                 
                 let arr = SAMProductRankModel.mj_objectArray(withKeyValuesArray: dictArr)!
@@ -1246,7 +1229,7 @@ extension SAMComOperationController {
         }) {[weak self] (Task, Error) in
             //处理上拉
             self!.productRankColView.mj_header.endRefreshing()
-            let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     
@@ -1271,7 +1254,7 @@ extension SAMComOperationController {
             if count == 0 { //没有模型数据
                 
                 //提示用户
-                let _ = SAMHUD.showMessage("没有更多数据", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("没有更多数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                 
                 //设置footer
                 self!.productRankColView.mj_footer.endRefreshingWithNoMoreData()
@@ -1302,7 +1285,7 @@ extension SAMComOperationController {
         }) {[weak self] (Task, Error) in
             //处理下拉
             self!.productRankColView.mj_footer.endRefreshing()
-            let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }    }
 }
 
@@ -1338,20 +1321,83 @@ extension SAMComOperationController {
     //订单管理
     fileprivate func orderManageColViewdidSelected(indexpath: IndexPath) {
         
+        //取出数据模型
+        let selectedModel = self.orderManageModels[indexpath.item] as! SAMOrderModel
+        
+        //当前已经发货
+        if selectedModel.isAgreeSend! == "是" {
+            orderCheck(orderModel: selectedModel)
+            
+        }else { //当前没有发货
+            //alertvc
+            let alertVC = UIAlertController(title: "请选择操作！", message: nil, preferredStyle: .alert)
+            
+            //发货按钮
+            alertVC.addAction(UIAlertAction(title: "发货", style: .destructive, handler: { (_) in
+                self.orderAgreeSend(orderModel: selectedModel)
+            }))
+            //编辑查看按钮
+            alertVC.addAction(UIAlertAction(title: "编辑/查看", style: .cancel, handler: { (_) in
+                self.orderCheck(orderModel: selectedModel)
+            }))
+            
+            present(alertVC, animated: true, completion: nil)
+        }
+    }
+    
+    ///订单管理，查看订单方法
+    fileprivate func orderCheck(orderModel: SAMOrderModel) {
         //设置加载hud
         let hud = SAMHUD.showAdded(to: KeyWindow, animated: true)
         hud!.labelText = NSLocalizedString("", comment: "HUD loading title")
         
-        let selectedModel = orderManageModels[indexpath.item] as! SAMOrderModel
-        selectedModel.loadMoreInfo(success: {
+        orderModel.loadMoreInfo(success: {
             hud?.hide(true)
-            let vc = SAMOrderOwedOperationController.checkOrder(orderInfoModel: selectedModel, type: .checkOrder)
+            let vc = SAMOrderOwedOperationController.checkOrder(orderInfoModel: orderModel, type: .checkOrder)
             self.navigationController!.pushViewController(vc, animated: true)
         }) {
             hud?.hide(true)
-            let _ = SAMHUD.showMessage("网络错误，请重试", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
+    
+    ///订单管理，发货方法
+    fileprivate func orderAgreeSend(orderModel: SAMOrderModel) {
+        
+        let alertVC = UIAlertController(title: "确定发货？", message: nil, preferredStyle: .alert)
+        alertVC.addAction(UIAlertAction(title: "取消", style: .cancel, handler: nil))
+        alertVC.addAction(UIAlertAction(title: "确定", style: .destructive, handler: { (_) in
+            
+            //设置加载hud
+            let hud = SAMHUD.showAdded(to: KeyWindow, animated: true)!
+            hud.labelText = NSLocalizedString("请等待...", comment: "HUD loading title")
+            
+            SAMNetWorker.sharedNetWorker().get("OrderBillAgreeSend.ashx", parameters: ["billNumber": orderModel.billNumber!], progress: nil, success: { (task, json) in
+                
+                //获取状态字符串
+                let Json = json as! [String: AnyObject]
+                let dict = Json["head"] as! [String: String]
+                let state = dict["status"]
+                
+                if state == "success" { //发货成功
+                    hud.hide(true)
+                    let _ = SAMHUD.showMessage("发货成功", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+                    
+                }else { //发货失败
+                    hud.hide(true)
+                    let _ = SAMHUD.showMessage("发货失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+                }
+            }) { (task, error) in
+                
+                hud.hide(true)
+                let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+            }
+        })
+        )
+        
+        present(alertVC, animated: true, completion: nil)
+    }
+
     //待售布匹
     fileprivate func forSaleColViewdidSelected(indexpath: IndexPath) {
         
@@ -1397,7 +1443,7 @@ extension SAMComOperationController {
                 hud!.hide(true)
                 
                 //提示用户
-                let _ = SAMHUD.showMessage("没有数据", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("没有数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
             })
         }) {
             
@@ -1406,7 +1452,7 @@ extension SAMComOperationController {
                 hud!.hide(true)
                 
                 //提示用户
-                let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
             })
         }
 
@@ -1426,11 +1472,11 @@ extension SAMComOperationController {
             
         }, noData: {
             hud?.hide(true)
-            let _ = SAMHUD.showMessage("没有数据", superView: self.view!, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("没有数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
             
         }) {
             hud?.hide(true)
-            let _ = SAMHUD.showMessage("请检查网络", superView: self.view!, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     //产品排行
@@ -1448,11 +1494,11 @@ extension SAMComOperationController {
             
         }, noData: {
             hud?.hide(true)
-            let _ = SAMHUD.showMessage("没有数据", superView: self.view!, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("没有数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
             
         }) {
             hud?.hide(true)
-            let _ = SAMHUD.showMessage("请检查网络", superView: self.view!, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
 }

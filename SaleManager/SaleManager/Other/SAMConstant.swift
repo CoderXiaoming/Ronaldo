@@ -17,6 +17,11 @@ let SAMCustomerViewControllerDidSelectCustomerNotification = "SAMCustomerViewCon
 let SAMProductOperationViewGetShoppingCarListModelNotification = "SAMProductOperationViewGetShoppingCarListModelNotification"
 ///用户在二维码扫描界面成功获取到信息跳转发出的通知
 let SAMQRCodeViewGetProductNameNotification = "SAMQRCodeViewGetProductNameNotification"
+///产品库存详情控制器dismiss成功后发出的通知
+let SAMStockDetailControllerDismissSuccessNotification = "SAMStockDetailControllerDismissSuccessNotification"
+///产品库存条件搜索控制器dismiss成功后发出的通知
+let SAMStockConSearchControllerDismissSuccessNotification = "SAMStockConSearchControllerDismissSuccessNotification"
+
 
 let ScreenW = UIScreen.main.bounds.width
 let ScreenH = UIScreen.main.bounds.height

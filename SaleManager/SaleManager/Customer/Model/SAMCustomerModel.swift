@@ -10,33 +10,57 @@ import UIKit
 
 class SAMCustomerModel: NSObject {
     
-    var id: String?
-    ///客户拼音简记码
-    var CGUnitBM: String?
-    ///客户名称
-    var CGUnitName: String?
-    ///联系人
-    var contactPerson: String?
-    ///省份
-    var province: String?
-    ///城市
-    var city: String?
-    ///地址
-    var address: String?
-    ///手机
-    var mobilePhone: String?
-    ///固定电话
-    var phoneNumber: String?
-    ///传真
-    var faxNumber: String?
-    ///备注
-    var memoInfo: String?
-    ///部门
-    var deptName: String?
-    ///员工名
-    var employeeName: String?
+    ///存放客户数据模型数组单例
+    static let models = NSMutableArray()
     
-    override var description: String {
-        return String.init(format: "id = %@ ~~~ CGUnitBM = %@ ~~~ CGUnitName = %@ ~~~ contactPerson = %@ ~~~ province = %@ ~~~ city = %@ ~~~ address = %@ ~~~ mobilePhone = %@ ~~~ phoneNumber = %@ ~~~ faxNumber = %@ ~~~ memoInfo = %@ ~~~ deptName = %@ ~~~ employeeName = %@", arguments: [id!, CGUnitBM!, CGUnitName!, contactPerson!, province!, city!, address!, mobilePhone!, phoneNumber!, CGUnitBM!, faxNumber!, memoInfo!, deptName!, employeeName!])
+    //MARK: - 对外提供的返回数据模型数组的类方法
+    class func modelArr() -> NSMutableArray {
+        return models
     }
+    
+    var id = ""
+    ///客户拼音简记码
+    var CGUnitBM = ""
+    ///客户名称
+    var CGUnitName = "" {
+        didSet{
+            CGUnitName = ((CGUnitName == "") ? "---" : CGUnitName)
+        }
+    }
+    ///联系人
+    var contactPerson = ""
+    ///省份
+    var province = ""
+    ///城市
+    var city = ""
+    ///地址
+    var address = ""
+    ///手机
+    var mobilePhone = "" {
+        didSet{
+            mobilePhone = ((mobilePhone == "") ? "---" : mobilePhone)
+        }
+    }
+    ///固定电话
+    var phoneNumber = "" {
+        didSet{
+            phoneNumber = ((phoneNumber == "") ? "---" : phoneNumber)
+        }
+    }
+    ///传真
+    var faxNumber = "" {
+        didSet{
+            faxNumber = ((faxNumber == "") ? "---" : faxNumber)
+        }
+    }
+    ///备注
+    var memoInfo = "" {
+        didSet{
+            memoInfo = ((memoInfo == "") ? "---" : memoInfo)
+        }
+    }
+    ///部门
+    var deptName = ""
+    ///员工名
+    var employeeName = ""
 }

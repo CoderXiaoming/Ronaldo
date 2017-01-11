@@ -20,6 +20,7 @@ class SAMHUD: MBProgressHUD {
         hud?.mode = MBProgressHUDMode.text;
         hud?.labelText = NSLocalizedString(message, comment: "HUD message title")
         hud?.hide(true, afterDelay: hideDelay)
+        hud?.backgroundColor = UIColor.init(white: 0, alpha: 0.1)
         return hud
     }
 }

@@ -19,7 +19,6 @@
                 <outlet property="dropDownBtn" destination="K6U-5j-QhU" id="P35-KZ-1WS"/>
                 <outlet property="endDateTF" destination="Yg3-lF-vG2" id="YPz-ZE-fbJ"/>
                 <outlet property="hudView" destination="8hg-Q5-DAI" id="jtS-ze-jhO"/>
-                <outlet property="searchBtn" destination="iF1-7Q-boF" id="YgL-EP-AjJ"/>
                 <outlet property="searchConView" destination="FSd-eF-IRR" id="ROx-oz-DCY"/>
                 <outlet property="stateSearchTF" destination="FqR-XG-t3M" id="F3z-El-C50"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -119,7 +118,7 @@
                                 <action selector="dropDownBtnClick:" destination="-1" eventType="touchUpInside" id="kJp-pO-E7e"/>
                             </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iF1-7Q-boF">
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iF1-7Q-boF">
                             <rect key="frame" x="330" y="40" width="40" height="30"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="40" id="U7R-GP-c2B"/>

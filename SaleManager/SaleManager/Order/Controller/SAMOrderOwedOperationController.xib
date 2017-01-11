@@ -67,8 +67,11 @@
                         </view>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DjZ-bR-cvd">
                             <rect key="frame" x="0.0" y="0.0" width="187" height="44"/>
-                            <color key="backgroundColor" red="0.20392156859999999" green="0.59607843140000005" blue="0.85882352939999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <state key="normal" title="删除"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <state key="normal" title="删除" backgroundImage="dateButtonBGImage"/>
+                            <state key="disabled" backgroundImage="dateButtonBGImage_highlighted">
+                                <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
                             <connections>
                                 <action selector="deleteBtnClick:" destination="-1" eventType="touchUpInside" id="EzC-Sy-veS"/>
                             </connections>

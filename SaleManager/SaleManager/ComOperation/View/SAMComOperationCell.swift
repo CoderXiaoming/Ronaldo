@@ -18,7 +18,7 @@ class SAMComOperationCell: UICollectionViewCell {
             }
             
             //设置订单状态图片
-            sateImageView.image = orderInfoModel?.orderStateImage!
+            sateImageView.image = UIImage(named: orderInfoModel!.orderStateImageName)
             
             //设置客户名称
             customerLabel.text = orderInfoModel!.CGUnitName
@@ -48,7 +48,7 @@ class SAMComOperationCell: UICollectionViewCell {
             }
             
             //设置图片
-            sateImageView.image = forSaleInfoModel!.orderStateImage
+            sateImageView.image = UIImage(named: forSaleInfoModel!.orderStateImageName)
             
             //设置客户名称
             customerLabel.text = forSaleInfoModel!.CGUnitName
@@ -81,7 +81,7 @@ class SAMComOperationCell: UICollectionViewCell {
             }
             
             //设置图片
-            sateImageView.image = owedInfoModel!.orderStateImage
+            sateImageView.image = UIImage(named: owedInfoModel!.orderStateImageName)
             
             //设置客户名称
             customerLabel.text = owedInfoModel!.CGUnitName
@@ -114,7 +114,7 @@ class SAMComOperationCell: UICollectionViewCell {
             }
             
             //设置图片
-            sateImageView.image = saleOrderInfoModel!.orderStateImage
+            sateImageView.image = UIImage(named: saleOrderInfoModel!.orderStateImageName)
             
             //设置客户名称
             customerLabel.text = saleOrderInfoModel!.CGUnitName

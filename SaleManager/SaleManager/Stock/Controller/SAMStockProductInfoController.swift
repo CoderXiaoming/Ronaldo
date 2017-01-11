@@ -12,26 +12,13 @@ import SDWebImage
 class SAMStockProductInfoController: UITableViewController {
 
     ///接收的数据模型
-    var stockProductModel: SAMStockProductModel? {
-        didSet{
-            //判断productImageVIew是否已经加载
-            if productImageVIew != nil {
-                productImageVIew.sd_setImage(with: stockProductModel!.thumbURL1! as URL, placeholderImage: UIImage(named: "firstLogo")!)
-            }
-        }
-    }
+    var stockProductModel: SAMStockProductModel?
 
     //MARK: - 对外提供的类工厂方法
-    class func instance() -> SAMStockProductInfoController? {
-        return UIStoryboard(name: "SAMStockProductInfoController", bundle: nil).instantiateInitialViewController() as? SAMStockProductInfoController
-    }
-    
-    //MARK: - viewDidLoad
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        //设置标题
-        navigationItem.title = "产品信息"
+    class func instance(stockModel: SAMStockProductModel) -> SAMStockProductInfoController? {
+        let vc = UIStoryboard(name: "SAMStockProductInfoController", bundle: nil).instantiateInitialViewController() as? SAMStockProductInfoController
+        vc?.stockProductModel = stockModel
+        return vc
     }
     
     //MARK: - viewWillAppear
@@ -40,82 +27,48 @@ class SAMStockProductInfoController: UITableViewController {
         
         //初始化UI
         setupUI()
-        
-        //给图片控制器传递数据模型
-        productImageVC?.stockProductModel = stockProductModel
     }
     
-    //MARK: - 初始化UI
+    ///初始化UI
     func setupUI() {
+        
+        //设置标题
+        navigationItem.title = "产品信息"
+        
         //设置产品图片
-        if stockProductModel?.thumbURL1 != nil {
-            productImageVIew.sd_setImage(with: stockProductModel!.thumbURL1! as URL, placeholderImage: UIImage(named: "firstLogo")!)
+        if stockProductModel?.thumbUrl1 != "" {
+            productImageVIew.sd_setImage(with: URL.init(string: stockProductModel!.thumbUrl1), placeholderImage: UIImage(named: "firstLogo")!)
         }else {
             productImageVIew.image = UIImage(named: "temp")
             //TODO: temp要更换
         }
         
         //设置编号名称
-        if stockProductModel!.productIDName != "" {
-            numberLabel.text = stockProductModel!.productIDName
-        }else {
-            numberLabel.text = "---"
-        }
+        numberLabel.text = stockProductModel!.productIDName
         
         //设置花名
-        if stockProductModel!.productIDNameHM != "" {
-            huaMingLabel.text = stockProductModel!.productIDNameHM
-        }else {
-            huaMingLabel.text = "---"
-        }
+        huaMingLabel.text = stockProductModel!.productIDNameHM
         
         //设置大类
-        if stockProductModel!.parentID != "" {
-            categoryLabel.text = stockProductModel!.parentID
-        }else {
-            categoryLabel.text = "---"
-        }
+        categoryLabel.text = stockProductModel!.parentID
         
         //设置条码
-        if stockProductModel!.codeName != "" {
-            codeNumberLabel.text = stockProductModel!.codeName
-        }else {
-            codeNumberLabel.text = "---"
-        }
+        codeNumberLabel.text = stockProductModel!.codeName
         
         //设置规格
-        if stockProductModel!.specName != "" {
-            rankLabel.text = stockProductModel!.specName
-        }else {
-            rankLabel.text = "---"
-        }
+        rankLabel.text = stockProductModel!.specName
         
         //设置单位
-        if stockProductModel!.unit != "" {
-            countUnitLabel.text = stockProductModel!.unit
-        }else {
-            countUnitLabel.text = "---"
-        }
+        countUnitLabel.text = stockProductModel!.unit
         
         //设置单位
-        if stockProductModel!.memoInfo != "" {
-            remarkLabel.text = stockProductModel!.memoInfo
-        }else {
-            remarkLabel.text = "---"
-        }
+        remarkLabel.text = stockProductModel!.memoInfo
     }
     
     //MARK: - 用户点击事件处理
     func navbarBackBtnClick() {
         let _ = navigationController?.popViewController(animated: true)
     }
-    
-    //MARK: - 懒加载属性
-    //产品图片展示器
-    fileprivate lazy var productImageVC: SAMProductImageController? = {
-        let vc = SAMProductImageController.instance()
-        return vc
-    }()
     
     //MARK: - XIB链接属性
     @IBOutlet weak var productImageVIew: UIImageView!
@@ -145,7 +98,8 @@ extension SAMStockProductInfoController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let imageIndex = IndexPath(row: 0, section: 0)
         if indexPath == imageIndex {
-            navigationController!.pushViewController(productImageVC!, animated: true)
+            let productImageVC = SAMProductImageController.instance(stockModel: stockProductModel!)
+            navigationController!.pushViewController(productImageVC, animated: true)
         }
     }
 }

@@ -16,20 +16,12 @@ private let OperationViewShowHideAnimationDuration = 0.3
 class SAMProductImageController: UIViewController {
 
     ///接收的数据模型
-    var stockProductModel: SAMStockProductModel? {
-        didSet{
-            //加载产品图片控制器的大图
-            if stockProductModel?.imageURL1 != nil {
-                productImage?.sd_setImage(with: stockProductModel?.imageURL1! as URL!, placeholderImage: nil)
-            }else {
-                //TODO: 没有图片展示提示图片
-            }
-        }
-    }
+    var stockProductModel: SAMStockProductModel?
     
     ///对外提供的类工厂方法
-    class func instance() -> SAMProductImageController {
+    class func instance(stockModel: SAMStockProductModel) -> SAMProductImageController {
         let vc = SAMProductImageController()
+        vc.stockProductModel = stockModel
         vc.hidesBottomBarWhenPushed = true
         return vc
     }
@@ -47,6 +39,13 @@ class SAMProductImageController: UIViewController {
 
     //MARK: - 初始化UI
     fileprivate func setupUI() {
+        
+        //设置产品图片
+        if stockProductModel?.imageUrl1 != "" {
+            productImage?.sd_setImage(with: URL.init(string: stockProductModel!.imageUrl1), placeholderImage: nil)
+        }else {
+            //TODO: 没有图片展示提示图片
+        }
         
         //设置主标题
         navigationItem.title = "产品图片"
@@ -169,10 +168,10 @@ class SAMProductImageController: UIViewController {
         
         //展示提示信息
         let hud = SAMHUD.showAdded(to: view, animated: true)!
-        hud.labelText = NSLocalizedString("正在上传头像", comment: "HUD loading title")
+        hud.labelText = NSLocalizedString("正在上传...", comment: "HUD loading title")
         
         //创建请求参数
-        let patameters = ["codeID": stockProductModel!.codeID!, "imageIndex": 1] as [String : Any]
+        let patameters = ["codeID": stockProductModel!.codeID, "imageIndex": 1] as [String : Any]
         
         //子线程发送上传请求
         SAMNetWorker.sharedUnloadImageNetWorker().post("uploadImage.ashx", parameters: patameters, constructingBodyWith: { (formData) in
@@ -199,8 +198,8 @@ class SAMProductImageController: UIViewController {
                         let urlDict = Json["body"] as! [[String: String]]
                         
                         let model = self!.stockProductModel
-                        model?.thumbUrl1 = urlDict[0]["thumbUrl"]
-                        model?.imageUrl1 = urlDict[0]["imageUrl"]
+                        model?.thumbUrl1 = urlDict[0]["thumbUrl"]!
+                        model?.imageUrl1 = urlDict[0]["imageUrl"]!
                         
                         self!.stockProductModel = model
                         
@@ -229,20 +228,6 @@ class SAMProductImageController: UIViewController {
                 let _ = SAMHUD.showMessage("网络错误", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
             })
         }
-    }
-    
-    //MARK: - viewDidDisappear
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        //恢复scrollView的缩放
-        scrollView?.zoomScale = 1
-        
-        //移除operationView、hudView
-        operationView?.removeFromSuperview()
-        hudView?.removeFromSuperview()
-        operationView = nil
-        hudView = nil
     }
     
     //MARK: - 懒加载属性
@@ -286,7 +271,6 @@ class SAMProductImageController: UIViewController {
     fileprivate override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
-    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

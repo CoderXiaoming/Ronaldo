@@ -18,7 +18,7 @@ private let SAMOrderDetailBigCellSize = CGSize(width: ScreenW, height: 225)
 private let SAMOrderDetailSmallCellSize = CGSize(width: ScreenW, height: 44)
 
 class SAMOrderDetailController: UIViewController {
-
+    
     ///接收的订单模型
     var orderInfoModel: SAMSaleOrderInfoModel?
     
@@ -105,7 +105,7 @@ class SAMOrderDetailController: UIViewController {
         let parameters = ["billNumber": orderInfoModel!.billNumber]
         
         //发送请求
-        SAMNetWorker.sharedNetWorker().get("getSellMainDataByBillNumber.ashx", parameters: parameters, progress: nil, success: { (Task, json) in
+        SAMNetWorker.sharedNetWorker().get("getSellMainDataByBillNumber.ashx", parameters: parameters, progress: nil, success: {[weak self] (Task, json) in
             
             //获取模型数组
             let Json = json as! [String: AnyObject]
@@ -119,7 +119,7 @@ class SAMOrderDetailController: UIViewController {
             }else { //有数据模型
                 
                 let arr = SAMSaleOrderDetailModel.mj_objectArray(withKeyValuesArray: dictArr)!
-                self.orderDetailModel = (arr[0] as! SAMSaleOrderDetailModel)
+                self!.orderDetailModel = (arr[0] as! SAMSaleOrderDetailModel)
                 success()
             }
         }) { (Task, Error) in
@@ -138,7 +138,7 @@ class SAMOrderDetailController: UIViewController {
         let parameters = ["billNumber": orderInfoModel!.billNumber]
         
         //发送请求
-        SAMNetWorker.sharedNetWorker().get("getSellDetailDataByBillNumber.ashx", parameters: parameters, progress: nil, success: { (Task, json) in
+        SAMNetWorker.sharedNetWorker().get("getSellDetailDataByBillNumber.ashx", parameters: parameters, progress: nil, success: {[weak self] (Task, json) in
             
             //获取模型数组
             let Json = json as! [String: AnyObject]
@@ -149,7 +149,7 @@ class SAMOrderDetailController: UIViewController {
             if count != 0 {
                 
                 let arr = SAMSaleOrderDetailListModel.mj_objectArray(withKeyValuesArray: dictArr)!
-                self.orderDetailListModels.addObjects(from: arr as [AnyObject])
+                self!.orderDetailListModels.addObjects(from: arr as [AnyObject])
             }
         }) { (Task, Error) in
         }
@@ -210,7 +210,7 @@ class SAMOrderDetailController: UIViewController {
     }
     
     ///订单列表详情模型数组
-    fileprivate var orderDetailListModels = NSMutableArray()
+    fileprivate let orderDetailListModels = NSMutableArray()
     
     //MARK: - XIB链接属性
     @IBOutlet weak var customerLabel: UILabel!

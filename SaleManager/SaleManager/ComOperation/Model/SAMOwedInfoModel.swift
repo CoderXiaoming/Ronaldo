@@ -69,11 +69,11 @@ class SAMOwedInfoModel: NSObject {
             //设置状态指示图片
             switch iState {
                 case "欠货中":
-                    orderStateImage = UIImage(named: "oweding")
+                    orderStateImageName = "oweding"
                 case "已完成":
-                    orderStateImage = UIImage(named: "owedCompletion")
+                    orderStateImageName = "owedCompletion"
                 case "已删除":
-                    orderStateImage = UIImage(named: "owedDelete")
+                    orderStateImageName = "owedDelete"
                 default:
                     break
             }
@@ -100,5 +100,5 @@ class SAMOwedInfoModel: NSObject {
     }
     
     ///状态图片
-    var orderStateImage: UIImage?
+    var orderStateImageName = ""
 }

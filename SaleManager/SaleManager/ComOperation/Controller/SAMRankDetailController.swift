@@ -17,6 +17,7 @@ class SAMRankDetailController: UIViewController {
         if customerRankModel != nil {
             vc.customerRankModel = customerRankModel
             vc.requestURLStr = "getCustomerProductStatic.ashx"
+            
         }else {
             vc.productRankModel = productRankModel
             vc.requestURLStr = "getSellStaticProductDetail.ashx"
@@ -94,7 +95,6 @@ class SAMRankDetailController: UIViewController {
             })
         }
     }
-    
     
     //MARK: - viewDidLoad
     override func viewDidLoad() {
@@ -186,7 +186,6 @@ class SAMRankDetailController: UIViewController {
         }else {
             searchBar.placeholder = String(format: "客户排行(%@)", productRankModel!.productIDName)
         }
-        
     }
     
     //MARK: - 加载新数据
@@ -278,7 +277,6 @@ class SAMRankDetailController: UIViewController {
                 self?.collectionView.mj_footer.endRefreshingWithNoMoreData()
                 
             }else { //有数据模型
-                
                 let arr = SAMProductRankListModel.mj_objectArray(withKeyValuesArray: dictArr)!
                 
                 //判断是否还有更过数据
@@ -301,7 +299,6 @@ class SAMRankDetailController: UIViewController {
                     self!.collectionView.reloadData()
                 })
             }
-            
         }) {[weak self] (Task, Error) in
             //处理上拉
             self!.collectionView.mj_header.endRefreshing()
@@ -356,19 +353,15 @@ class SAMRankDetailController: UIViewController {
     
     ///4个时间按钮的点击
     @IBAction func todayBtnClick(_ sender: AnyObject) {
-        
         dateBtnViewdidClick(0.0)
     }
     @IBAction func yesterdayBtnClick(_ sender: AnyObject) {
-        
         dateBtnViewdidClick(1.0)
     }
     @IBAction func last7daysBtnClick(_ sender: AnyObject) {
-        
         dateBtnViewdidClick(7.0)
     }
     @IBAction func last30daysBtnClick(_ sender: AnyObject) {
-        
         dateBtnViewdidClick(30.0)
     }
     
@@ -457,10 +450,10 @@ class SAMRankDetailController: UIViewController {
     }()
     
     ///数据模型数组
-    fileprivate var rankListModels = NSMutableArray()
+    fileprivate let rankListModels = NSMutableArray()
     
     ///符合搜索结果模型数组
-    fileprivate var searchResultModels = NSMutableArray()
+    fileprivate let searchResultModels = NSMutableArray()
     
     ///记录当前是否在搜索
     fileprivate var isSearch: Bool = false
@@ -492,44 +485,6 @@ class SAMRankDetailController: UIViewController {
         view = Bundle.main.loadNibNamed("SAMRankDetailController", owner: self, options: nil)![0] as! UIView
     }
 }
-
-//MARK: - UITextFieldDelegate
-extension SAMRankDetailController: UITextFieldDelegate {
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        
-        //停止滚动
-        collectionView.setContentOffset(collectionView.contentOffset, animated: true)
-        
-        //展现hudView
-        hudView.isHidden = false
-        
-        //判断dateBtnView是否展现
-        if dropDownBtn.isSelected {
-            
-            //隐藏界面
-            dropDownBtnClick(dropDownBtn)
-        }
-        
-        //设置第一响应者
-        firstTF = textField
-    }
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        
-        //清空firstTF
-        firstTF = nil
-        
-        //隐藏hudView
-        hideHUDView()
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        
-        //结束第一响应者编辑状态
-        endFirstTextFieldEditing()
-        return true
-    }
-}
-
 
 //MARK: - UICollectionViewDelegate
 extension SAMRankDetailController: UICollectionViewDelegate {
@@ -588,6 +543,43 @@ extension SAMRankDetailController: UICollectionViewDelegateFlowLayout {
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
+    }
+}
+
+//MARK: - UITextFieldDelegate
+extension SAMRankDetailController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        
+        //停止滚动
+        collectionView.setContentOffset(collectionView.contentOffset, animated: true)
+        
+        //展现hudView
+        hudView.isHidden = false
+        
+        //判断dateBtnView是否展现
+        if dropDownBtn.isSelected {
+            
+            //隐藏界面
+            dropDownBtnClick(dropDownBtn)
+        }
+        
+        //设置第一响应者
+        firstTF = textField
+    }
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        
+        //清空firstTF
+        firstTF = nil
+        
+        //隐藏hudView
+        hideHUDView()
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        //结束第一响应者编辑状态
+        endFirstTextFieldEditing()
+        return true
     }
 }
 
@@ -654,7 +646,6 @@ extension SAMRankDetailController: UISearchBarDelegate {
         //刷新tableView
         collectionView.reloadData()
     }
-    
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         

@@ -47,5 +47,5 @@ class SAMForSaleModel: NSObject {
     }
     
     //MARK: - 辅助属性
-    let orderStateImage = UIImage(named: "indicater_forSale_selected")
+    let orderStateImageName = "indicater_forSale_selected"
 }

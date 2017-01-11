@@ -9,18 +9,11 @@
 import UIKit
 import AVFoundation
 
-protocol LXMCodeViewControllerDelegate: NSObjectProtocol {
-    func codeScandidScan(_ codeScanner: LXMCodeViewController, result: String?)
-}
-
-///扫描线一次动画
+///扫描线一次位移动画时长
 private let scanLineAnimtionDuration = 2.0
 
 class LXMCodeViewController: UIViewController {
 
-    /// 代理
-    weak var delegate: LXMCodeViewControllerDelegate?
-    
     ///对外提供的类工厂方法
     class func instance() -> LXMCodeViewController {
         return LXMCodeViewController()
@@ -174,7 +167,6 @@ class LXMCodeViewController: UIViewController {
     fileprivate override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
-    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

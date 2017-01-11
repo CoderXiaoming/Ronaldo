@@ -7,9 +7,10 @@
 //
 
 import UIKit
+import MJExtension
 
 class SAMOrderModel: NSObject {
-
+    
     ///销售日期
     var startDate = "" {
         didSet{
@@ -40,7 +41,7 @@ class SAMOrderModel: NSObject {
     var orderStatus: String? {
         didSet{
             if isAgreeSend != nil {
-                setStateImage()
+                setStateImageName()
             }
         }
     }
@@ -48,30 +49,36 @@ class SAMOrderModel: NSObject {
     var isAgreeSend: String? {
         didSet{
             if orderStatus != nil {
-                setStateImage()
+                setStateImageName()
             }
         }
     }
     
     //MARK: - 设置状态图片
-    fileprivate func setStateImage() {
+    fileprivate func setStateImageName() {
         
-        if orderStateImage != nil {
+        if orderStateImageName != "" {
             return
         }
         
         if isAgreeSend! != "是" {
-            orderStateImage = UIImage(named: "orderManageNotSend")
+            orderStateImageName = "orderManageNotSend"
         }else if orderStatus! == "未开单" {
-            orderStateImage = UIImage(named: "orderManageNotCompletion")
+            orderStateImageName = "orderManageNotCompletion"
         }else {
-            orderStateImage = UIImage(named: "orderManageCompletion")
+            orderStateImageName = "orderManageCompletion"
         }
     }
     
     //MARK: - 对外提供的加载详情订单详情的数据模型
     func loadMoreInfo(success: @escaping ()->(), defeat: @escaping ()->()) {
     
+        //如果订单产品数据模型数组有数据，则直接回调成功
+        if productListModels.count > 0 {
+            success()
+            return
+        }
+        
         //如果没有订单号，执行失败闭包，返回
         if billNumber == "" {
             defeat()
@@ -84,7 +91,7 @@ class SAMOrderModel: NSObject {
         orderCustomerModel?.id = CGUnitID
         
         //发送请求，获取订单详情数据模型
-        SAMNetWorker.sharedNetWorker().get("getOrderMainDataByBillNumber.ashx", parameters: ["billNumber": billNumber!], progress: nil, success: { (Task, json) in
+        SAMNetWorker.sharedNetWorker().get("getOrderMainDataByBillNumber.ashx", parameters: ["billNumber": billNumber!], progress: nil, success: {[weak self] (Task, json) in
             
             //获取模型数组
             let Json = json as! [String: AnyObject]
@@ -102,21 +109,21 @@ class SAMOrderModel: NSObject {
                 let model = arr[0] as? SAMOrderDetailModel
                 
                 //赋值订单详情内容数组
-                self.orderDetailContentArr = [[["客户", model!.CGUnitName!],
-                                               ["备注", model!.memoInfo!]],
+                self!.orderDetailContentArr = [[["客户", model!.CGUnitName],
+                                               ["备注", model!.memoInfo]],
                                               [],
-                                              [["优惠", model!.cutMoney!],
-                                               ["其他金额", model!.otherMoney!],
-                                               ["总金额", model!.totalMoney!],
-                                               ["已收定金", model!.receiveMoney!]],
-                                              [["日期", model!.startDate!],
-                                               ["开单人", model!.userName!],
-                                               ["订单状态", model!.orderStatus!],
-                                               ["是否已经生成码单", model!.isMakeBill!],
-                                               ["是否同意发货", model!.isAgreeSend!]]]
+                                              [["优惠", model!.cutMoney],
+                                               ["其他金额", model!.otherMoney],
+                                               ["总金额", model!.totalMoney],
+                                               ["已收定金", model!.receiveMoney]],
+                                              [["日期", model!.startDate],
+                                               ["开单人", model!.userName],
+                                               ["订单状态", model!.orderStatus],
+                                               ["是否已经生成码单", model!.isMakeBill],
+                                               ["是否同意发货", model!.isAgreeSend]]]
                 
                 //发送请求，获取订单产品数据模型数组
-                SAMNetWorker.sharedNetWorker().get("getOrderDetailData.ashx", parameters: ["billNumber": self.billNumber!], progress: nil, success: { (Task, json) in
+                SAMNetWorker.sharedNetWorker().get("getOrderDetailData.ashx", parameters: ["billNumber": self!.billNumber!], progress: nil, success: { (Task, json) in
                     
                     //获取模型数组
                     let Json = json as! [String: AnyObject]
@@ -128,11 +135,10 @@ class SAMOrderModel: NSObject {
                         defeat()
                         return
                     }else { //有数据模型
-                        
                         let arr = SAMShoppingCarListModel.mj_objectArray(withKeyValuesArray: dictArr)!
                         for model in arr {
                             let shoppingCarListModel = model as! SAMShoppingCarListModel
-                            self.productListModels.append(shoppingCarListModel)
+                            self!.productListModels.append(shoppingCarListModel)
                         }
                         success()
                         return
@@ -161,7 +167,6 @@ class SAMOrderModel: NSObject {
     ///订单产品数据模型数组
     var productListModels = [SAMShoppingCarListModel]()
     
-    ///状态图片
-    var orderStateImage: UIImage?
+    ///状态图片的名字
+    var orderStateImageName = ""
 }
-

@@ -11,28 +11,28 @@ import UIKit
 class SAMOrderDetailModel: NSObject {
 
     ///订单主项id
-    var id: String?
+    var id = ""
     ///客户名称
-    var CGUnitName: String?
+    var CGUnitName = ""
     ///备注信息
-    var memoInfo: String?
+    var memoInfo = ""
     ///优惠金额
-    var cutMoney: String?
+    var cutMoney = ""
     ///其他金额
-    var otherMoney: String?
+    var otherMoney = ""
     ///总金额
-    var totalMoney: String?
+    var totalMoney = ""
     ///已收定金
-    var receiveMoney: String?
+    var receiveMoney = ""
     ///日期
-    var startDate: String?
+    var startDate = ""
     ///开单人
-    var userName: String?
+    var userName = ""
     ///订单状态（已开单，未开单）
-    var orderStatus: String?
+    var orderStatus = ""
     ///是否已经生成码单（是，否）
-    var isMakeBill: String?
+    var isMakeBill = ""
     ///是否同意发货，手机可见（是，否）
-    var isAgreeSend: String?
+    var isAgreeSend = ""
     
 }

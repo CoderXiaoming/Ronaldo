@@ -24,25 +24,13 @@ class SAMCustomerCollectionCell: UICollectionViewCell {
     var customerModel: SAMCustomerModel? {
         didSet{
             //设置 customerLabel
-            if customerModel?.CGUnitName != "" {
-                customerLabel.text = customerModel?.CGUnitName
-            }else {
-                customerLabel.text = "---"
-            }
+            customerLabel.text = customerModel?.CGUnitName
             
             //设置 remarkLabel
-            if customerModel?.memoInfo != "" {
-                remarkLabel.text = customerModel?.memoInfo
-            }else {
-                remarkLabel.text = "---"
-            }
+            remarkLabel.text = customerModel?.memoInfo
             
             //设置 phoneLabel
-            if customerModel?.mobilePhone != "" {
-                phoneLabel.text = customerModel?.mobilePhone
-            }else {
-                phoneLabel.text = "---"
-            }
+            phoneLabel.text = customerModel?.mobilePhone
         }
     }
     
@@ -50,18 +38,10 @@ class SAMCustomerCollectionCell: UICollectionViewCell {
     func showMoreInfo() {
         
         //设置 faxLabel
-        if customerModel?.faxNumber != "" {
-            faxLabel.text = customerModel?.faxNumber
-        }else {
-            faxLabel.text = "---"
-        }
+        faxLabel.text = customerModel?.faxNumber
         
         //设置 telLabel
-        if customerModel?.phoneNumber != "" {
-            telLabel.text = customerModel?.phoneNumber
-        }else {
-            telLabel.text = "---"
-        }
+        telLabel.text = customerModel?.phoneNumber
         
         //设置 addLabel
         var addStr = ""
@@ -126,7 +106,6 @@ class SAMCustomerCollectionCell: UICollectionViewCell {
             self.containterView.transform = CGAffineTransform.identity
         }) 
     }
-    
     
     //MARK: - 点击事件处理
     @IBAction func editBtnClick(_ sender: AnyObject) {

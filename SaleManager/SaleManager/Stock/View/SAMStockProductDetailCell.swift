@@ -8,13 +8,6 @@
 
 import UIKit
 
-//CELL的宽度
-let SAMStockProductDetailCellWidth: CGFloat = 100
-//CELL的高度
-let SAMStockProductDetailCellHeight: CGFloat = 40
-//CELL的间距
-let SAMStockProductDetailCellMinimumLineSpacing: CGFloat = 5
-
 class SAMStockProductDetailCell: UICollectionViewCell {
 
     //接收的数据模型

@@ -21,13 +21,13 @@ class SAMBaseNavigationController: UINavigationController {
         //设置返回按钮颜色
         navBar.tintColor = UIColor(red: 75 / 255.0, green: 75 / 255.0, blue: 75 / 255.0, alpha: 1.0)
         
+        //设置背景图片
         navBar.setBackgroundImage(UIImage(named: "navbarBackgroundImage"), for: .default)
     }
 
     //MARK: - 其他方法
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        
     }
     override init(rootViewController: UIViewController) {
         super.init(rootViewController: rootViewController)

@@ -15,8 +15,8 @@ class SAMOrderBuildTitleModel: NSObject {
     ///内容
     var cellContent = ""
     
-    //mark: - 对外提供的类工厂方法
     class func titleModel(title: String, content: String?) -> SAMOrderBuildTitleModel {
+        
         let model = SAMOrderBuildTitleModel()
         model.cellTitle = title
         if content != nil {

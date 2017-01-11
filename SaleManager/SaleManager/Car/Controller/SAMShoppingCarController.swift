@@ -27,11 +27,6 @@ class SAMShoppingCarController: UIViewController {
         return carViewVC
     }
     
-    //MARK: - 对外提供的普通类工厂方法
-    class func sharedInstance() -> SAMShoppingCarController {
-        return SAMShoppingCarController()
-    }
-    
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,41 +78,40 @@ class SAMShoppingCarController: UIViewController {
         let parameters = ["userID": userIDStr, "productIDName": ""]
         
         //发送请求
-        SAMNetWorker.sharedNetWorker().get("getCartList.ashx", parameters: parameters, progress: nil, success: { (Task, json) in
+        SAMNetWorker.sharedNetWorker().get("getCartList.ashx", parameters: parameters, progress: nil, success: {[weak self] (Task, json) in
             //设置全选按钮不选中
-            self.allSelectedButton.isSelected = false
+            self!.allSelectedButton.isSelected = false
             
             //清空原先数据
-            self.clearExpiredInfo()
+            self!.clearExpiredInfo()
             
             //获取模型数组
             let Json = json as! [String: AnyObject]
             let dictArr = Json["body"] as? [[String: AnyObject]]
             let count = dictArr?.count ?? 0
             if count == 0 { //没有模型数据
-                
                 //提示用户
-                let _ = SAMHUD.showMessage("暂无订单", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
-            }else { //有数据模型
+                let _ = SAMHUD.showMessage("暂无数据", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
                 
+            }else { //有数据模型
                 let arr = SAMShoppingCarListModel.mj_objectArray(withKeyValuesArray: dictArr)!
-                self.listModels.addObjects(from: arr as [AnyObject])
+                self!.listModels.addObjects(from: arr as [AnyObject])
             }
             
             //回到主线程
             DispatchQueue.main.async(execute: {
                 
                 //结束上拉
-                self.tableView.mj_header.endRefreshing()
+                self!.tableView.mj_header.endRefreshing()
                 //刷新数据
-                self.tableView.reloadData()
+                self!.tableView.reloadData()
             })
-        }) { (Task, Error) in
+        }) {[weak self] (Task, Error) in
             
             //处理上拉
-            self.tableView.mj_header.endRefreshing()
+            self!.tableView.mj_header.endRefreshing()
             //提示用户
-            let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     
@@ -216,10 +210,10 @@ class SAMShoppingCarController: UIViewController {
     }
     
     ///源模型数组
-    fileprivate var listModels = NSMutableArray()
+    fileprivate let listModels = NSMutableArray()
     
     ///选中的模型数组
-    fileprivate var selectedModels = NSMutableArray()
+    fileprivate let selectedModels = NSMutableArray()
     
     ///记录当前是否在搜索
     fileprivate var isSearch: Bool = false {
@@ -228,7 +222,7 @@ class SAMShoppingCarController: UIViewController {
         }
     }
     ///符合搜索结果模型数组
-    fileprivate var searchResultModels = NSMutableArray()
+    fileprivate let searchResultModels = NSMutableArray()
     
     ///添加产品的动画layer数组
     fileprivate lazy var addProductAnimLayers = [CALayer]()
@@ -329,7 +323,7 @@ class SAMShoppingCarController: UIViewController {
                 self.tableView.deleteSections(IndexSet.init(integer: orignalIndex), with: .left)
                 
                 //异步发送删除请求
-                let parameters = ["id": model.id!]
+                let parameters = ["id": model.id]
                 SAMNetWorker.sharedNetWorker().post("CartDelete.ashx", parameters: parameters, progress: nil, success: { (task, Json) in
                 }, failure: { (task, error) in
                 })
@@ -714,7 +708,6 @@ extension SAMShoppingCarController: CAAnimationDelegate {
 //MARK: - 购物车代理SAMProductOperationViewDelegate
 extension SAMShoppingCarController: SAMProductOperationViewDelegate {
     
-    
     func operationViewDidClickDismissButton() {
         //隐藏购物车
         hideProductOperationView(false)
@@ -755,7 +748,7 @@ extension SAMShoppingCarController {
     func showShoppingCar(editModel: SAMShoppingCarListModel) {
     
         //设置购物车控件的目标frame
-        self.productOperationView = SAMProductOperationView.operationViewWillShow(nil, editProductModel: editModel, postModelAfterOperationSuccess: false)
+        self.productOperationView = SAMProductOperationView.operationViewWillShow(nil, editProductModel: editModel, isFromeCheckOrder: false, postModelAfterOperationSuccess: false)
         
         
         self.productOperationView!.delegate = self

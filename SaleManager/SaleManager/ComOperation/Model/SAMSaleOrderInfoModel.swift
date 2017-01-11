@@ -32,5 +32,5 @@ class SAMSaleOrderInfoModel: NSObject {
     }
     
     //MARK: - 辅助属性
-    let orderStateImage = UIImage(named: "indicater_saleHistory_selected")
+    let orderStateImageName = "indicater_saleHistory_selected"
 }

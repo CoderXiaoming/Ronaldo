@@ -8,30 +8,8 @@
 
 import UIKit
 import MBProgressHUD
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
 
-// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
-// Consider refactoring the code to use the non-optional operators.
-fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l > r
-  default:
-    return rhs < lhs
-  }
-}
-
+///客户管理控制器类型
 enum CustomerAddControlleType {
     case addCustomer
     case eidtCustomer
@@ -108,11 +86,11 @@ class SAMCustomerAddController: UIViewController {
     fileprivate func setupEditCustomerModel() {
     
         //设置公司名字 联系人名字
-        if editingModel!.CGUnitName!.contains("公司") { //对字符串进行分割
-            let strArr = editingModel!.CGUnitName?.components(separatedBy: "公司")
-            if strArr?.count > 1 {
-                corporationTF.text = (strArr![0] as String).lxm_stringByTrimmingWhitespace()
-                contactTF.text = (strArr![1] as String).lxm_stringByTrimmingWhitespace()
+        if editingModel!.CGUnitName.contains("公司") { //对字符串进行分割
+            let strArr = editingModel!.CGUnitName.components(separatedBy: "公司")
+            if strArr.count > 1 {
+                corporationTF.text = (strArr[0] as String).lxm_stringByTrimmingWhitespace()
+                contactTF.text = (strArr[1] as String).lxm_stringByTrimmingWhitespace()
             }
         }else {
             corporationTF.text = editingModel?.CGUnitName
@@ -220,7 +198,7 @@ class SAMCustomerAddController: UIViewController {
             var parameters = ["id": SAMUserAuth.shareUser()!.id!, "employeeID": SAMUserAuth.shareUser()!.employeeID!, "customerName": customerStr, "contactPerson": "", "deptID": SAMUserAuth.shareUser()!.deptID!, "mobilePhone": cellStr, "phoneNumber": telStr, "province": provinceStr, "city": cityStr, "address": addStr, "memoInfo": remarkStr]
             
             if self.editingModel != nil {
-                parameters["CGUnitID"] = self.editingModel!.id!
+                parameters["CGUnitID"] = self.editingModel!.id
             }
             
             //发送请求，获取结果
@@ -234,14 +212,14 @@ class SAMCustomerAddController: UIViewController {
     
     //MARK: - 上传用户资料
     fileprivate func uploadCustomer(_ parameters: [String: String]) {
-        SAMNetWorker.sharedNetWorker().post(requestURLStr!, parameters: parameters, progress: nil, success: { (Task, json) in
+        SAMNetWorker.sharedNetWorker().post(requestURLStr!, parameters: parameters, progress: nil, success: {[weak self] (Task, json) in
             
                 let Json = json as! [String: AnyObject]
                 let state = (Json["head"] as! [String: String])["status"]!
-                self.unloadCompletion(state)
-            }) { (Task, Error) in
+                self!.unloadCompletion(state)
+            }) {[weak self] (Task, Error) in
                 
-                self.unloadCompletion("error")
+                self!.unloadCompletion("error")
         }
     }
     
@@ -284,7 +262,7 @@ class SAMCustomerAddController: UIViewController {
             return
         }
         
-        let CGUnitID = editingModel!.id!
+        let CGUnitID = editingModel!.id
         let startDate = Date().yyyyMMddStr()
         let userID = SAMUserAuth.shareUser()?.id!
         
@@ -298,7 +276,7 @@ class SAMCustomerAddController: UIViewController {
         let hud = SAMHUD.showAdded(to: KeyWindow, animated: true)
         hud!.labelText = NSLocalizedString("正在保存...", comment: "HUD loading title")
         //发送服务器请求
-        SAMNetWorker.sharedNetWorker().post("CGUnitFollowAdd.ashx", parameters: ["MainData": mainJsonStr], progress: nil, success: { (task, json) in
+        SAMNetWorker.sharedNetWorker().post("CGUnitFollowAdd.ashx", parameters: ["MainData": mainJsonStr], progress: nil, success: {[weak self] (task, json) in
             
             //隐藏HUD
             hud?.hide(true)
@@ -310,17 +288,16 @@ class SAMCustomerAddController: UIViewController {
             
             if state == "success" { //保存成功
                 
-                let hud = SAMHUD.showMessage("保存成功", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let hud = SAMHUD.showMessage("保存成功", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
                 hud?.delegate = self
             }else { //保存失败
-                let _ = SAMHUD.showMessage("保存失败", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("保存失败", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
             }
-        }) { (task, error) in
-            let _ = SAMHUD.showMessage("请检查网络", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+        }) {[weak self] (task, error) in
+            let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
 
     }
-    
     
     //MARK: - 结束当前textField编辑状态
     func endFirstResponderEditing() {
@@ -329,7 +306,7 @@ class SAMCustomerAddController: UIViewController {
         }
     }
     
-    //MARK: - 懒加载集合
+    //MARK: - 属性
     ///控制器类型
     fileprivate var controllerType: CustomerAddControlleType?
     ///传递需要编辑的客户数据
@@ -382,8 +359,7 @@ class SAMCustomerAddController: UIViewController {
     @IBOutlet weak var vistContentTextView: UITextView!
     @IBOutlet weak var visitAddEnsureBtn: UIButton!
     
-
-    //MARK: - 无关紧要的方法
+    //MARK: - 其他方法
     fileprivate init() {
         super.init(nibName: nil, bundle: nil)
     }

@@ -99,14 +99,13 @@ class SAMLoginController: UIViewController {
             remPwdBtn.isSelected = false
         }
     }
+    //记住密码按钮点击
     @IBAction func remPwdBtnClick(_ sender: UIButton) {
         remPwdBtn.isSelected = !remPwdBtn.isSelected
         if remPwdBtn.isSelected {
             remNameBtn.isSelected = true
         }
     }
-    
-    
     //登录按钮点击
     @IBAction func loginBtnClick(_ sender: AnyObject) {
         
@@ -374,6 +373,5 @@ class SAMLoginController: UIViewController {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 }
 

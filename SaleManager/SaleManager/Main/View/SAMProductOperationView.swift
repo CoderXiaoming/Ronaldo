@@ -42,7 +42,7 @@ class SAMProductOperationView: UIView {
     static let instance = Bundle.main.loadNibNamed("SAMProductOperationView", owner: nil, options: nil)![0] as! SAMProductOperationView
     
     //MARK: - 对外提供的展示控件调用的方法
-    class func operationViewWillShow(_ addProductModel: SAMStockProductModel?, editProductModel: SAMShoppingCarListModel?, postModelAfterOperationSuccess: Bool) -> SAMProductOperationView {
+    class func operationViewWillShow(_ addProductModel: SAMStockProductModel?, editProductModel: SAMShoppingCarListModel?, isFromeCheckOrder: Bool, postModelAfterOperationSuccess: Bool) -> SAMProductOperationView {
         
         //清楚所有文本框
         instance.clearAllTextField()
@@ -58,6 +58,9 @@ class SAMProductOperationView: UIView {
             instance.isAddingProduct = false
         }
         
+        //记录是否来自订单查看界面
+        instance.isFromOrderCheckVC = isFromeCheckOrder
+        
         //记录是否发出通知
         instance.willPostModel = postModelAfterOperationSuccess
         
@@ -67,7 +70,6 @@ class SAMProductOperationView: UIView {
         
         return instance
     }
-
     
     //MARK: - awakeFromNib
     override func awakeFromNib() {
@@ -135,7 +137,6 @@ class SAMProductOperationView: UIView {
                     
                     self.layoutIfNeeded()
                     }, completion: { (_) in
-                        
                 })
             }else { //键盘即将展示
                 UIView.animate(withDuration: animDuration, animations: { 
@@ -166,7 +167,7 @@ class SAMProductOperationView: UIView {
         })
     }
     
-    //MARK: - 属性懒加载
+    //MARK: - 属性
     ///接收的添加产品数据模型
     fileprivate var addProductModel: SAMStockProductModel? {
         didSet{
@@ -176,14 +177,10 @@ class SAMProductOperationView: UIView {
             }
             
             //设置图片
-            productImage.sd_setImage(with: addProductModel!.thumbURL1, placeholderImage: UIImage(named: "photo_loadding"))
+            productImage.sd_setImage(with: URL.init(string: addProductModel!.thumbUrl1), placeholderImage: UIImage(named: "photo_loadding"))
             
             //设置产品名称
-            if addProductModel!.productIDName != "" {
-                productNumberLabel.text = addProductModel!.productIDName
-            }else {
-                productNumberLabel.text = "---"
-            }
+            productNumberLabel.text = addProductModel!.productIDName
             
             //设置标题匹数
             pishuLabel.text = String(format: "%d", addProductModel!.countP)
@@ -196,7 +193,7 @@ class SAMProductOperationView: UIView {
             
             //设置文本框
             pishuTF.text = "0"
-            mishuTF.text = "1"
+            mishuTF.text = "0"
             priceTF.text = "0"
             remarkTF.text = ""
         }
@@ -211,18 +208,14 @@ class SAMProductOperationView: UIView {
             }
             
             //设置图片
-            if editProductModel!.thumbURL != nil {
-                productImage.sd_setImage(with: editProductModel!.thumbURL!, placeholderImage: UIImage(named: "photo_loadding"))
+            if editProductModel!.thumbUrl != "" {
+                productImage.sd_setImage(with: URL.init(string: editProductModel!.thumbUrl), placeholderImage: UIImage(named: "photo_loadding"))
             }else {
                 productImage.image = UIImage(named: "photo_loadding")
             }
             
             //设置产品名称
-            if editProductModel!.productIDName != "" {
-                productNumberLabel.text = editProductModel!.productIDName
-            }else {
-                productNumberLabel.text = "---"
-            }
+            productNumberLabel.text = editProductModel!.productIDName
             
             //设置标题库存匹数
             if editProductModel!.stockCountP == 0 {
@@ -244,11 +237,7 @@ class SAMProductOperationView: UIView {
             priceTF.text = String(format: "%.1f", editProductModel!.price)
             
             //赋值备注文本框
-            if editProductModel!.memoInfo != "" {
-                remarkTF.text = editProductModel!.memoInfo
-            }else {
-                remarkTF.text = ""
-            }
+            remarkTF.text = editProductModel!.memoInfo
             
             //设置字体大小
             setTitleLabelBiggerOrSmaller(true)
@@ -268,6 +257,9 @@ class SAMProductOperationView: UIView {
         }
     }
     
+    ///记录当前是否 来自物品编辑是否来自订单查看
+    fileprivate var isFromOrderCheckVC: Bool = false
+    
     ///数据请求链接
     fileprivate var requestURLStr: String?
     
@@ -285,6 +277,18 @@ class SAMProductOperationView: UIView {
         //结束第一响应者编辑状态
         endFirstTextFieldEditing()
         
+        //如果是来自订单查看控制器
+        if isFromOrderCheckVC {
+            editProductModel?.countP = Int(NSString(string: pishuTF.text!).intValue)
+            editProductModel?.countM = Double(NSString(string: mishuTF.text!).doubleValue)
+            editProductModel?.price = Double(NSString(string: priceTF.text!).doubleValue)
+            editProductModel?.memoInfo = remarkTF.text!
+            
+            //告诉代理添加产品成功操作
+            delegate?.operationViewAddOrEditProductSuccess(productImage.image!, postShoppingCarListModelSuccess: false)
+            return
+        }
+        
         //设置加载hud
         let hud = SAMHUD.showAdded(to: KeyWindow, animated: true)!
         hud.labelText = NSLocalizedString("请等待...", comment: "HUD loading title")
@@ -298,10 +302,10 @@ class SAMProductOperationView: UIView {
         if isAddingProduct { //添加购物车状态
             
             parameters["userID"] = SAMUserAuth.shareUser()!.id! as AnyObject?
-            parameters["productID"] = addProductModel!.id! as AnyObject?
+            parameters["productID"] = addProductModel!.id as AnyObject?
         }else { //编辑购物车状态
             
-            parameters["id"] = editProductModel!.id! as AnyObject?
+            parameters["id"] = editProductModel!.id as AnyObject?
         }
         
         if remarkTF.hasText {
@@ -311,7 +315,7 @@ class SAMProductOperationView: UIView {
         }
         
         //发送服务器请求，添加到购物车
-        SAMNetWorker.sharedNetWorker().post(requestURLStr!, parameters: parameters, progress: nil, success: { (task, json) in
+        SAMNetWorker.sharedNetWorker().post(requestURLStr!, parameters: parameters, progress: nil, success: {[weak self] (task, json) in
             
             //获取上传状态
             let Json = json as! [String: AnyObject]
@@ -320,16 +324,16 @@ class SAMProductOperationView: UIView {
             
             if status == "success" { //上传服务器成功
             
-                if !self.isAddingProduct { //如果是编辑数据模型状态，则需要主动修改模型数据
+                if !self!.isAddingProduct { //如果是编辑数据模型状态，则需要主动修改模型数据
                     
-                    self.editProductModel?.countP = Int(NSString(string: self.pishuTF.text!).intValue)
-                    self.editProductModel?.countM = Double(NSString(string: self.mishuTF.text!).doubleValue)
-                    self.editProductModel?.price = Double(NSString(string: self.priceTF.text!).doubleValue)
-                    self.editProductModel?.memoInfo = self.remarkTF.text
+                    self!.editProductModel?.countP = Int(NSString(string: self!.pishuTF.text!).intValue)
+                    self!.editProductModel?.countM = Double(NSString(string: self!.mishuTF.text!).doubleValue)
+                    self!.editProductModel?.price = Double(NSString(string: self!.priceTF.text!).doubleValue)
+                    self!.editProductModel?.memoInfo = self!.remarkTF.text!
                 }
                 
                 //判断是否要发送携带购物车数据模型的通知
-                if self.willPostModel { //需要发出通知
+                if self!.willPostModel { //需要发出通知
                     
                     //创建请求参数
                     let userIDStr = SAMUserAuth.shareUser()!.id!
@@ -348,7 +352,7 @@ class SAMProductOperationView: UIView {
                         if count == 0 { //没有模型数据
                             
                             //告诉代理添加产品成功操作，但是模型数据获取失败
-                            self.delegate?.operationViewAddOrEditProductSuccess(self.productImage.image!, postShoppingCarListModelSuccess: false)
+                            self!.delegate?.operationViewAddOrEditProductSuccess(self!.productImage.image!, postShoppingCarListModelSuccess: false)
                             
                             return
                         }else { //有数据模型
@@ -360,7 +364,7 @@ class SAMProductOperationView: UIView {
                             NotificationCenter.default.post(name: NSNotification.Name.init(SAMProductOperationViewGetShoppingCarListModelNotification), object: nil, userInfo: ["model": model])
                             
                             //告诉代理添加产品成功操作，模型数据获取成功
-                            self.delegate?.operationViewAddOrEditProductSuccess(self.productImage.image!, postShoppingCarListModelSuccess: true)
+                            self!.delegate?.operationViewAddOrEditProductSuccess(self!.productImage.image!, postShoppingCarListModelSuccess: true)
                             
                             return
                         }
@@ -381,7 +385,7 @@ class SAMProductOperationView: UIView {
                         hud.hide(true)
                         
                         //告诉代理添加产品成功操作，但是模型数据获取失败
-                        self.delegate?.operationViewAddOrEditProductSuccess(self.productImage.image!, postShoppingCarListModelSuccess: false)
+                        self!.delegate?.operationViewAddOrEditProductSuccess(self!.productImage.image!, postShoppingCarListModelSuccess: false)
                     })
                 }
             }else { //上传服务器失败
@@ -391,13 +395,12 @@ class SAMProductOperationView: UIView {
                     //隐藏HUD
                     hud.hide(true)
                     
-                    let hudMessage = self.isAddingProduct ? "添加失败，请重试" : "修改失败，请重试"
+                    let hudMessage = self!.isAddingProduct ? "添加失败，请重试" : "修改失败，请重试"
                     //提示用户错误信息
                     let _ = SAMHUD.showMessage(hudMessage, superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                 })
             }
         }) { (task, error) in
-            
             DispatchQueue.main.async(execute: { 
                 //隐藏HUD
                 hud.hide(true)
@@ -497,12 +500,7 @@ extension SAMProductOperationView: UITextFieldDelegate {
         
         //如果是空字符串，就赋值文本框，返回
         if str == ""  {
-            
-            if textField == mishuTF {
-                textField.text = "1"
-            }else {
-                textField.text = "0"
-            }
+            textField.text = "0"
             return
         }
         
@@ -511,11 +509,7 @@ extension SAMProductOperationView: UITextFieldDelegate {
         
         //如果截取后没有字符，或者为0，则赋值
         if str == "" || str == "0"  {
-            if textField == mishuTF {
-                textField.text = "1"
-            }else {
-                textField.text = "0"
-            }
+            textField.text = "0"
             return
         }
         

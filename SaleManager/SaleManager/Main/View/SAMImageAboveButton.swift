@@ -36,5 +36,4 @@ class SAMImageAboveButton: UIButton {
         titleLabel?.frame.size.width = frame.width
         titleLabel?.textAlignment = NSTextAlignment.center
     }
-
 }
