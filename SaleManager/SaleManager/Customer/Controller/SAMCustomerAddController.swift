@@ -141,27 +141,15 @@ class SAMCustomerAddController: UIViewController {
         //退出编辑状态
         endFirstResponderEditing()
         
-        //获取公司名称字符串，并进行判断
+        //获取公司名称字符串，并进行判断，必须要求公司名称
         var customerStr = corporationTF.text!.lxm_stringByTrimmingWhitespace()!
         if customerStr == "" {
             let _ = SAMHUD.showMessage("请填写公司", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
             return
         }
         
-        //获取联系人名称字符串，并进行判断
         let contactStr = contactTF.text!.lxm_stringByTrimmingWhitespace()!
-        if contactStr == "" {
-            let _ = SAMHUD.showMessage("请填写联系人", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
-            return
-        }
-        
-        //获取手机字符串，并进行判断
         let cellStr = cellTF.text!.lxm_stringByTrimmingWhitespace()!
-        if (cellStr != "") && !cellStr.lxm_stringisWholeNumber() {
-            let _ = SAMHUD.showMessage("请填写合法手机号", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
-            return
-        }
-        
         let telStr = telTF.text!.lxm_stringByTrimmingWhitespace()!
         let provinceStr = provinceTF.text!.lxm_stringByTrimmingWhitespace()!
         let cityStr = cityTF.text!.lxm_stringByTrimmingWhitespace()!

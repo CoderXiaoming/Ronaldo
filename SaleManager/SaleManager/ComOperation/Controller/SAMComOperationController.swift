@@ -40,6 +40,9 @@ class SAMComOperationController: UIViewController {
         
         //设置其他
         setupOtherUI()
+        
+        //设置待售布匹搜索控件UI
+        setupForSaleSearchViewUI()
     }
     
     ///设置导航栏指示器
@@ -75,7 +78,7 @@ class SAMComOperationController: UIViewController {
     
     ///设置文本框
     fileprivate func setupTextField() {
-        let arr = NSArray(array: [beginDateTF, endDateTF, customerSearchTF, stateSearchTF])
+        let arr = NSArray(array: [beginDateTF, endDateTF, customerSearchTF, stateSearchTF, forSaleDrawerTF, forSaleProductTF, forSaleCustomerTF, owedSearchCustomerTF, owedSearchProductTF, owedSearchStateTF])
         arr.enumerateObjects({ (obj, _, _) in
             let textField = obj as! UITextField
             
@@ -83,7 +86,7 @@ class SAMComOperationController: UIViewController {
             textField.delegate = self
             
             //设置订单分类的inputView
-            if textField == stateSearchTF {
+            if (textField == stateSearchTF) || (textField == owedSearchStateTF) {
                 textField.text = "所有"
                 textField.inputView = stateSearchPickerView
             }
@@ -152,6 +155,19 @@ class SAMComOperationController: UIViewController {
         endDateTF.text = todayDate.yyyyMMddStr()
         let disDate = todayDate.beforeOrAfter(1, before: true)
         beginDateTF.text = disDate.yyyyMMddStr()
+    }
+    
+    ///设置待售布匹搜索控件UI
+    fileprivate func setupForSaleSearchViewUI() {
+        
+        //加载待售布匹开单人模型数组
+        loadForSaleDrawerModels()
+        
+        //设置开单人选择文本框输入控件
+        forSaleDrawerTF.inputView = stateSearchPickerView
+        
+        //隐藏待售布匹搜索控件
+        forSaleSearchView.isHidden = true
     }
     
     //MARK: - viewWillAppear , Disappear 设置导航栏
@@ -346,7 +362,7 @@ class SAMComOperationController: UIViewController {
     fileprivate let rigisterReuseNames = ["SAMComOperationCell", "SAMComOperationCell", "SAMComOperationCell", "SAMComOperationCell", "SAMComOperationViewRankCell", "SAMComOperationViewRankCell"]
     
     ///所有接口字符串
-    fileprivate let requestURLStrs = ["getOrderMainData.ashx", "getReadySellProductList.ashx", "getOOSRecordList.ashx", "getSellMainData.ashx", "getSellStaticCGUnit.ashx", "getSellStaticProduct.ashx"]
+    fileprivate let requestURLStrs = ["getOrderMainData.ashx", "getReadySellProductListNew.ashx", "getOOSRecordList.ashx", "getSellMainData.ashx", "getSellStaticCGUnit.ashx", "getSellStaticProduct.ashx"]
     
     ///订单请求参数
     fileprivate var orderRequestParameters: [String: String]?
@@ -406,6 +422,10 @@ class SAMComOperationController: UIViewController {
     ///搜索状态数组
     fileprivate var searchStates = [["所有", "未开单", "已开单"], [], ["所有", "欠货中", "已完成", "已删除"], [], [], []]
     
+    ///待售布匹开单人模型数组
+    fileprivate var forSaleDrawerModels = NSMutableArray()
+    fileprivate var forSaleDrawerSelectedModel: SAMForSaleDrawerModel?
+    
     ///第一响应者
     fileprivate var firstTF: UITextField?
     
@@ -416,6 +436,19 @@ class SAMComOperationController: UIViewController {
     @IBOutlet weak var dropDownBtn: UIButton!
     @IBOutlet weak var customerSearchTF: SAMLoginTextField!
     @IBOutlet weak var stateSearchTF: SAMLoginTextField!
+    
+    //待售布匹的搜索控件，覆盖在主文本框控件上
+    @IBOutlet weak var forSaleSearchView: UIView!
+    @IBOutlet weak var forSaleStaticTF: SAMLoginTextField!
+    @IBOutlet weak var forSaleDrawerTF: SAMLoginTextField!
+    @IBOutlet weak var forSaleCustomerTF: SAMLoginTextField!
+    @IBOutlet weak var forSaleProductTF: SAMLoginTextField!
+    
+    //缺货登记控件，包含在主文本框控件内
+    @IBOutlet weak var owedSearchView: UIView!
+    @IBOutlet weak var owedSearchCustomerTF: UITextField!
+    @IBOutlet weak var owedSearchProductTF: UITextField!
+    @IBOutlet weak var owedSearchStateTF: UITextField!
     
     @IBOutlet weak var dateBtnView: UIView!
     @IBOutlet weak var dateBtnContentView: UIView!
@@ -489,14 +522,11 @@ extension SAMComOperationController: UICollectionViewDelegate {
                 stateSearchTF.placeholder = "状态"
                 stateSearchTF.inputView = stateSearchPickerView
             
+                scrolltoForSaleView(isForSale: false)
+                owedSearchView.isHidden = true
+            
             case 1:
-                beginDateTF.isEnabled = false
-                endDateTF.isEnabled = false
-                customerSearchTF.placeholder = "客户/产品名称"
-                stateSearchTF.isEnabled = true
-                stateSearchTF.placeholder = "订单编号"
-                stateSearchTF.inputView = nil
-                stateSearchTF.keyboardType = .default
+                scrolltoForSaleView(isForSale: true)
             
             case 2:
                 beginDateTF.isEnabled = true
@@ -506,12 +536,18 @@ extension SAMComOperationController: UICollectionViewDelegate {
                 stateSearchTF.placeholder = "状态"
                 stateSearchTF.inputView = stateSearchPickerView
             
+                scrolltoForSaleView(isForSale: false)
+                owedSearchView.isHidden = false
+            
             case 3:
                 beginDateTF.isEnabled = true
                 endDateTF.isEnabled = true
                 customerSearchTF.placeholder = "客户名称"
                 stateSearchTF.isEnabled = false
                 stateSearchTF.placeholder = "---"
+            
+                scrolltoForSaleView(isForSale: false)
+                owedSearchView.isHidden = true
             
             case 4:
                 beginDateTF.isEnabled = true
@@ -520,12 +556,18 @@ extension SAMComOperationController: UICollectionViewDelegate {
                 stateSearchTF.placeholder = "部门"
                 stateSearchTF.isEnabled = false
             
+                scrolltoForSaleView(isForSale: false)
+                owedSearchView.isHidden = true
+            
             case 5:
                 beginDateTF.isEnabled = true
                 endDateTF.isEnabled = true
                 customerSearchTF.placeholder = "产品名称"
                 stateSearchTF.placeholder = "分类"
                 stateSearchTF.isEnabled = false
+            
+                scrolltoForSaleView(isForSale: false)
+                owedSearchView.isHidden = true
             
             default:
                 break
@@ -540,6 +582,13 @@ extension SAMComOperationController: UICollectionViewDelegate {
             pickerView(stateSearchPickerView, didSelectRow: 0, inComponent: 0)
         }
     }
+    
+    //当前是否是待售布匹搜索界面
+    fileprivate func scrolltoForSaleView(isForSale: Bool) {
+        forSaleSearchView.isHidden = !isForSale
+        dropDownBtn.isEnabled = !isForSale
+    }
+    
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
@@ -688,18 +737,34 @@ extension SAMComOperationController: UIPickerViewDataSource, UIPickerViewDelegat
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        
-        return searchStates[currentColIndex].count
+        if currentColIndex == 1 { //待售布匹搜索控件
+            return forSaleDrawerModels.count
+            
+        }else {
+            return searchStates[currentColIndex].count
+        }
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        
-        return searchStates[currentColIndex][row]
+        if currentColIndex == 1 { //待售布匹搜索控件
+            let model = forSaleDrawerModels[row] as! SAMForSaleDrawerModel
+            return model.userName
+            
+        }else {
+            return searchStates[currentColIndex][row]
+        }
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        
-        stateSearchTF.text = searchStates[currentColIndex][row]
+        if currentColIndex == 1 { //待售布匹搜索控件
+            //记录当前选中
+            forSaleDrawerSelectedModel = forSaleDrawerModels[row] as? SAMForSaleDrawerModel
+            forSaleDrawerTF.text = forSaleDrawerSelectedModel?.userName
+            
+        }else {
+            stateSearchTF.text = searchStates[currentColIndex][row]
+            owedSearchStateTF.text = searchStates[currentColIndex][row]
+        }
     }
 }
 
@@ -827,12 +892,21 @@ extension SAMComOperationController {
 extension SAMComOperationController {
     
     func loadNewforSaleModels() {
+        //如果没有选中的用户模型
+        if forSaleDrawerSelectedModel == nil {
+            loadForSaleDrawerModels()
+            _ = SAMHUD.showMessage("网络错误，请重试", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+            return
+        }
         
         //创建请求参数
-        let userID = SAMUserAuth.shareUser()!.id!
-        let strFilter = searchConIn(textField: customerSearchTF)
-        let orderBillNumber = searchConIn(textField: stateSearchTF)
-        let parameters = ["userID": userID, "strFilter": strFilter, "orderBillNumber": orderBillNumber]
+        let userID = forSaleDrawerSelectedModel!.id
+        let CGUnitName = searchConIn(textField: forSaleCustomerTF)
+        let productIDName = searchConIn(textField: forSaleProductTF)
+        let parameters = ["userID": userID, "CGUnitName": CGUnitName, "productIDName": productIDName]
+        
+        //加载统计信息
+        loadForSaleStaticInfo(staticParameters: parameters)
         
         //发送请求
         SAMNetWorker.sharedNetWorker().get(requestURLStrs[1], parameters: parameters, progress: nil, success: {[weak self] (Task, json) in
@@ -868,6 +942,58 @@ extension SAMComOperationController {
         }
     }
     
+    ///加载开单人列表请求方法
+    fileprivate func loadForSaleDrawerModels() {
+        //发送请求
+        SAMNetWorker.sharedNetWorker().get("getUserList.ashx", parameters: nil, progress: nil, success: {[weak self] (Task, json) in
+            
+            //获取模型数组
+            let Json = json as! [String: AnyObject]
+            let dictArr = Json["body"] as? [[String: AnyObject]]
+            let count = dictArr?.count ?? 0
+            
+            //判断是否有模型数据
+            if count == 0 { //没有模型数据
+                let _ = SAMHUD.showMessage("没有数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+                
+            }else { //有数据模型
+                //清空原先数据
+                self!.forSaleDrawerModels.removeAllObjects()
+                //添加数据
+                let arr = SAMForSaleDrawerModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                self!.forSaleDrawerModels.addObjects(from: arr as [AnyObject])
+                //赋值数据
+                self!.forSaleDrawerSelectedModel = self!.forSaleDrawerModels[0] as? SAMForSaleDrawerModel
+                
+            }
+        }) { (Task, Error) in
+            let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+        }
+    }
+    
+    ///加载待售布匹统计信息
+    fileprivate func loadForSaleStaticInfo(staticParameters: Any?) {
+        //发送请求
+        SAMNetWorker.sharedNetWorker().get("getReadySellProductStatic.ashx", parameters: staticParameters, progress: nil, success: {[weak self] (Task, json) in
+            
+            //获取模型数组
+            let Json = json as! [String: AnyObject]
+            let dictArr = Json["body"] as! [[String: AnyObject]]
+            let countP = dictArr[0]["countP"] as! String
+            let countM = dictArr[0]["countM"] as! String
+            
+            //回主线程
+            DispatchQueue.main.async(execute: {
+                self!.forSaleStaticTF.text = countP + "/" + countM
+            })
+            
+        }) {[weak self] (Task, Error) in
+            //处理上拉
+            self!.forSaleColView.mj_header.endRefreshing()
+            let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+        }
+    }
+    
     func loadMoreforSaleModels() {}
 }
 
@@ -881,11 +1007,12 @@ extension SAMComOperationController {
         
         //创建请求参数
         let userID = SAMUserAuth.shareUser()!.id!
-        let CGUnitName = searchConIn(textField: customerSearchTF)
+        let CGUnitName = searchConIn(textField: owedSearchCustomerTF)
         let startDate = beginDateTF.text!
         let endDate = endDateTF.text!
-        let iState = searchConIn(textField: stateSearchTF)
-        oweRequestParameters = ["userID": userID, "CGUnitName": CGUnitName, "startDate": startDate, "endDate": endDate, "iState": iState]
+        let iState = searchConIn(textField: owedSearchStateTF)
+        let productIDName = searchConIn(textField: owedSearchProductTF)
+        oweRequestParameters = ["userID": userID, "CGUnitName": CGUnitName, "startDate": startDate, "endDate": endDate, "iState": iState, "productIDName": productIDName]
         
         //发送请求
         SAMNetWorker.sharedNetWorker().get(requestURLStrs[2], parameters: oweRequestParameters!, progress: nil, success: {[weak self] (Task, json) in

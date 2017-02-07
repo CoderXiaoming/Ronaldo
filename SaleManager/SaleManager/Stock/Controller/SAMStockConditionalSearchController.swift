@@ -14,6 +14,8 @@ import MJRefresh
 private let loadCategoriesURLStr = "getCategoryList.ashx"
 ///加载所有仓库的链接
 private let loadStorehousesURLStr = "getStorehouseList.ashx"
+///分类输入控制器的Cell
+private let SAMCategoryInputViewCellIdentifier = "SAMCategoryInputViewCellIdentifier"
 
 class SAMStockConditionalSearchController: UIViewController {
     
@@ -47,7 +49,8 @@ class SAMStockConditionalSearchController: UIViewController {
         view.layer.cornerRadius = 8
         
         //设置 分类/仓库 选择器
-        categoryTF.inputView = categoryPickerView
+//        categoryTF.inputView = categoryPickerView  更改
+        categoryTF.inputAccessoryView = categoryInputView
         
         storehouseTF.inputView = storehousePickerView
     }
@@ -62,6 +65,9 @@ class SAMStockConditionalSearchController: UIViewController {
             //设置textField的代理
             tf.delegate = self
         })
+        
+        //监听分类文本框
+        categoryTF.addTarget(self, action: #selector(SAMStockConditionalSearchController.categoryTFdidChangeText), for: .editingChanged)
     }
 
     //MARK: - viewWillAppear
@@ -180,6 +186,24 @@ class SAMStockConditionalSearchController: UIViewController {
         }
     }
     
+    ///记录当前是否在搜索分类
+    fileprivate var isSearch: Bool = false
+    ///当前搜索条件下的分类模型数组
+    fileprivate let categorySearchResultModels = NSMutableArray()
+    ///当前选中的分类模型
+    fileprivate var currentSelectedCategoryModel: SAMStockCategory? {
+        didSet{
+            if currentSelectedCategoryModel == nil {
+                categoryTF.text = ""
+                parentID = "-1"
+            }else {
+                categoryTF.text = currentSelectedCategoryModel?.categoryName
+                parentID = currentSelectedCategoryModel!.id!
+            }
+        }
+    }
+    
+    /*
     ///分类选择pickerView
     fileprivate lazy var categoryPickerView: UIPickerView = {
         let pickerView = UIPickerView()
@@ -187,6 +211,22 @@ class SAMStockConditionalSearchController: UIViewController {
         pickerView.dataSource = self
         
         return pickerView
+    }()
+     */
+    
+    ///分类选择输入选择控件
+    fileprivate lazy var categoryInputView: UICollectionView = {
+        let inputView = UICollectionView(frame: CGRect.zero, collectionViewLayout: SAMCategoryInputColViewFlowLayout())
+        inputView.frame = UIScreen.main.bounds
+        inputView.frame.size.height = 250
+        inputView.backgroundColor = UIColor(white: 1.0, alpha: 0.65)
+        
+        //注册cell
+        inputView.register(UINib(nibName: "SAMCategoryInputViewCell", bundle: nil), forCellWithReuseIdentifier: SAMCategoryInputViewCellIdentifier)
+        
+        inputView.dataSource = self
+        inputView.delegate = self
+        return inputView
     }()
     
     ///仓库选择pickerView
@@ -236,6 +276,12 @@ extension SAMStockConditionalSearchController: UITextFieldDelegate {
         
         //点击到完成按钮退出编辑状态
         textField.resignFirstResponder()
+        
+        //如果是分类文本框
+        if textField == categoryTF {
+            let model = currentSelectedCategoryModel
+            currentSelectedCategoryModel = model
+        }
         return true
     }
     
@@ -265,6 +311,11 @@ extension SAMStockConditionalSearchController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
+        //如果为分类文本框
+        if textField == categoryTF {
+            return true
+        }
+        
         //如果为库存文本框
         if textField == stockTF {
             //获取当前文本
@@ -284,6 +335,54 @@ extension SAMStockConditionalSearchController: UITextFieldDelegate {
         
         return false
     }
+    
+    //分类文本框监听方法
+    func categoryTFdidChangeText() {
+        categoryTFdidInput(searchText: categoryTF.text)
+    }
+    
+    fileprivate func categoryTFdidInput(searchText: String?) {
+        
+        //获取搜索字符串
+        let searchStr = NSString(string: (searchText?.lxm_stringByTrimmingWhitespace()!)!)
+        
+        if searchStr.length > 0 {
+            
+            //记录正在搜索
+            isSearch = true
+            
+            //获取搜索字符串数组
+            let searchItems = searchStr.components(separatedBy: " ")
+            
+            var andMatchPredicates = [NSPredicate]()
+            
+            for item in searchItems {
+                
+                let searchString = item as NSString
+                //categoryName搜索谓语
+                let lhs = NSExpression(forKeyPath: "categoryName")
+                let rhs = NSExpression(forConstantValue: searchString)
+                let firstPredicate = NSComparisonPredicate(leftExpression: lhs, rightExpression: rhs, modifier: .direct, type:
+                    .contains, options: .caseInsensitive)
+                
+                let orMatchPredicate = NSCompoundPredicate.init(orPredicateWithSubpredicates: [firstPredicate])
+                andMatchPredicates.append(orMatchPredicate)
+            }
+            
+            let finalCompoundPredicate = NSCompoundPredicate.init(andPredicateWithSubpredicates: andMatchPredicates)
+            
+            //存储搜索结果
+            let arr = categories.filtered(using: finalCompoundPredicate)
+            categorySearchResultModels.removeAllObjects()
+            categorySearchResultModels.addObjects(from: arr)
+        }else {
+            //记录没有搜索
+            isSearch = false
+        }
+        
+        //刷新tableView
+        categoryInputView.reloadData()
+    }
 }
 
 //MARK: PickerViewDelegate PickerViewDataSource
@@ -294,16 +393,20 @@ extension SAMStockConditionalSearchController: UIPickerViewDelegate, UIPickerVie
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         
+        /*
         //对pickerView进行判断
         if pickerView == categoryPickerView {
             return categories.count
         }else {
             return storehouses.count
         }
+        */
+        return storehouses.count
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         
+        /*
         //对pickerView进行判断
         if pickerView == categoryPickerView {
             
@@ -314,10 +417,14 @@ extension SAMStockConditionalSearchController: UIPickerViewDelegate, UIPickerVie
             let storehouseModel = storehouses[row] as! SAMStockStorehouse
             return storehouseModel.storehouseName
         }
+        */
+        let storehouseModel = storehouses[row] as! SAMStockStorehouse
+        return storehouseModel.storehouseName
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
+        /*
         //对pickerView进行判断 然后记录，再赋值
         if pickerView == categoryPickerView {
             
@@ -335,6 +442,10 @@ extension SAMStockConditionalSearchController: UIPickerViewDelegate, UIPickerVie
             storehouseTF.text = storehouseModel.storehouseName
             storehouseID = storehouseModel.id!
         }
+        */
+        let storehouseModel = storehouses[row] as! SAMStockStorehouse
+        storehouseTF.text = storehouseModel.storehouseName
+        storehouseID = storehouseModel.id!
     }
 }
 
@@ -347,5 +458,47 @@ extension SAMStockConditionalSearchController: MBProgressHUDDelegate {
         
         //退出控制器
         dismiss(animated: true, completion: nil)
+    }
+}
+
+//MARK: - 分类输入控制器collectionView用到的FlowLayout
+private class SAMCategoryInputColViewFlowLayout: UICollectionViewFlowLayout {
+    
+    override func prepare() {
+        super.prepare()
+        minimumLineSpacing = 5
+        minimumInteritemSpacing = 0
+        scrollDirection = UICollectionViewScrollDirection.vertical
+        collectionView?.showsVerticalScrollIndicator = false
+        itemSize = CGSize(width: ScreenW * 0.5 - 5, height: 40)
+    }
+}
+
+//MARK: - 分类输入控制器collectionView用到的 datasource delegate
+extension SAMStockConditionalSearchController: UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        //根据是否是搜索状态返回不同的数据
+        let sourceArr = isSearch ? categorySearchResultModels : categories
+        
+        return sourceArr.count
+    }
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SAMCategoryInputViewCellIdentifier, for: indexPath) as! SAMCategoryInputViewCell
+        
+        //根据是否是搜索状态返回不同的数据
+        let sourceArr = isSearch ? categorySearchResultModels : categories
+        let categoryModel = sourceArr[indexPath.item] as! SAMStockCategory
+        cell.categoryModel = categoryModel
+        return cell
+    }
+}
+
+extension SAMStockConditionalSearchController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        categoryTF.resignFirstResponder()
+        //根据是否是搜索状态返回不同的数据
+        let sourceArr = isSearch ? categorySearchResultModels : categories
+        currentSelectedCategoryModel = sourceArr[indexPath.item] as? SAMStockCategory
     }
 }

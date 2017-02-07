@@ -42,6 +42,13 @@ class SAMStockProductCell: UICollectionViewCell {
             //设置米数
             mishuLabel.text = stockProductModel!.countMText
             
+            //根据米数设置背景图片
+            if stockProductModel!.countMText == "0.0" {
+                topContentView.backgroundColor = UIColor(red: 200 / 255.0, green: 200 / 255.0, blue: 200 / 255.0, alpha: 1.0)
+            }else {
+                topContentView.backgroundColor = UIColor.white
+            }
+            
             //设置匹数
             pishuLabel.text = stockProductModel!.countPText
             

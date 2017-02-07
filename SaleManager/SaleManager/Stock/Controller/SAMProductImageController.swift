@@ -42,9 +42,9 @@ class SAMProductImageController: UIViewController {
         
         //设置产品图片
         if stockProductModel?.imageUrl1 != "" {
-            productImage?.sd_setImage(with: URL.init(string: stockProductModel!.imageUrl1), placeholderImage: nil)
+            productImage?.sd_setImage(with: URL.init(string: stockProductModel!.imageUrl1), placeholderImage: UIImage(named: "photo_loadding"))
         }else {
-            //TODO: 没有图片展示提示图片
+            productImage?.image = UIImage(named: "photo_loadding")
         }
         
         //设置主标题
@@ -157,9 +157,9 @@ class SAMProductImageController: UIViewController {
     //MARK: - 保存照片后的回调方法
     func didFinishSaveImageWithError(_ image: UIImage?, error: NSError?, contextInfo: AnyObject) {
         if error == nil {
-            let _ = SAMHUD.showMessage("保存成功", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("保存成功", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }else {
-            let _ = SAMHUD.showMessage("保存失败", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("保存失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     
@@ -167,7 +167,7 @@ class SAMProductImageController: UIViewController {
     fileprivate func unloadProductImage(_ image: UIImage) {
         
         //展示提示信息
-        let hud = SAMHUD.showAdded(to: view, animated: true)!
+        let hud = SAMHUD.showAdded(to: KeyWindow!, animated: true)!
         hud.labelText = NSLocalizedString("正在上传...", comment: "HUD loading title")
         
         //创建请求参数
@@ -200,14 +200,16 @@ class SAMProductImageController: UIViewController {
                         let model = self!.stockProductModel
                         model?.thumbUrl1 = urlDict[0]["thumbUrl"]!
                         model?.imageUrl1 = urlDict[0]["imageUrl"]!
-                        
                         self!.stockProductModel = model
+                        
+                        //设置图片
+                        self!.productImage?.sd_setImage(with: URL.init(string: self!.stockProductModel!.imageUrl1))
                         
                         //隐藏loadingHUD
                         hud.hide(true)
                         
                         //提示用户上传成功
-                        let _ = SAMHUD.showMessage("上传成功", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                        let _ = SAMHUD.showMessage("上传成功", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                         
                         //记录上传状态
                         SAMStockHasUnloadProductImage = true
@@ -216,7 +218,7 @@ class SAMProductImageController: UIViewController {
                         //隐藏loadingHUD
                         hud.hide(true)
                         
-                        let _ = SAMHUD.showMessage("上传失败", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                        let _ = SAMHUD.showMessage("上传失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                     }
                 })
         }) { (Task, Error) in
@@ -225,7 +227,7 @@ class SAMProductImageController: UIViewController {
             DispatchQueue.main.async(execute: {
                 
                 hud.hide(true)
-                let _ = SAMHUD.showMessage("网络错误", superView: self.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("网络错误", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
             })
         }
     }

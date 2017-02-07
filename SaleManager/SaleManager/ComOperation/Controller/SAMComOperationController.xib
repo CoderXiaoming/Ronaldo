@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1212" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1217" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -18,7 +19,16 @@
                 <outlet property="dateBtnView" destination="HlH-wH-bg5" id="TdI-nO-crb"/>
                 <outlet property="dropDownBtn" destination="K6U-5j-QhU" id="P35-KZ-1WS"/>
                 <outlet property="endDateTF" destination="Yg3-lF-vG2" id="YPz-ZE-fbJ"/>
+                <outlet property="forSaleCustomerTF" destination="wrp-ho-ARD" id="jSa-Hw-2NA"/>
+                <outlet property="forSaleDrawerTF" destination="jph-dk-vik" id="JFW-qE-VPs"/>
+                <outlet property="forSaleProductTF" destination="sRD-T6-Kac" id="OSw-Ah-DKb"/>
+                <outlet property="forSaleSearchView" destination="A7G-mD-0zz" id="M6P-zR-HXj"/>
+                <outlet property="forSaleStaticTF" destination="hfw-se-XbW" id="Ftg-w2-CD8"/>
                 <outlet property="hudView" destination="8hg-Q5-DAI" id="jtS-ze-jhO"/>
+                <outlet property="owedSearchCustomerTF" destination="ovC-fZ-7Qv" id="7op-4c-k6K"/>
+                <outlet property="owedSearchProductTF" destination="XKj-Ee-WGl" id="ELX-Uy-vQf"/>
+                <outlet property="owedSearchStateTF" destination="a5i-mI-MGV" id="Gn5-Jx-qvq"/>
+                <outlet property="owedSearchView" destination="X3g-xf-r0s" id="o6n-MK-DrU"/>
                 <outlet property="searchConView" destination="FSd-eF-IRR" id="ROx-oz-DCY"/>
                 <outlet property="stateSearchTF" destination="FqR-XG-t3M" id="F3z-El-C50"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -32,6 +42,13 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FSd-eF-IRR" userLabel="SearchView">
                     <rect key="frame" x="0.0" y="75" width="375" height="76"/>
                     <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ABK-XO-c0e" userLabel="TopSeperaterView">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
+                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="1" id="Xk2-9t-1mA"/>
+                            </constraints>
+                        </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FGK-YY-oDL" userLabel="ContainerView">
                             <rect key="frame" x="0.0" y="1" width="330" height="74"/>
                             <subviews>
@@ -65,16 +82,55 @@
                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                     <textInputTraits key="textInputTraits" spellCheckingType="no" returnKeyType="done"/>
                                 </textField>
+                                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X3g-xf-r0s">
+                                    <rect key="frame" x="0.0" y="37" width="330" height="37"/>
+                                    <subviews>
+                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="客户名称" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ovC-fZ-7Qv">
+                                            <rect key="frame" x="10" y="3" width="96.5" height="30"/>
+                                            <nil key="textColor"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                            <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                        </textField>
+                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="产品编号" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="XKj-Ee-WGl">
+                                            <rect key="frame" x="116.5" y="3" width="97" height="30"/>
+                                            <nil key="textColor"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                            <textInputTraits key="textInputTraits" keyboardType="alphabet" returnKeyType="done"/>
+                                        </textField>
+                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="状态" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="a5i-mI-MGV">
+                                            <rect key="frame" x="223.5" y="3" width="96.5" height="30"/>
+                                            <nil key="textColor"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                        </textField>
+                                    </subviews>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <constraints>
+                                        <constraint firstItem="XKj-Ee-WGl" firstAttribute="centerY" secondItem="X3g-xf-r0s" secondAttribute="centerY" id="Ahb-FJ-AZN"/>
+                                        <constraint firstItem="XKj-Ee-WGl" firstAttribute="leading" secondItem="ovC-fZ-7Qv" secondAttribute="trailing" constant="10" id="Lvl-ga-roU"/>
+                                        <constraint firstItem="a5i-mI-MGV" firstAttribute="leading" secondItem="XKj-Ee-WGl" secondAttribute="trailing" constant="10" id="MgE-sK-6ko"/>
+                                        <constraint firstItem="a5i-mI-MGV" firstAttribute="centerY" secondItem="X3g-xf-r0s" secondAttribute="centerY" id="SbH-mc-3jM"/>
+                                        <constraint firstItem="a5i-mI-MGV" firstAttribute="width" secondItem="ovC-fZ-7Qv" secondAttribute="width" id="ZJM-zo-gKM"/>
+                                        <constraint firstItem="ovC-fZ-7Qv" firstAttribute="leading" secondItem="X3g-xf-r0s" secondAttribute="leading" constant="10" id="gXa-Kn-y4x"/>
+                                        <constraint firstItem="ovC-fZ-7Qv" firstAttribute="centerY" secondItem="X3g-xf-r0s" secondAttribute="centerY" id="j86-xz-uRB"/>
+                                        <constraint firstAttribute="trailing" secondItem="a5i-mI-MGV" secondAttribute="trailing" constant="10" id="jDh-uR-IW1"/>
+                                        <constraint firstItem="XKj-Ee-WGl" firstAttribute="width" secondItem="ovC-fZ-7Qv" secondAttribute="width" id="xMx-gy-Sug"/>
+                                    </constraints>
+                                </view>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstItem="VwB-7N-LjJ" firstAttribute="centerY" secondItem="1hD-v2-1It" secondAttribute="centerY" id="2Zu-UM-EMF"/>
+                                <constraint firstAttribute="bottom" secondItem="X3g-xf-r0s" secondAttribute="bottom" id="5HJ-sH-3yF"/>
                                 <constraint firstItem="VwB-7N-LjJ" firstAttribute="top" secondItem="FGK-YY-oDL" secondAttribute="top" constant="5" id="8Ur-Mq-Vnd"/>
                                 <constraint firstItem="1hD-v2-1It" firstAttribute="leading" secondItem="VwB-7N-LjJ" secondAttribute="trailing" constant="5" id="Buy-oh-ATv"/>
                                 <constraint firstItem="1hD-v2-1It" firstAttribute="centerX" secondItem="FGK-YY-oDL" secondAttribute="centerX" id="FPY-Aa-WMW"/>
+                                <constraint firstItem="X3g-xf-r0s" firstAttribute="leading" secondItem="FGK-YY-oDL" secondAttribute="leading" id="GgW-lE-UuN"/>
                                 <constraint firstItem="FqR-XG-t3M" firstAttribute="centerY" secondItem="zxV-IG-RbE" secondAttribute="centerY" id="Gkg-fb-83Q"/>
+                                <constraint firstItem="X3g-xf-r0s" firstAttribute="height" secondItem="FGK-YY-oDL" secondAttribute="height" multiplier="0.5" id="I1M-k8-Sj8"/>
                                 <constraint firstItem="Yg3-lF-vG2" firstAttribute="centerY" secondItem="VwB-7N-LjJ" secondAttribute="centerY" id="I4w-T5-OKN"/>
                                 <constraint firstItem="zxV-IG-RbE" firstAttribute="trailing" secondItem="VwB-7N-LjJ" secondAttribute="trailing" id="Iot-gI-6Bc"/>
+                                <constraint firstAttribute="trailing" secondItem="X3g-xf-r0s" secondAttribute="trailing" id="LRJ-NS-n3p"/>
                                 <constraint firstItem="VwB-7N-LjJ" firstAttribute="leading" secondItem="FGK-YY-oDL" secondAttribute="leading" constant="10" id="RLM-4Y-GOG"/>
                                 <constraint firstAttribute="trailing" secondItem="Yg3-lF-vG2" secondAttribute="trailing" constant="10" id="TQt-Q1-EcZ"/>
                                 <constraint firstItem="zxV-IG-RbE" firstAttribute="top" secondItem="VwB-7N-LjJ" secondAttribute="bottom" constant="5" id="gD1-vn-jRx"/>
@@ -84,11 +140,56 @@
                                 <constraint firstItem="zxV-IG-RbE" firstAttribute="leading" secondItem="FGK-YY-oDL" secondAttribute="leading" constant="10" id="zTM-bL-u3p"/>
                             </constraints>
                         </view>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ABK-XO-c0e" userLabel="TopSeperaterView">
-                            <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
-                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="A7G-mD-0zz" userLabel="forSaleSearchView">
+                            <rect key="frame" x="0.0" y="1" width="330" height="74"/>
+                            <subviews>
+                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="统计信息" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hfw-se-XbW" userLabel="BeginDateText Field" customClass="SAMLoginTextField" customModule="SaleManager" customModuleProvider="target">
+                                    <rect key="frame" x="10" y="5" width="143.5" height="30"/>
+                                    <nil key="textColor"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                </textField>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="—" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DiS-1I-du8">
+                                    <rect key="frame" x="158.5" y="12" width="14" height="17"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <color key="textColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="开单人" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jph-dk-vik" customClass="SAMLoginTextField" customModule="SaleManager" customModuleProvider="target">
+                                    <rect key="frame" x="177.5" y="5" width="142.5" height="30"/>
+                                    <nil key="textColor"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                </textField>
+                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="客户名称" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="wrp-ho-ARD" userLabel="CustomerText Field" customClass="SAMLoginTextField" customModule="SaleManager" customModuleProvider="target">
+                                    <rect key="frame" x="10" y="40" width="143.5" height="30"/>
+                                    <nil key="textColor"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                    <textInputTraits key="textInputTraits" spellCheckingType="no" returnKeyType="done"/>
+                                </textField>
+                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="产品型号" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="sRD-T6-Kac" userLabel="orderStateSearchTF" customClass="SAMLoginTextField" customModule="SaleManager" customModuleProvider="target">
+                                    <rect key="frame" x="177.5" y="40" width="142.5" height="30"/>
+                                    <nil key="textColor"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                    <textInputTraits key="textInputTraits" spellCheckingType="no" keyboardType="alphabet" returnKeyType="done"/>
+                                </textField>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="1" id="Xk2-9t-1mA"/>
+                                <constraint firstItem="jph-dk-vik" firstAttribute="centerY" secondItem="hfw-se-XbW" secondAttribute="centerY" id="2cM-OR-QZH"/>
+                                <constraint firstItem="hfw-se-XbW" firstAttribute="top" secondItem="A7G-mD-0zz" secondAttribute="top" constant="5" id="C7E-6V-CYF"/>
+                                <constraint firstItem="hfw-se-XbW" firstAttribute="leading" secondItem="A7G-mD-0zz" secondAttribute="leading" constant="10" id="CS0-Vf-R7z"/>
+                                <constraint firstItem="sRD-T6-Kac" firstAttribute="leading" secondItem="jph-dk-vik" secondAttribute="leading" id="KH6-SZ-DoG"/>
+                                <constraint firstItem="jph-dk-vik" firstAttribute="leading" secondItem="DiS-1I-du8" secondAttribute="trailing" constant="5" id="Qn1-fG-hUW"/>
+                                <constraint firstItem="wrp-ho-ARD" firstAttribute="leading" secondItem="A7G-mD-0zz" secondAttribute="leading" constant="10" id="VCe-IB-cV1"/>
+                                <constraint firstItem="wrp-ho-ARD" firstAttribute="trailing" secondItem="hfw-se-XbW" secondAttribute="trailing" id="dYf-CP-FJP"/>
+                                <constraint firstItem="sRD-T6-Kac" firstAttribute="centerY" secondItem="wrp-ho-ARD" secondAttribute="centerY" id="dkZ-Ck-vIC"/>
+                                <constraint firstItem="DiS-1I-du8" firstAttribute="leading" secondItem="hfw-se-XbW" secondAttribute="trailing" constant="5" id="eBK-FI-XxQ"/>
+                                <constraint firstItem="DiS-1I-du8" firstAttribute="centerX" secondItem="A7G-mD-0zz" secondAttribute="centerX" id="fNA-w0-zmg"/>
+                                <constraint firstAttribute="trailing" secondItem="jph-dk-vik" secondAttribute="trailing" constant="10" id="hXt-2R-ARW"/>
+                                <constraint firstItem="sRD-T6-Kac" firstAttribute="trailing" secondItem="jph-dk-vik" secondAttribute="trailing" id="oj0-fS-WsL"/>
+                                <constraint firstItem="wrp-ho-ARD" firstAttribute="top" secondItem="hfw-se-XbW" secondAttribute="bottom" constant="5" id="uzt-0N-8r8"/>
+                                <constraint firstItem="hfw-se-XbW" firstAttribute="centerY" secondItem="DiS-1I-du8" secondAttribute="centerY" id="wZu-dl-aT6"/>
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TJg-ib-ayN" userLabel="BottomSeperaterView">
@@ -143,13 +244,17 @@
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="iF1-7Q-boF" secondAttribute="trailing" constant="5" id="4Q4-MD-7fl"/>
                         <constraint firstAttribute="height" constant="76" id="58u-Ak-VvQ"/>
+                        <constraint firstItem="A7G-mD-0zz" firstAttribute="leading" secondItem="FGK-YY-oDL" secondAttribute="leading" id="7qp-SG-0Dh"/>
                         <constraint firstItem="K6U-5j-QhU" firstAttribute="top" secondItem="ABK-XO-c0e" secondAttribute="bottom" constant="5" id="8X3-tr-76n"/>
+                        <constraint firstItem="A7G-mD-0zz" firstAttribute="top" secondItem="FGK-YY-oDL" secondAttribute="top" id="9ve-te-3dP"/>
+                        <constraint firstItem="A7G-mD-0zz" firstAttribute="trailing" secondItem="FGK-YY-oDL" secondAttribute="trailing" id="9zc-N4-NFr"/>
                         <constraint firstItem="K6U-5j-QhU" firstAttribute="leading" secondItem="FGK-YY-oDL" secondAttribute="trailing" id="D5e-sG-36a"/>
                         <constraint firstAttribute="bottom" secondItem="TJg-ib-ayN" secondAttribute="bottom" id="JAs-eR-IJu"/>
                         <constraint firstItem="ABK-XO-c0e" firstAttribute="leading" secondItem="FSd-eF-IRR" secondAttribute="leading" id="Jer-YO-mJH"/>
                         <constraint firstItem="FGK-YY-oDL" firstAttribute="leading" secondItem="FSd-eF-IRR" secondAttribute="leading" id="LQX-Nv-uaS"/>
                         <constraint firstItem="FGK-YY-oDL" firstAttribute="top" secondItem="ABK-XO-c0e" secondAttribute="bottom" id="U5W-Hh-9fA"/>
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="75" id="VKF-gQ-qLz"/>
+                        <constraint firstItem="A7G-mD-0zz" firstAttribute="bottom" secondItem="FGK-YY-oDL" secondAttribute="bottom" id="ViK-I7-443"/>
                         <constraint firstItem="ABK-XO-c0e" firstAttribute="top" secondItem="FSd-eF-IRR" secondAttribute="top" id="adv-bY-MYA"/>
                         <constraint firstItem="TJg-ib-ayN" firstAttribute="top" secondItem="FGK-YY-oDL" secondAttribute="bottom" id="l7w-0L-icB"/>
                         <constraint firstAttribute="trailing" secondItem="TJg-ib-ayN" secondAttribute="trailing" id="lMD-3B-88p"/>
@@ -166,7 +271,7 @@
                     <rect key="frame" x="0.0" y="151" width="375" height="516"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HlH-wH-bg5" userLabel="DateButtonView">
+                <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HlH-wH-bg5" userLabel="DateButtonView">
                     <rect key="frame" x="325" y="35" width="80" height="147"/>
                     <subviews>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="dateButtonViewTriggle" translatesAutoresizingMaskIntoConstraints="NO" id="6M2-Cp-hR4">

@@ -31,6 +31,9 @@ class SAMCustomerCollectionCell: UICollectionViewCell {
             
             //设置 phoneLabel
             phoneLabel.text = customerModel?.mobilePhone
+            
+            //设置 归属
+            belongLabel.text = customerModel?.employeeName
         }
     }
     
@@ -128,6 +131,7 @@ class SAMCustomerCollectionCell: UICollectionViewCell {
     @IBOutlet weak var customerLabel: UILabel!
     @IBOutlet weak var remarkLabel: UILabel!
     @IBOutlet weak var phoneLabel: UILabel!
+    @IBOutlet weak var belongLabel: UILabel!
     @IBOutlet weak var addLabel: UILabel!
     @IBOutlet weak var faxLabel: UILabel!
     @IBOutlet weak var telLabel: UILabel!

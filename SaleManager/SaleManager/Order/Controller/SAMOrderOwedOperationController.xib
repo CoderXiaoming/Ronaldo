@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1212" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1217" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -13,6 +14,8 @@
             <connections>
                 <outlet property="deleteButton" destination="DjZ-bR-cvd" id="tVb-Dv-ebH"/>
                 <outlet property="editBtnView" destination="5qT-nl-jme" id="WnY-uz-ZYS"/>
+                <outlet property="saveAndAgreeSendButton" destination="geX-IO-nPC" id="bTp-yy-PTk"/>
+                <outlet property="saveAndAgreeSendButtonWidth" destination="Tkt-vZ-bks" id="riI-Wb-5bG"/>
                 <outlet property="saveBtnView" destination="cHl-hH-TqO" id="WP3-OV-9Ll"/>
                 <outlet property="saveButton" destination="3af-ul-1PM" id="ZaJ-tO-ZcF"/>
                 <outlet property="saveEditButton" destination="aqR-UQ-urf" id="uiv-4D-bxR"/>
@@ -35,7 +38,7 @@
                     <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3af-ul-1PM">
-                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                            <rect key="frame" x="188.5" y="0.0" width="186.5" height="44"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <state key="normal" title="保存" backgroundImage="dateButtonBGImage"/>
                             <state key="disabled" backgroundImage="dateButtonBGImage_highlighted">
@@ -45,14 +48,39 @@
                                 <action selector="saveBtnClick:" destination="-1" eventType="touchUpInside" id="3Pq-aV-8Sg"/>
                             </connections>
                         </button>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Q1e-Qo-fE5" userLabel="centerSeperaterView">
+                            <rect key="frame" x="187.5" y="0.0" width="1" height="44"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="1" id="1zO-hf-Z1y"/>
+                            </constraints>
+                        </view>
+                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="geX-IO-nPC">
+                            <rect key="frame" x="0.0" y="0.0" width="187.5" height="44"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <state key="normal" title="保存并发货" backgroundImage="dateButtonBGImage"/>
+                            <state key="disabled" backgroundImage="dateButtonBGImage_highlighted">
+                                <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="saveAndAgreeSendBtnClick:" destination="-1" eventType="touchUpInside" id="rHh-fG-Lu5"/>
+                            </connections>
+                        </button>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
-                        <constraint firstItem="3af-ul-1PM" firstAttribute="leading" secondItem="cHl-hH-TqO" secondAttribute="leading" id="E3c-NG-82S"/>
+                        <constraint firstItem="Q1e-Qo-fE5" firstAttribute="top" secondItem="cHl-hH-TqO" secondAttribute="top" id="5sK-wP-8B4"/>
+                        <constraint firstAttribute="bottom" secondItem="Q1e-Qo-fE5" secondAttribute="bottom" id="NBi-7l-qIV"/>
                         <constraint firstItem="3af-ul-1PM" firstAttribute="top" secondItem="cHl-hH-TqO" secondAttribute="top" id="TTW-CG-gSp"/>
+                        <constraint firstItem="geX-IO-nPC" firstAttribute="width" secondItem="cHl-hH-TqO" secondAttribute="width" multiplier="0.5" id="Tkt-vZ-bks"/>
+                        <constraint firstItem="3af-ul-1PM" firstAttribute="leading" secondItem="Q1e-Qo-fE5" secondAttribute="trailing" id="Ycu-DJ-kqH"/>
+                        <constraint firstItem="geX-IO-nPC" firstAttribute="top" secondItem="cHl-hH-TqO" secondAttribute="top" id="aPH-po-TK8"/>
+                        <constraint firstAttribute="bottom" secondItem="geX-IO-nPC" secondAttribute="bottom" id="dhI-R6-rMS"/>
                         <constraint firstAttribute="bottom" secondItem="3af-ul-1PM" secondAttribute="bottom" id="eYz-q6-kjv"/>
                         <constraint firstAttribute="height" constant="44" id="hfe-QE-duQ"/>
+                        <constraint firstItem="Q1e-Qo-fE5" firstAttribute="leading" secondItem="geX-IO-nPC" secondAttribute="trailing" id="lcQ-as-GsN"/>
                         <constraint firstAttribute="trailing" secondItem="3af-ul-1PM" secondAttribute="trailing" id="w7v-9b-Fbp"/>
+                        <constraint firstItem="geX-IO-nPC" firstAttribute="leading" secondItem="cHl-hH-TqO" secondAttribute="leading" id="y4v-9h-fb5"/>
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5qT-nl-jme" userLabel="EditButtonView">

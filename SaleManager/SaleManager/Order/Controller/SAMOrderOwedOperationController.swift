@@ -134,7 +134,7 @@ class SAMOrderOwedOperationController: UIViewController {
         
         //设置title，请求路径
         performByControllerType(buildOrder: {
-            self.titles = [[["客户", ""], ["备注", ""]], [], [["优惠", "0"], ["其他金额", "0"], ["总金额", "0"], ["已收定金", "0"]]]
+            self.titles = [[["客户", ""], ["备注", ""]], [["666", "666"]], [["优惠", "0"], ["其他金额", "0"], ["总金额", "0"], ["已收定金", "0"]]]
             self.saveUrlStr = "OrderBillAdd.ashx"
             
         }, checkOrder: { 
@@ -151,9 +151,9 @@ class SAMOrderOwedOperationController: UIViewController {
             self.titles = [[["客户", self.oweModel!.CGUnitName], ["交货日期", self.oweModel!.endDate]], [["产品型号", self.oweModel!.productIDName], ["匹数", String(format: "%d", self.oweModel!.countP)], ["米数", String(format: "%.1f", self.oweModel!.countM)]], [["备注", self.oweModel!.memoInfo], ["状态", self.oweModel!.iState]]]
             self.saveUrlStr = "OOSRecordEdit.ashx"
             //设置用户
-            self.orderCustomerModel = self.oweModel?.orderCustomerModel!
-            //设置产品数据模型
-            self.stockModel = self.oweModel?.stockModel!
+//            self.orderCustomerModel = self.oweModel?.orderCustomerModel!
+//            //设置产品数据模型
+//            self.stockModel = self.oweModel?.stockModel!
         }
         
         //创建数据模型数组
@@ -165,8 +165,8 @@ class SAMOrderOwedOperationController: UIViewController {
             let strArrArr = titles![section] as [[String?]]
 
             //如果数组为空返回
-            if strArrArr.count == 0 {
-                titleModels!.append([])
+            if strArrArr.count == 1 {
+                titleModels!.append([SAMOrderBuildTitleModel.titleModel(title: "666", content: "666")])
             }else {
                 //遍历数组，创建数据源数组
                 var modelArr =  [SAMOrderBuildTitleModel?]()
@@ -202,6 +202,7 @@ class SAMOrderOwedOperationController: UIViewController {
         }, buildOwe: {
             //隐藏编辑按钮父控件
             self.editBtnView.isHidden = true
+            self.saveAndAgreeSendButtonWidth.constant = -(ScreenW + 1)
             self.navigationItem.title = "缺货登记"
         }) {
             //展示编辑按钮父控件
@@ -247,6 +248,7 @@ class SAMOrderOwedOperationController: UIViewController {
         if orderCustomerModel == nil {
             //设置按钮状态
             saveButton.isEnabled = false
+            saveAndAgreeSendButton.isEnabled = false
             return
         }
         
@@ -256,6 +258,7 @@ class SAMOrderOwedOperationController: UIViewController {
         
         //设置按钮状态
         saveButton.isEnabled = true
+        saveAndAgreeSendButton.isEnabled = true
         
         //刷新数据
         tableView.reloadRows(at: [IndexPath(item: 0, section: 0)], with: .none)
@@ -295,8 +298,18 @@ class SAMOrderOwedOperationController: UIViewController {
     }
     
     //MARK: - 用户点击事件处理
+    @IBAction func saveAndAgreeSendBtnClick(_ sender: Any) {
+        
+        saveAndAgreeSend(isAgreeSend: true)
+    }
     @IBAction func saveBtnClick(_ sender: Any) {
         
+        saveAndAgreeSend(isAgreeSend: false)
+    }
+    
+    ///发货两个按钮共同点击
+    fileprivate func saveAndAgreeSend(isAgreeSend: Bool) {
+    
         //创建主请求参数
         var MainData: [String: String]?
         let CGUnitID = orderCustomerModel!.id
@@ -366,6 +379,12 @@ class SAMOrderOwedOperationController: UIViewController {
         //设置加载hud
         let hud = SAMHUD.showAdded(to: KeyWindow, animated: true)
         hud!.labelText = NSLocalizedString("正在保存...", comment: "HUD loading title")
+        
+        //判断请求链接，直接同意发货
+        if isAgreeSend == true {
+            saveUrlStr = "OrderBillAddAgree.ashx"
+        }
+        
         //发送服务器请求
         SAMNetWorker.sharedNetWorker().post(saveUrlStr!, parameters: parameters, progress: nil, success: {[weak self] (task, json) in
             
@@ -378,16 +397,23 @@ class SAMOrderOwedOperationController: UIViewController {
             let state = dict["status"]
             
             if state == "success" { //保存成功
-            
-                let hud = SAMHUD.showMessage("保存成功", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+                var showMessage = ""
+                if isAgreeSend == true {
+                    showMessage = "发货成功"
+                }else {
+                    showMessage = "保存成功"
+                }
+                let hud = SAMHUD.showMessage(showMessage, superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                 hud?.delegate = self
+                
             }else { //保存失败
                 let _ = SAMHUD.showMessage("保存失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
             }
-        }) {[weak self] (task, error) in
+        }) { (task, error) in
             let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
+    
     
     @IBAction func deleteBtnClick(_ sender: UIButton) {
         
@@ -431,7 +457,7 @@ class SAMOrderOwedOperationController: UIViewController {
                     hud.hide(true)
                     let _ = SAMHUD.showMessage("删除失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                 }
-            }) {[weak self] (task, error) in
+            }) { (task, error) in
                 
                 hud.hide(true)
                 let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
@@ -500,11 +526,13 @@ class SAMOrderOwedOperationController: UIViewController {
     
     @IBOutlet weak var saveBtnView: UIView!
     @IBOutlet weak var saveButton: UIButton!
+    @IBOutlet weak var saveAndAgreeSendButton: UIButton!
     
     @IBOutlet weak var editBtnView: UIView!
     @IBOutlet weak var deleteButton: UIButton!
     @IBOutlet weak var saveEditButton: UIButton!
     
+    @IBOutlet weak var saveAndAgreeSendButtonWidth: NSLayoutConstraint!
     @IBOutlet weak var tableViewTopDistance: NSLayoutConstraint!
     //MARK: - 其他方法
     fileprivate init() { //重写该方法，为单例服务

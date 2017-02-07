@@ -223,7 +223,7 @@ class SAMStockViewController: UIViewController {
         
         //如果此时conSearchParemeters为空，说明为空搜索名下拉，而且没有之前的搜索条件
         if conSearchParameters == nil {
-            let _ = SAMHUD.showMessage("你想搜什么？", superView: view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("你想搜什么？", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
             collectionView.mj_header.endRefreshing()
             return
         }
@@ -255,7 +255,7 @@ class SAMStockViewController: UIViewController {
                 
                 //回主线程提示用户信息
                 DispatchQueue.main.async(execute: { 
-                    let _ = SAMHUD.showMessage("没有数据", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                    let _ = SAMHUD.showMessage("没有数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                 })
             }else { //有数据模型
                 
@@ -307,7 +307,7 @@ class SAMStockViewController: UIViewController {
             DispatchQueue.main.async(execute: { 
                 //处理上拉
                 self!.collectionView.mj_header.endRefreshing()
-                let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
             })
         }
     }
@@ -372,7 +372,7 @@ class SAMStockViewController: UIViewController {
                 
                 DispatchQueue.main.async(execute: { 
                     //提示用户
-                    let _ = SAMHUD.showMessage("没有更多数据", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                    let _ = SAMHUD.showMessage("没有更多数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                     
                     //设置footer
                     self!.collectionView.mj_footer.endRefreshingWithNoMoreData()
@@ -409,7 +409,7 @@ class SAMStockViewController: UIViewController {
             DispatchQueue.main.async(execute: { 
                 //处理下拉
                 self!.collectionView.mj_footer.endRefreshing()
-                let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
             })
         }
     }

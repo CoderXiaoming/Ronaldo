@@ -31,7 +31,7 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="loginViewBGImage" translatesAutoresizingMaskIntoConstraints="NO" id="7zp-NM-2QL">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="loginImage.png" translatesAutoresizingMaskIntoConstraints="NO" id="7zp-NM-2QL">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </imageView>
@@ -94,19 +94,6 @@
                                 <action selector="loginBtnClick:" destination="-1" eventType="touchUpInside" id="9Fy-UR-yrt"/>
                             </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="esp-df-C5e" userLabel="BackButton">
-                            <rect key="frame" x="5" y="5" width="30" height="30"/>
-                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="30" id="fvP-1t-cTt"/>
-                                <constraint firstAttribute="width" constant="30" id="pO9-LD-HT4"/>
-                            </constraints>
-                            <inset key="imageEdgeInsets" minX="-5" minY="0.0" maxX="0.0" maxY="0.0"/>
-                            <state key="normal" image="back"/>
-                            <connections>
-                                <action selector="loginBackBtnClick:" destination="-1" eventType="touchUpInside" id="A4g-b5-ZmV"/>
-                            </connections>
-                        </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SQ2-zy-1Yx">
                             <rect key="frame" x="197.5" y="198" width="120" height="30"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -153,10 +140,8 @@
                         <constraint firstItem="tpP-Ow-s38" firstAttribute="centerX" secondItem="qoO-f1-2ez" secondAttribute="centerX" id="Rfi-4C-xP7"/>
                         <constraint firstItem="X2h-hT-K3V" firstAttribute="top" secondItem="tpP-Ow-s38" secondAttribute="bottom" constant="10" id="YWb-8v-0ov"/>
                         <constraint firstAttribute="height" constant="240" id="YnI-sa-ygF"/>
-                        <constraint firstItem="esp-df-C5e" firstAttribute="top" secondItem="qoO-f1-2ez" secondAttribute="top" constant="5" id="ZNm-ih-B3V"/>
                         <constraint firstItem="m0F-UO-mra" firstAttribute="width" secondItem="qoO-f1-2ez" secondAttribute="width" multiplier="0.75" id="e3G-DY-feI"/>
                         <constraint firstItem="m0F-UO-mra" firstAttribute="top" secondItem="qoO-f1-2ez" secondAttribute="top" constant="30" id="gyk-13-JQc"/>
-                        <constraint firstItem="esp-df-C5e" firstAttribute="leading" secondItem="qoO-f1-2ez" secondAttribute="leading" constant="5" id="ivI-AP-0yO"/>
                         <constraint firstItem="SQ2-zy-1Yx" firstAttribute="centerX" secondItem="tpP-Ow-s38" secondAttribute="centerX" constant="70" id="nkW-hz-K9a"/>
                         <constraint firstItem="m0F-UO-mra" firstAttribute="centerX" secondItem="qoO-f1-2ez" secondAttribute="centerX" id="ntd-RR-KWi"/>
                     </constraints>
@@ -170,14 +155,14 @@
                                 <constraint firstAttribute="height" constant="92" id="JBF-5Z-Tba"/>
                             </constraints>
                         </imageView>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="服务器地址" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wya-UZ-ZzF">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="激活码" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wya-UZ-ZzF">
                             <rect key="frame" x="0.0" y="47" width="375" height="24"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" type="system" pointSize="20"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="又忘了？😂" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="S1e-hB-HIe" userLabel="ServerAddTextField" customClass="SAMLoginTextField" customModule="SaleManager" customModuleProvider="target">
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="@亚洲红" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="S1e-hB-HIe" userLabel="ServerAddTextField" customClass="SAMLoginTextField" customModule="SaleManager" customModuleProvider="target">
                             <rect key="frame" x="47" y="76" width="281" height="46"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -264,9 +249,8 @@
         </view>
     </objects>
     <resources>
-        <image name="back" width="20" height="18"/>
         <image name="firstLogo" width="170" height="139"/>
-        <image name="loginViewBGImage" width="375" height="667"/>
+        <image name="loginImage.png" width="1125" height="2001"/>
         <image name="login_disabled" width="266" height="40"/>
         <image name="login_enabled" width="266" height="40"/>
         <image name="login_highlighted" width="266" height="40"/>

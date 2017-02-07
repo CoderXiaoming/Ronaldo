@@ -111,7 +111,7 @@ class SAMOrderModel: NSObject {
                 //赋值订单详情内容数组
                 self!.orderDetailContentArr = [[["客户", model!.CGUnitName],
                                                ["备注", model!.memoInfo]],
-                                              [],
+                                              [["666", "666"]],
                                               [["优惠", model!.cutMoney],
                                                ["其他金额", model!.otherMoney],
                                                ["总金额", model!.totalMoney],

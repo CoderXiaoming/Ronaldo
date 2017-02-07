@@ -213,14 +213,18 @@ class SAMLoginController: UIViewController {
         //退出界面编辑状态
         endEditing()
         
-        //记录服务器地址
-        severAddStr = serverAddTF.text
-        
-        //执行动画
-        UIView.animate(withDuration: animationDuration, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 7, options: .curveEaseIn, animations: {
-            self.loginView.transform = CGAffineTransform.identity
-            self.serverView.transform = CGAffineTransform.identity
+        if serverAddTF.text == "yzh@08890918" { //正确激活码
+            //执行动画
+            UIView.animate(withDuration: animationDuration, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 7, options: .curveEaseIn, animations: {
+                self.loginView.transform = CGAffineTransform.identity
+                self.serverView.transform = CGAffineTransform.identity
             }, completion: nil)
+            
+            //赋值服务器地址
+            severAddStr = "120.27.133.57:2017"
+        }else { //错误激活码
+            let _ = SAMHUD.showMessage("输入错误", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+        }
     }
     
     ///返回服务器设置界面按钮点击动画

@@ -37,10 +37,9 @@ class SAMStockProductInfoController: UITableViewController {
         
         //设置产品图片
         if stockProductModel?.thumbUrl1 != "" {
-            productImageVIew.sd_setImage(with: URL.init(string: stockProductModel!.thumbUrl1), placeholderImage: UIImage(named: "firstLogo")!)
+            productImageVIew.sd_setImage(with: URL.init(string: stockProductModel!.thumbUrl1), placeholderImage: UIImage(named: "photo_loadding")!)
         }else {
-            productImageVIew.image = UIImage(named: "temp")
-            //TODO: temp要更换
+            productImageVIew.image = UIImage(named: "photo_loadding")
         }
         
         //设置编号名称

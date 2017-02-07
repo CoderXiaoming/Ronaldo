@@ -50,12 +50,12 @@ class SAMComOperationCell: UICollectionViewCell {
             //设置图片
             sateImageView.image = UIImage(named: forSaleInfoModel!.orderStateImageName)
             
-            //设置客户名称
-            customerLabel.text = forSaleInfoModel!.CGUnitName
-            
             //设置产品名称
+            customerLabel.text = forSaleInfoModel!.productIDName
+            
+            //设置客户名称
             firstInfoTitleLabel.text = ""
-            fitstInfoContentLabel.text = forSaleInfoModel!.productIDName
+            fitstInfoContentLabel.text = forSaleInfoModel!.CGUnitName
             
             //设置数量数
             secondInfoTitleLabel.text = "数量："

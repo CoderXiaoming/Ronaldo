@@ -65,6 +65,13 @@ class SAMShoppingCarController: UIViewController {
         tableView.rowHeight = 74
     }
     
+    //MARK: - viewDidAppear
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        //刷新界面数据
+        tableView.mj_header.beginRefreshing()
+    }
+    
     //MARK: - 加载新数据
     func loadNewInfo() {
         

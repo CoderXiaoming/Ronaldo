@@ -53,7 +53,13 @@ class SAMCustomerViewController: UIViewController {
         //设置导航标题
         switch controllerType {
         case .Normal:
-            navigationItem.title = "客户管理"
+            let titleButton = UIButton(type: .custom)
+            titleButton.setTitle("客户管理", for: .normal)
+            titleButton.setTitleColor(UIColor(red: 60 / 255.0, green: 60 / 255.0, blue: 60 / 255.0, alpha: 1.0), for: .normal)
+            titleButton.titleLabel?.font = UIFont.systemFont(ofSize: 18)
+            titleButton.sizeToFit()
+            titleButton.titleEdgeInsets = UIEdgeInsetsMake(0, -50, 0, 0)
+            navigationItem.titleView = titleButton
         case .OrderBuild:
             navigationItem.title = "选择客户"
         }
@@ -152,11 +158,16 @@ class SAMCustomerViewController: UIViewController {
     ///设置添加导航栏添加客户按钮
     fileprivate func setupNormalNavButtons() {
     
+        //如果不是正常控制器类型，返回
+        if controllerType != .Normal {
+            return
+        }
+        
         var addItem: UIBarButtonItem?
         var changeItem: UIBarButtonItem?
         
-        //检查新增权限 ，如果是正常类型，而且有查询权限才设置该按钮
-        if hasXZAuth && (controllerType == .Normal) {
+        //检查新增权限，而且有查询权限才设置该按钮
+        if hasXZAuth {
             let addBtn = UIButton(type: .custom)
             addBtn.setBackgroundImage(UIImage(named: "customerAddButtton"), for: UIControlState())
             addBtn.addTarget(self, action: #selector(SAMCustomerViewController.addCustomer), for: .touchUpInside)
@@ -165,8 +176,8 @@ class SAMCustomerViewController: UIViewController {
             addItem = UIBarButtonItem(customView: addBtn)
         }
         
-        //检查回访查询权限 ，如果是正常类型，而且有查询权限才设置该按钮
-        if hasHFCXAuth && (controllerType == .Normal) {
+        //检查回访查询权限，而且有查询权限才设置该按钮
+        if hasHFCXAuth {
             changeItem = UIBarButtonItem(customView: changeSearchStyleButton)
         }
         
@@ -178,6 +189,9 @@ class SAMCustomerViewController: UIViewController {
         if changeItem != nil {
             navRightItems.append(changeItem!)
         }
+        
+        //查询归属按钮
+        navRightItems.append(UIBarButtonItem(customView: customerBelongButton))
         
         navigationItem.rightBarButtonItems = navRightItems
     }
@@ -248,27 +262,34 @@ class SAMCustomerViewController: UIViewController {
         //结束下拉刷新
         customerCollectionView.mj_footer.endRefreshing()
         
-        //获取搜索条件
-        customerLastSearchStr = searchCon(textField: customerSearchTF)
-        
         //恢复形变CELL
         if self.selectedCustomerCell != nil {
             self.selectedCustomerCell?.rightSwipeCell()
         }
         
+        //获取搜索条件
+        customerLastSearchStr = searchCon(textField: customerSearchTF)
+        
         //创建请求参数
         pageIndex = 1
-        let id = SAMUserAuth.shareUser()?.employeeID
+        var id = SAMUserAuth.shareUser()?.employeeID
         let index = String(format: "%d", pageIndex)
         let size = String(format: "%d", pageSize)
-        let parameters = ["employeeID": id!, "con": customerLastSearchStr, "pageSize": size, "pageIndex": index]
+        
+        if isSearchCustomerBelong { //客户归属搜索
+            id = "-1"
+            customerCollectionView.allowsSelection = false
+        }else {
+            customerCollectionView.allowsSelection = true
+        }
+        
+        let parameters = ["employeeID": id, "con": customerLastSearchStr, "pageSize": size, "pageIndex": index]
         //发送请求
         SAMNetWorker.sharedNetWorker().get("getCustomerList.ashx", parameters: parameters, progress: nil, success: {[weak self] (Task, json) in
-            self!.customerCollectionView.mj_header.endRefreshing()
-            
-            //清楚数据
+            //清除数据
             self!.selectedIndexPath = nil
             self!.selectedCustomerCell = nil
+            self!.isSearchCustomerBelong = false
             SAMCustomerModel.modelArr().removeAllObjects()
 
             //获取模型数组
@@ -288,17 +309,19 @@ class SAMCustomerViewController: UIViewController {
                 }else { //设置pageIndex，可能还有更多信息
                     self!.pageIndex += 1
                 }
-                
-                //回主线程处理UI事件
-                DispatchQueue.main.async(execute: {
-                    //结束上拉
-                    self!.customerCollectionView.mj_header.endRefreshing()
-                    self!.customerCollectionView.reloadData()
-                })
             }
+            
+            //回主线程处理UI事件
+            DispatchQueue.main.async(execute: {
+                //结束上拉
+                self!.customerCollectionView.mj_header.endRefreshing()
+                self!.customerCollectionView.reloadData()
+            })
+            
             }) {[weak self] (Task, Error) in
                 //处理上拉
                 self!.customerCollectionView.mj_header.endRefreshing()
+                self!.isSearchCustomerBelong = false
                 let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
@@ -468,6 +491,16 @@ class SAMCustomerViewController: UIViewController {
         }
     }
     
+    ///客户归属搜索按钮点击事件
+    func customerBelongBtnClick() {
+        isSearchCustomerBelong = true
+        
+        //结束搜索框编辑状态
+        endFirstTextFieldEditing()
+        //启动下拉刷新
+        customerCollectionView.mj_header.beginRefreshing()
+    }
+    
     ///当前为新建订单类型，选择客户按钮点击
     func chooseCustomer() {
         
@@ -624,6 +657,9 @@ class SAMCustomerViewController: UIViewController {
     ///第一响应者
     fileprivate var firstTF: UITextField?
     
+    ///当前是否是搜索客户归属
+    fileprivate var isSearchCustomerBelong = false
+    
     ///查询权限
     fileprivate lazy var hasCXAuth: Bool = SAMUserAuth.checkAuth(["KH_CX_APP"])
     ///新增权限
@@ -662,6 +698,16 @@ class SAMCustomerViewController: UIViewController {
         changeBtn.addTarget(self, action: #selector(SAMCustomerViewController.changeSearchStyle), for: .touchUpInside)
         changeBtn.sizeToFit()
         return changeBtn
+    }()
+    
+    ///导航栏客户归属搜索按钮
+    fileprivate lazy var customerBelongButton: UIButton = {
+        let btn = UIButton(type: .custom)
+        btn.setTitle("归属", for: .normal)
+        btn.setTitleColor(UIColor(red: 65 / 255.0, green: 65 / 255.0, blue: 65 / 255.0, alpha: 1.0), for: .normal)
+        btn.addTarget(self, action: #selector(SAMCustomerViewController.customerBelongBtnClick), for: .touchUpInside)
+        btn.sizeToFit()
+        return btn
     }()
     
     //MARK: - xib链接控件
@@ -708,6 +754,7 @@ extension SAMCustomerViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return SAMCustomerModel.modelArr().count
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -719,7 +766,6 @@ extension SAMCustomerViewController: UICollectionViewDataSource {
         } else {
             cell.containterView.backgroundColor = SAMCustomerCellNormalColor
         }
-        
         //传递数据模型
         let model = SAMCustomerModel.modelArr()[indexPath.row] as! SAMCustomerModel
         cell.customerModel = model
