@@ -40,13 +40,6 @@ class SAMProductImageController: UIViewController {
     //MARK: - 初始化UI
     fileprivate func setupUI() {
         
-        //设置产品图片
-        if stockProductModel?.imageUrl1 != "" {
-            productImage?.sd_setImage(with: URL.init(string: stockProductModel!.imageUrl1), placeholderImage: UIImage(named: "photo_loadding"))
-        }else {
-            productImage?.image = UIImage(named: "photo_loadding")
-        }
-        
         //设置主标题
         navigationItem.title = "产品图片"
         
@@ -54,6 +47,13 @@ class SAMProductImageController: UIViewController {
         let height = ScreenH - navigationController!.navigationBar.frame.maxY
         scrollView?.frame = CGRect(x: 0, y: 0, width: ScreenW, height: height)
         view.addSubview(scrollView!)
+        
+        //设置产品图片
+        if stockProductModel?.imageUrl1 != "" {
+            productImage?.sd_setImage(with: URL.init(string: stockProductModel!.imageUrl1), placeholderImage: UIImage(named: "photo_loadding"))
+        }else {
+            productImage?.image = UIImage(named: "photo_loadding")
+        }
         
         //设置产品图片尺寸
         let y = (scrollView!.bounds.height - ScreenW) * 0.5

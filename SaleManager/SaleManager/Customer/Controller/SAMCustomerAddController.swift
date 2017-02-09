@@ -176,7 +176,9 @@ class SAMCustomerAddController: UIViewController {
         }
         
         //组建客服，地址字符串
-        customerStr = String(format: "%@公司 %@", customerStr, contactStr)
+        //TODO: - 修改，要求不拼接公司二字，如果后期需要公司二字，可直接更换下面两句
+        //customerStr = String(format: "%@公司 %@", customerStr, contactStr)
+        customerStr = String(format: "%@ %@", customerStr, contactStr)
         addStr = addStr + addStr2
         
         //添加确认按钮

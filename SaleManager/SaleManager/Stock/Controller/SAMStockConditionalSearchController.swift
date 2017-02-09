@@ -53,6 +53,9 @@ class SAMStockConditionalSearchController: UIViewController {
         categoryTF.inputAccessoryView = categoryInputView
         
         storehouseTF.inputView = storehousePickerView
+        
+        //设置默认搜索库存0
+        stockTF.text = "0"
     }
     
     ///初始化Textfield

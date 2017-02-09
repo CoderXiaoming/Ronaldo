@@ -21,6 +21,8 @@ let SAMQRCodeViewGetProductNameNotification = "SAMQRCodeViewGetProductNameNotifi
 let SAMStockDetailControllerDismissSuccessNotification = "SAMStockDetailControllerDismissSuccessNotification"
 ///产品库存条件搜索控制器dismiss成功后发出的通知
 let SAMStockConSearchControllerDismissSuccessNotification = "SAMStockConSearchControllerDismissSuccessNotification"
+///产品库存条件搜索语音识别成功后发出的通知
+let SAMStockConSearchControllerSpeechSuccessNotification = "SAMStockConSearchControllerSpeechSuccessNotification"
 
 
 let ScreenW = UIScreen.main.bounds.width

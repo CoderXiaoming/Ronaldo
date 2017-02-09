@@ -98,7 +98,7 @@ class SAMShoppingCarController: UIViewController {
             let count = dictArr?.count ?? 0
             if count == 0 { //没有模型数据
                 //提示用户
-                let _ = SAMHUD.showMessage("暂无数据", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("暂无数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                 
             }else { //有数据模型
                 let arr = SAMShoppingCarListModel.mj_objectArray(withKeyValuesArray: dictArr)!
@@ -118,7 +118,7 @@ class SAMShoppingCarController: UIViewController {
             //处理上拉
             self!.tableView.mj_header.endRefreshing()
             //提示用户
-            let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
+            let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     

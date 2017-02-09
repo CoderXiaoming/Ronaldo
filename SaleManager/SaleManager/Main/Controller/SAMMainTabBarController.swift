@@ -18,6 +18,9 @@ class SAMMainTabBarController: UITabBarController {
         
         //添加所有控制器
         addAllControllers()
+        
+        //清楚缓存
+        SAMCacheClearer.clearCaches()
     }
     
     //MARK: - 初始化UI

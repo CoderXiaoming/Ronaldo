@@ -209,7 +209,7 @@ extension LXMCodeViewController: AVCaptureMetadataOutputObjectsDelegate {
                 //切换到库存查询界面
                 tabBarController!.selectedIndex = 1
                 let animation = CATransition()
-                animation.duration = 0.8
+                animation.duration = 0.4
                 animation.timingFunction = CAMediaTimingFunction(name: "easeInEaseOut")
                 animation.type = "cameraIrisHollowClose"
                 tabBarController?.view.layer.add(animation, forKey: nil)

@@ -688,6 +688,7 @@ extension SAMComOperationController: UICollectionViewDataSource {
 extension SAMComOperationController: SAMComOperationIndicaterViewDelegate {
     func comOperationIndicaterViewDidSelected(index: Int) {
         
+        endFirstTextFieldEditing()  
         comScrollView.setContentOffset(CGPoint(x: ScreenW * CGFloat(index), y: 0), animated: true)
     }
 }
@@ -825,6 +826,7 @@ extension SAMComOperationController {
                 self!.orderManageColView.reloadData()
             })
         }) {[weak self] (Task, Error) in
+            print(Error)
             //处理上拉
             self!.orderManageColView.mj_header.endRefreshing()
             let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
@@ -1012,11 +1014,14 @@ extension SAMComOperationController {
         let endDate = endDateTF.text!
         let iState = searchConIn(textField: owedSearchStateTF)
         let productIDName = searchConIn(textField: owedSearchProductTF)
-        oweRequestParameters = ["userID": userID, "CGUnitName": CGUnitName, "startDate": startDate, "endDate": endDate, "iState": iState, "productIDName": productIDName]
+        
+        let pageSize = "20"
+        let pageIndex = "0"
+        
+        oweRequestParameters = ["userID": userID, "CGUnitName": CGUnitName, "startDate": startDate, "endDate": endDate, "iState": iState, "productIDName": productIDName, "pageSize": pageSize, "pageIndex": pageIndex]
         
         //发送请求
         SAMNetWorker.sharedNetWorker().get(requestURLStrs[2], parameters: oweRequestParameters!, progress: nil, success: {[weak self] (Task, json) in
-            
             //清空原先数据
             self!.owedModels.removeAllObjects()
             

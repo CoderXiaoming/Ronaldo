@@ -8,6 +8,7 @@
 
 import UIKit
 import MJRefresh
+import Speech
 
 ///控制器类型
 enum stockControllerType {
@@ -69,6 +70,9 @@ class SAMStockViewController: UIViewController {
         
         //设置一般监听
         setupNormalMonitorNotification()
+        
+        //设置长按手势
+        setupSpeechRecognizer()
     }
     
     ///初始化UI
@@ -112,6 +116,7 @@ class SAMStockViewController: UIViewController {
     fileprivate func setupNormalMonitorNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(SAMStockViewController.receiveStockDetailVCDismissNotification), name: NSNotification.Name.init(SAMStockDetailControllerDismissSuccessNotification), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(SAMStockViewController.receiveStockConSearchVCDismissNotification), name: NSNotification.Name.init(SAMStockConSearchControllerDismissSuccessNotification), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SAMStockViewController.receiveSpeechSearch(notification:)), name: NSNotification.Name.init(SAMStockConSearchControllerSpeechSuccessNotification), object: nil)
     }
     
     //MARK: - 接收到通知调用的方法
@@ -135,6 +140,21 @@ class SAMStockViewController: UIViewController {
         //记录控制器状态
         hasOutRequest = true
     }
+    ///从语音识别收到通知调用的方法
+    func receiveSpeechSearch(notification: Notification) {
+        productNameSearchStr = notification.userInfo!["searchString"] as! String
+        productNameTF.text = productNameSearchStr
+        collectionView.mj_header.beginRefreshing()
+    }
+    
+    //MARK: - 设置语音识别
+    fileprivate func setupSpeechRecognizer() {
+        //设置语音识别按钮
+        if #available(iOS 10.0, *) {
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(SAMStockViewController.longPressView(longPress:)))
+        view.addGestureRecognizer(longPress)
+        }
+    }
     
     //MARK: - viewDidAppear
     override func viewDidAppear(_ animated: Bool) {
@@ -155,6 +175,7 @@ class SAMStockViewController: UIViewController {
     
     //MARK: - 搜索按钮点击
     func searchBtnClick() {
+        
         
         //判断当前是产品名搜索状态还是条件搜索状态
         if productNameSearchStr != "" { //产品名搜索状态
@@ -203,6 +224,35 @@ class SAMStockViewController: UIViewController {
         }
     }
     
+    //MARK: - 长按界面监听方法，调用语音识别
+    func longPressView(longPress: UILongPressGestureRecognizer) {
+        if longPress.state == .began {
+            //添加麦克风图片
+            microphoneImageView = UIImageView(image: UIImage(named: "microphone"))
+            microphoneImageView?.frame = CGRect.zero
+            microphoneImageView?.frame.size = CGSize(width: ScreenW, height: ScreenW)
+            microphoneImageView!.center = KeyWindow!.center
+            KeyWindow!.addSubview(microphoneImageView!)
+            
+            if #available(iOS 10.0, *) {
+                LXMSpeechWorker.startRecording()
+            } else {
+                // Fallback on earlier versions
+            }
+        }
+        if longPress.state == .ended  {
+            //移除麦克风图片
+            microphoneImageView?.removeFromSuperview()
+            microphoneImageView = nil
+            
+            if #available(iOS 10.0, *) {
+                LXMSpeechWorker.stopRecording()
+            } else {
+                // Fallback on earlier versions
+            }
+        }
+    }
+    
     //MARK: - 加载数据
     func loadConSearchNewInfo() {
         
@@ -227,9 +277,6 @@ class SAMStockViewController: UIViewController {
             collectionView.mj_header.endRefreshing()
             return
         }
-        
-        //请求所有数据
-        loadStockStatistic()
         
         //创建请求参数
         conSearchPageIndex = 1
@@ -296,6 +343,9 @@ class SAMStockViewController: UIViewController {
                 //结束上拉
                 self!.collectionView.mj_header.endRefreshing()
                 
+                //请求统计数据
+                self!.calculateStockStatistic()
+                
                 //刷新数据
                 self!.collectionView.reloadData()
             })
@@ -313,40 +363,19 @@ class SAMStockViewController: UIViewController {
     }
     
     //MARK: - 加载所有库存数据统计
-    fileprivate func loadStockStatistic() {
+    fileprivate func calculateStockStatistic() {
         
-        //创建请求参数
-        let productIDName = conSearchParameters!["productIDName"] as! String
-        let staticParameters = ["productIDName": productIDName, "storehouseID": "-1", "parentID": "-1", "minCountM": "0"]
+        var staticCountP = 0
+        var staticCountM = 0.0
         
-        //发送请求
-        SAMNetWorker.sharedNetWorker().get("getStockStatic.ashx", parameters: staticParameters, progress: nil, success: {[weak self] (Task, json) in
-            
-            //获取模型数组
-            let Json = json as! [String: AnyObject]
-            let dictArr = Json["body"] as? [[String: AnyObject]]
-            let count = dictArr?.count ?? 0
-            
-            //判断是否有数据
-            if count == 0 { //没有数据
-                
-                DispatchQueue.main.async(execute: { 
-                    self!.totalCountPString = "---"
-                    self!.totalCountMString = "---"
-                })
-            }else { //有数据
-                
-                DispatchQueue.main.async(execute: {
-                    self!.totalCountPString = dictArr![0]["totalCountP"] as? String
-                    self!.totalCountMString = dictArr![0]["totalCountM"] as? String
-                })
-            }
-        }) {[weak self] (Task, Error) in
-            DispatchQueue.main.async(execute: {
-                self!.totalCountPString = "---"
-                self!.totalCountMString = "---"
-            })
+        for obj in stockProductModels {
+            let model = obj as! SAMStockProductModel
+            staticCountP += model.countP
+            staticCountM += model.countM
         }
+        
+        totalCountPString = String(format: "%d", staticCountP)
+        totalCountMString = String(format: "%.1f", staticCountM)
     }
     
     //MARK: - 加载更多数据
@@ -402,6 +431,7 @@ class SAMStockViewController: UIViewController {
                 
                 //刷新数据
                 DispatchQueue.main.async(execute: {
+                    self!.calculateStockStatistic()
                     self!.collectionView.reloadData()
                 })
             }
@@ -537,7 +567,10 @@ class SAMStockViewController: UIViewController {
         return group
     }()
     
-    //MARK: - xib链接约束属性
+    ///话筒图片
+    fileprivate var microphoneImageView: UIImageView?
+    
+    //MARK: - xibffs束属性
     ///所有库存控件顶部距离
     @IBOutlet weak var allStockViewTopDistance: NSLayoutConstraint!
     

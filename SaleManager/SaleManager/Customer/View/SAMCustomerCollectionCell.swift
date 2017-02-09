@@ -23,8 +23,11 @@ class SAMCustomerCollectionCell: UICollectionViewCell {
     ///接收的数据模型
     var customerModel: SAMCustomerModel? {
         didSet{
-            //设置 customerLabel
-            customerLabel.text = customerModel?.CGUnitName
+            //设置 customerLabel + 客户城市
+            customerLabel.text = customerModel!.CGUnitName
+            
+            //设置客户城市
+            customerCityLabel.text = customerModel!.province + "\\" + customerModel!.city
             
             //设置 remarkLabel
             remarkLabel.text = customerModel?.memoInfo
@@ -47,24 +50,7 @@ class SAMCustomerCollectionCell: UICollectionViewCell {
         telLabel.text = customerModel?.phoneNumber
         
         //设置 addLabel
-        var addStr = ""
-        if (customerModel?.province != "") && (customerModel?.city != "") {
-            addStr = String(format: "(%@/%@)", (customerModel?.province)!, (customerModel?.city)!)
-        }else if customerModel?.province != "" {
-            addStr = String(format: "（%@）", (customerModel?.province)!)
-        }else if customerModel?.city != "" {
-            addStr = String(format: "（%@）", (customerModel?.city)!)
-        }
-        
-        if customerModel?.address != "" {
-            addStr = addStr + (customerModel?.address)!
-        }
-        
-        if addStr != "" {
-            addLabel.text = addStr
-        }else {
-            addLabel.text = "---"
-        }
+        addLabel.text = customerModel?.address
     }
     
     //MARK: - 初始化操作
@@ -129,6 +115,8 @@ class SAMCustomerCollectionCell: UICollectionViewCell {
     @IBOutlet weak var containterView: UIView!
     
     @IBOutlet weak var customerLabel: UILabel!
+    @IBOutlet weak var customerCityLabel: UILabel!
+    
     @IBOutlet weak var remarkLabel: UILabel!
     @IBOutlet weak var phoneLabel: UILabel!
     @IBOutlet weak var belongLabel: UILabel!

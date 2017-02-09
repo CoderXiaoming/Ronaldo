@@ -144,16 +144,16 @@ class SAMOrderOwedOperationController: UIViewController {
             self.orderCustomerModel = self.orderInfoModel?.orderCustomerModel!
             
         }, buildOwe: { 
-            self.titles = [[["客户", ""], ["交货日期", ""]], [["产品型号", self.stockModel!.productIDName], ["匹数", "0"], ["米数", "0"]], [["备注", ""]]]
+            self.titles = [[["客户", ""], ["交货日期", ""]], [["产品型号", self.stockModel!.productIDName], ["匹数", "0"], ["米数", "0"], ["备注", ""]]]
             self.saveUrlStr = "OOSRecordAdd.ashx"
             
         }) {
             self.titles = [[["客户", self.oweModel!.CGUnitName], ["交货日期", self.oweModel!.endDate]], [["产品型号", self.oweModel!.productIDName], ["匹数", String(format: "%d", self.oweModel!.countP)], ["米数", String(format: "%.1f", self.oweModel!.countM)]], [["备注", self.oweModel!.memoInfo], ["状态", self.oweModel!.iState]]]
             self.saveUrlStr = "OOSRecordEdit.ashx"
             //设置用户
-//            self.orderCustomerModel = self.oweModel?.orderCustomerModel!
-//            //设置产品数据模型
-//            self.stockModel = self.oweModel?.stockModel!
+            self.orderCustomerModel = self.oweModel?.orderCustomerModel!
+            //设置产品数据模型
+            self.stockModel = self.oweModel?.stockModel!
         }
         
         //创建数据模型数组
@@ -336,11 +336,6 @@ class SAMOrderOwedOperationController: UIViewController {
             let productID = self.stockModel!.id
             let countP = self.titleModels![1][1]!.cellContent
             let countM = self.titleModels![1][2]!.cellContent
-            let mishu = Double.init(countM)!
-            if mishu == 0 {
-                let _ = SAMHUD.showMessage("米数必须大于0", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
-                return
-            }
             let memoInfo = self.titleModels![2][0]!.cellContent
             
             MainData = ["CGUnitID": CGUnitID, "startDate": dateStr, "endDate": endDate, "productID": productID, "countP": countP, "countM": countM, "memoInfo": memoInfo, "userID": userID]
@@ -661,11 +656,8 @@ extension SAMOrderOwedOperationController: UITableViewDelegate {
                 }
                 
             case OrderOwedOperationControllerType.buildOwe, OrderOwedOperationControllerType.checkOwe:
-                if section != (titleModels!.count - 1) {
-                    return 20
-                }else {
-                    return 0
-                }
+                return 20
+            
         }
     }
     

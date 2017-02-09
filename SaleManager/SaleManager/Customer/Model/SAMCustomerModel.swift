@@ -34,7 +34,11 @@ class SAMCustomerModel: NSObject {
     ///城市
     var city = ""
     ///地址
-    var address = ""
+    var address = "" {
+        didSet{
+            address = ((address == "") ? "---" : address)
+        }
+    }
     ///手机
     var mobilePhone = "" {
         didSet{
