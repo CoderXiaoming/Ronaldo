@@ -136,6 +136,9 @@ class SAMComOperationController: UIViewController {
         
         //赋值第一个collectionView
         currentCollectionView = orderManageColView
+        
+        //设置orderManageColView长安手势
+        setupOrderBuildRecognizer()
     }
     
     ///设置其他UI
@@ -168,6 +171,12 @@ class SAMComOperationController: UIViewController {
         
         //隐藏待售布匹搜索控件
         forSaleSearchView.isHidden = true
+    }
+    
+    //MARK: - 设置orderManageColView长按手势
+    fileprivate func setupOrderBuildRecognizer() {
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(SAMComOperationController.longPressOrderColView(longPress:)))
+        orderManageColView.addGestureRecognizer(longPress)
     }
     
     //MARK: - viewWillAppear , Disappear 设置导航栏
@@ -333,6 +342,16 @@ class SAMComOperationController: UIViewController {
         }
     }
     
+    //MARK: - 长按订单collectionView监听方法，创建订单
+    func longPressOrderColView(longPress: UILongPressGestureRecognizer) {
+        if longPress.state == .began {
+            //退出编辑状态
+            endFirstTextFieldEditing()
+            let buildOrderVC = SAMOrderOwedOperationController.buildOrder(productModels: nil, type: .buildOrder)
+            navigationController!.pushViewController(buildOrderVC, animated: true)
+        }
+    }
+
     //MARK: - 属性懒加载
     ///当前collectionView的序号
     fileprivate var currentColIndex = 0
@@ -826,7 +845,6 @@ extension SAMComOperationController {
                 self!.orderManageColView.reloadData()
             })
         }) {[weak self] (Task, Error) in
-            print(Error)
             //处理上拉
             self!.orderManageColView.mj_header.endRefreshing()
             let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)

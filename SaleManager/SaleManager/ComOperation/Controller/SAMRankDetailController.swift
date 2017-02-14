@@ -244,6 +244,11 @@ class SAMRankDetailController: UIViewController {
                 }
             }
             
+            //当前是搜索状态
+            if self!.isSearch {
+                self!.searchBar(self!.searchBar, textDidChange: self!.searchBar.text!)
+            }
+            
             //回主线程，刷新数据
             DispatchQueue.main.async(execute: {
                 self!.collectionView.mj_header.endRefreshing()
@@ -294,6 +299,12 @@ class SAMRankDetailController: UIViewController {
                 }
 
                 self!.rankListModels.addObjects(from: arr as [AnyObject])
+                
+                //当前是搜索状态
+                if self!.isSearch {
+                    self!.searchBar(self!.searchBar, textDidChange: self!.searchBar.text!)
+                }
+                
                 //刷新数据
                 DispatchQueue.main.async(execute: {
                     self!.collectionView.reloadData()

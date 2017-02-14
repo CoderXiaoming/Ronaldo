@@ -11,75 +11,74 @@ import Speech
 
 @available(iOS 10.0, *)
 class LXMSpeechWorker: SFSpeechRecognizer {
-    
-    
-    
-    
     //MARK: - 开始录音
     class func startRecording() {
         
         //0-请求权限
         SFSpeechRecognizer.requestAuthorization { (status) in
-        }
-        
-        speechRecognizer.speechResults.removeAllObjects()
-        
-        if speechRecognizer.recognitionTask != nil {  //1
-            speechRecognizer.recognitionTask?.cancel()
-            speechRecognizer.recognitionTask = nil
-        }
-        
-        let audioSession = AVAudioSession.sharedInstance()  //2
-        do {
-            try audioSession.setCategory(AVAudioSessionCategoryRecord)
-            try audioSession.setMode(AVAudioSessionModeMeasurement)
-            try audioSession.setActive(true, with: .notifyOthersOnDeactivation)
-        } catch {
-        }
-        
-        speechRecognizer.recognitionRequest = SFSpeechAudioBufferRecognitionRequest()  //3
-        
-        guard let inputNode = speechRecognizer.audioEngine.inputNode else {
-            fatalError("Audio engine has no input node")
-        }  //4
-        
-        guard let recognitionRequest = speechRecognizer.recognitionRequest else {
-            fatalError("Unable to create an SFSpeechAudioBufferRecognitionRequest object")
-        } //5
-        
-        recognitionRequest.shouldReportPartialResults = true  //6
-        
-        speechRecognizer.recognitionTask = speechRecognizer.recognitionTask(with: recognitionRequest, resultHandler: { (result, error) in  //7
             
-            var isFinal = false  //8
-            
-            if result != nil {
+            //如果允许
+            if status == .authorized {
+                speechRecognizer.speechResults.removeAllObjects()
                 
-                let text = result?.bestTranscription.formattedString  //9
-                speechRecognizer.speechResults.add(text ?? "")
-                isFinal = (result?.isFinal)!
-            }
-            
-            if error != nil || isFinal {  //10
-                speechRecognizer.audioEngine.stop()
-                inputNode.removeTap(onBus: 0)
+                if speechRecognizer.recognitionTask != nil {  //1
+                    speechRecognizer.recognitionTask?.cancel()
+                    speechRecognizer.recognitionTask = nil
+                }
                 
-                speechRecognizer.recognitionRequest = nil
-                speechRecognizer.recognitionTask = nil
+                let audioSession = AVAudioSession.sharedInstance()  //2
+                do {
+                    try audioSession.setCategory(AVAudioSessionCategoryRecord)
+                    try audioSession.setMode(AVAudioSessionModeMeasurement)
+                    try audioSession.setActive(true, with: .notifyOthersOnDeactivation)
+                } catch {
+                }
+                
+                speechRecognizer.recognitionRequest = SFSpeechAudioBufferRecognitionRequest()  //3
+                
+                guard let inputNode = speechRecognizer.audioEngine.inputNode else {
+                    fatalError("Audio engine has no input node")
+                }  //4
+                
+                guard let recognitionRequest = speechRecognizer.recognitionRequest else {
+                    fatalError("Unable to create an SFSpeechAudioBufferRecognitionRequest object")
+                } //5
+                
+                recognitionRequest.shouldReportPartialResults = true  //6
+                
+                speechRecognizer.recognitionTask = speechRecognizer.recognitionTask(with: recognitionRequest, resultHandler: { (result, error) in  //7
+                    
+                    var isFinal = false  //8
+                    
+                    if result != nil {
+                        
+                        let text = result?.bestTranscription.formattedString  //9
+                        speechRecognizer.speechResults.add(text ?? "")
+                        isFinal = (result?.isFinal)!
+                    }
+                    
+                    if error != nil || isFinal {  //10
+                        speechRecognizer.audioEngine.stop()
+                        inputNode.removeTap(onBus: 0)
+                        
+                        speechRecognizer.recognitionRequest = nil
+                        speechRecognizer.recognitionTask = nil
+                    }
+                })
+                
+                let recordingFormat = inputNode.outputFormat(forBus: 0)  //11
+                inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer, when) in
+                    speechRecognizer.recognitionRequest?.append(buffer)
+                }
+                
+                speechRecognizer.audioEngine.prepare()  //12
+                
+                do {
+                    try speechRecognizer.audioEngine.start()
+                } catch {
+                    print("audioEngine couldn't start because of an error.")
+                }
             }
-        })
-        
-        let recordingFormat = inputNode.outputFormat(forBus: 0)  //11
-        inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer, when) in
-            speechRecognizer.recognitionRequest?.append(buffer)
-        }
-        
-        speechRecognizer.audioEngine.prepare()  //12
-        
-        do {
-            try speechRecognizer.audioEngine.start()
-        } catch {
-            print("audioEngine couldn't start because of an error.")
         }
     }
     

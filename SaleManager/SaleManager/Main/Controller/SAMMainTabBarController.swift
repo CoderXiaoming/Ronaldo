@@ -43,10 +43,10 @@ class SAMMainTabBarController: UITabBarController {
         homeVC.view.backgroundColor = UIColor.white
         addOnmeController(homeVC, tabImg: UIImage(named: "home_tabar")!, selectedImg: UIImage(named: "home_tabar_highlighted")!, tabTile: "首页")
         
-        let stockVC = SAMBaseNavigationController(rootViewController: SAMStockViewController.instance(shoppingCarListModel: nil, type: .normal))
+        let stockVC = SAMBaseNavigationController(rootViewController: SAMStockViewController.instance(shoppingCarListModel: nil, QRCodeScanStr: nil, type: .normal))
         addOnmeController(stockVC, tabImg: UIImage(named: "stock_tabbar")!, selectedImg: UIImage(named: "stock_tabbar_highlighted")!, tabTile: "库存")
         
-        let codeVC = SAMBaseNavigationController(rootViewController: LXMCodeViewController.instance())
+        let codeVC = SAMBaseNavigationController(rootViewController: LXMCodeViewController.instance(type: .Normal))
         addOnmeController(codeVC, tabImg: UIImage(named: "QRcode_tabar")!, selectedImg: UIImage(named: "QRcode_tabar_highlighted")!, tabTile: "扫码")
         
         let carVC = SAMBaseNavigationController(rootViewController: SAMShoppingCarController.sharedInstanceMain())

@@ -28,7 +28,7 @@ class SAMOrderOwedOperationController: UIViewController {
     class func buildOrder(productModels: [SAMShoppingCarListModel]?, type: OrderOwedOperationControllerType) -> SAMOrderOwedOperationController {
         let vc = SAMOrderOwedOperationController()
         vc.controllerType = type
-        vc.productToOrderModels = productModels!
+        vc.productToOrderModels = productModels
         
         vc.hidesBottomBarWhenPushed = true
         return vc
@@ -268,6 +268,10 @@ class SAMOrderOwedOperationController: UIViewController {
         
         //添加购物车模型
         let model = notification.userInfo!["model"] as! SAMShoppingCarListModel
+        
+        if productToOrderModels == nil {
+            productToOrderModels = [SAMShoppingCarListModel]()
+        }
         productToOrderModels!.append(model)
         
         //刷新数据
@@ -277,24 +281,26 @@ class SAMOrderOwedOperationController: UIViewController {
     //MARK: - 更新统计数据
     fileprivate func updateCountData() {
         
-        //清空数组
-        productSectionCountArr.removeAll()
-        
-        var countMashu = 0.0
-        var countMishu = 0.0
-        var countPrice = 0.0
-        
-        for model in productToOrderModels! {
-            countMashu += model.countMA
-            countMishu += model.countM
-            countPrice += model.countPrice
+        if productToOrderModels != nil {
+            //清空数组
+            productSectionCountArr.removeAll()
+            
+            var countMashu = 0.0
+            var countMishu = 0.0
+            var countPrice = 0.0
+            
+            for model in productToOrderModels! {
+                countMashu += model.countMA
+                countMishu += model.countM
+                countPrice += model.countPrice
+            }
+            
+            productSectionCountArr.append(countMashu)
+            productSectionCountArr.append(countMishu)
+            productSectionCountArr.append(countPrice)
+            
+            productSectionFooterView.countArr = productSectionCountArr
         }
-        
-        productSectionCountArr.append(countMashu)
-        productSectionCountArr.append(countMishu)
-        productSectionCountArr.append(countPrice)
-        
-        productSectionFooterView.countArr = productSectionCountArr
     }
     
     //MARK: - 用户点击事件处理
@@ -310,6 +316,12 @@ class SAMOrderOwedOperationController: UIViewController {
     ///发货两个按钮共同点击
     fileprivate func saveAndAgreeSend(isAgreeSend: Bool) {
     
+        //如果是新建订单类型，对productToOrderModels进行判断
+        if (controllerType! == OrderOwedOperationControllerType.buildOrder) && productToOrderModels == nil{
+            _ = SAMHUD.showMessage("请添加产品", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+            return
+        }
+        
         //创建主请求参数
         var MainData: [String: String]?
         let CGUnitID = orderCustomerModel!.id
@@ -567,7 +579,7 @@ extension SAMOrderOwedOperationController: UITableViewDataSource {
         switch controllerType! {
             case OrderOwedOperationControllerType.buildOrder, OrderOwedOperationControllerType.checkOrder:
                 if section == 1 { //产品列表组
-                    return self.productToOrderModels!.count
+                    return self.productToOrderModels?.count ?? 0
                 }else { //订单内容组
                     return self.titleModels![section].count
                 }
@@ -766,7 +778,7 @@ extension SAMOrderOwedOperationController: UITableViewDelegate {
             /*******************  查询按钮  ********************/
             let equiryAction = UITableViewRowAction(style: .normal, title: "查询") { (action, indexPath) in
                 
-                let stockVC = SAMStockViewController.instance(shoppingCarListModel: model, type: .requestStock)
+                let stockVC = SAMStockViewController.instance(shoppingCarListModel: model, QRCodeScanStr: nil, type: .requestStock)
                 self.navigationController?.pushViewController(stockVC, animated: true)
             }
             equiryAction.backgroundColor = UIColor(red: 0, green: 255 / 255.0, blue: 127 / 255.0, alpha: 1.0)
@@ -936,7 +948,13 @@ extension SAMOrderOwedOperationController: MBProgressHUDDelegate {
 extension SAMOrderOwedOperationController: SAMOrderProductSectionHeaderViewDelegate {
 
     func headerViewDidClickAddBtn() {
-        let stockVC = SAMStockViewController.instance(shoppingCarListModel: nil, type: .requestBuildOrder)
+        
+        let stockVC = SAMStockViewController.instance(shoppingCarListModel: nil, QRCodeScanStr: nil, type: .requestBuildOrder)
         navigationController!.pushViewController(stockVC, animated: true)
+    }
+    
+    func headerViewDidClickQRBtn() {
+        let QRCodeVC = LXMCodeViewController.instance(type: .buildOrder)
+        navigationController!.pushViewController(QRCodeVC, animated: true)
     }
 }

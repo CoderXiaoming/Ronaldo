@@ -559,9 +559,10 @@ extension SAMShoppingCarController: UITableViewDelegate {
         //取出对应模型
         let model = cell.listModel!
         
+        
         /*******************  查询按钮  ********************/
         let equiryAction = UITableViewRowAction(style: .normal, title: "查询") { (action, indexPath) in
-            let stockVC = SAMStockViewController.instance(shoppingCarListModel: model, type: .requestStock)
+            let stockVC = SAMStockViewController.instance(shoppingCarListModel: model, QRCodeScanStr: nil, type: .requestStock)
             self.navigationController?.pushViewController(stockVC, animated: true)
         }
         equiryAction.backgroundColor = UIColor(red: 0, green: 255 / 255.0, blue: 127 / 255.0, alpha: 1.0)

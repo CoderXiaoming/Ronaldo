@@ -28,7 +28,7 @@ private let SAMStockProductCellNormalSize = CGSize(width: ScreenW, height: SAMSt
 class SAMStockViewController: UIViewController {
     
     ///对外提供的类工厂方法
-    class func instance(shoppingCarListModel: SAMShoppingCarListModel?, type: stockControllerType) ->SAMStockViewController {
+    class func instance(shoppingCarListModel: SAMShoppingCarListModel?, QRCodeScanStr: String?, type: stockControllerType) ->SAMStockViewController {
     
         let vc = SAMStockViewController()
         
@@ -51,6 +51,11 @@ class SAMStockViewController: UIViewController {
             case .requestBuildOrder:
                 //记录控制器状态
                 vc.isFromBuildOrder = true
+                if QRCodeScanStr != nil {
+                    //当前有外部查询请求
+                    vc.hasOutRequest = true
+                    vc.productNameSearchStr = QRCodeScanStr!
+                }
                 return vc
         }
     }
@@ -104,7 +109,8 @@ class SAMStockViewController: UIViewController {
         
         //设置上拉下拉
         collectionView.mj_header = MJRefreshNormalHeader.init(refreshingTarget: self, refreshingAction: #selector(SAMStockViewController.loadConSearchNewInfo))
-        collectionView.mj_footer = MJRefreshBackNormalFooter(refreshingTarget: self, refreshingAction: #selector(SAMStockViewController.loadConSearchMoreInfo))
+//        collectionView.mj_footer = MJRefreshBackNormalFooter(refreshingTarget: self, refreshingAction: #selector(SAMStockViewController.loadConSearchMoreInfo))
+        collectionView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(SAMStockViewController.loadConSearchMoreInfo))
         
         //没有数据自动隐藏footer
         collectionView.mj_footer.isAutomaticallyHidden = true
@@ -151,8 +157,8 @@ class SAMStockViewController: UIViewController {
     fileprivate func setupSpeechRecognizer() {
         //设置语音识别按钮
         if #available(iOS 10.0, *) {
-        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(SAMStockViewController.longPressView(longPress:)))
-        view.addGestureRecognizer(longPress)
+            let longPress = UILongPressGestureRecognizer(target: self, action: #selector(SAMStockViewController.longPressView(longPress:)))
+            view.addGestureRecognizer(longPress)
         }
     }
     
@@ -176,17 +182,15 @@ class SAMStockViewController: UIViewController {
     //MARK: - 搜索按钮点击
     func searchBtnClick() {
         
-        
         //判断当前是产品名搜索状态还是条件搜索状态
-        if productNameSearchStr != "" { //产品名搜索状态
-            
+        if productNameTF.hasText {
             //退出编辑
             endProductNameTFEditing(false)
             
             //开始搜索
             collectionView.mj_header.beginRefreshing()
         }else { //条件搜索状态
-        
+            
             //清空产品名文本框，退出编辑
             endProductNameTFEditing(true)
             
@@ -227,6 +231,8 @@ class SAMStockViewController: UIViewController {
     //MARK: - 长按界面监听方法，调用语音识别
     func longPressView(longPress: UILongPressGestureRecognizer) {
         if longPress.state == .began {
+            //退出编辑状态
+            view.endEditing(true)
             //添加麦克风图片
             microphoneImageView = UIImageView(image: UIImage(named: "microphone"))
             microphoneImageView?.frame = CGRect.zero
@@ -265,7 +271,7 @@ class SAMStockViewController: UIViewController {
         
         //销毁条件搜索控制器
         conditionalSearchVC = nil
-        
+        print(productNameSearchStr)
         //如果是产品名搜索，设置请求参数
         if productNameSearchStr != "" {
             conSearchParameters = ["productIDName": productNameSearchStr as AnyObject, "minCountM": "0" as AnyObject, "parentID": "-1" as AnyObject, "storehouseID": "-1" as AnyObject]
@@ -889,6 +895,7 @@ extension SAMStockViewController: UITextFieldDelegate {
     fileprivate func endProductNameTFEditing(_ clear: Bool) {
         if clear {
             productNameTF.text = ""
+            productNameSearchStr = ""
         }
         let _ = productNameTF.resignFirstResponder()
     }

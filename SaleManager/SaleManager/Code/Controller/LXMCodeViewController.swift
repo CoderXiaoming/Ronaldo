@@ -9,14 +9,22 @@
 import UIKit
 import AVFoundation
 
+///控制器类型枚举定义
+enum QRCodeControllerType {
+    case Normal //正常
+    case buildOrder //创建订单
+}
+
 ///扫描线一次位移动画时长
 private let scanLineAnimtionDuration = 2.0
 
 class LXMCodeViewController: UIViewController {
-
+    
     ///对外提供的类工厂方法
-    class func instance() -> LXMCodeViewController {
-        return LXMCodeViewController()
+    class func instance(type: QRCodeControllerType) -> LXMCodeViewController {
+        let vc = LXMCodeViewController()
+        vc.controllerType = type
+        return vc
     }
     
     override func viewDidLoad() {
@@ -41,7 +49,19 @@ class LXMCodeViewController: UIViewController {
         super.viewWillAppear(animated)
         
         //开始扫描
-        self.startScan()
+        startScan()
+    }
+    
+    //MARK: - viewDidAppear
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        //创建订单跳转过来第一次展示没有动画，所以做此判断
+        if (controllerType! == .buildOrder) && isFirstAppear {
+            //开始扫描线动画
+            startScanLineAnimation()
+            isFirstAppear = false
+        }
     }
     
     //MARK: - viewWillDisappear
@@ -49,7 +69,7 @@ class LXMCodeViewController: UIViewController {
         super.viewDidAppear(animated)
         
         //停止扫描
-        self.stopScan()
+        stopScan()
     }
     
     //MARK: - 开始扫描
@@ -123,7 +143,7 @@ class LXMCodeViewController: UIViewController {
     
     //MARK: - 停止动画
     fileprivate func stopAnimation() {
-        view.layer.removeAllAnimations()
+        scanLineImage.layer.removeAllAnimations()
     }
     
     //MARK: - 后台进入APP直接显示该界面时调用
@@ -132,6 +152,10 @@ class LXMCodeViewController: UIViewController {
     }
     
     //MARK: - 懒加载集合
+    ///控制其类型
+    fileprivate var controllerType: QRCodeControllerType?
+    ///是否是第一次展示界面
+    fileprivate var isFirstAppear: Bool = true
     /// 会话
     fileprivate lazy var session = AVCaptureSession()
     
@@ -203,16 +227,34 @@ extension LXMCodeViewController: AVCaptureMetadataOutputObjectsDelegate {
                 //获取解码字符串
                 let str = SAMQRCoder.encrypt(withContent: result, type: CCOperation(kCCDecrypt), key: "yzh2016g")
                 
-                //发出通知
-                NotificationCenter.default.post(name: NSNotification.Name.init(SAMQRCodeViewGetProductNameNotification), object: nil, userInfo: ["productIDName": str!])
+                //如果为空字符串则提示用户
+                if str == "" {
+                    let alertVC = UIAlertController(title: nil, message: "二维码错误", preferredStyle: .alert)
+                    alertVC.addAction(UIAlertAction(title: "重新扫描", style: .default, handler: {[weak self] (action) in
+                        //重新扫描
+                        self!.startScan()
+                    }))
+                    
+                    present(alertVC, animated: true, completion: {  })
+                    return
+                }
                 
-                //切换到库存查询界面
-                tabBarController!.selectedIndex = 1
-                let animation = CATransition()
-                animation.duration = 0.4
-                animation.timingFunction = CAMediaTimingFunction(name: "easeInEaseOut")
-                animation.type = "cameraIrisHollowClose"
-                tabBarController?.view.layer.add(animation, forKey: nil)
+                //对控制器类型进行判断
+                if controllerType! == QRCodeControllerType.Normal { //正常状态
+                    //发出通知
+                    NotificationCenter.default.post(name: NSNotification.Name.init(SAMQRCodeViewGetProductNameNotification), object: nil, userInfo: ["productIDName": str!])
+                    
+                    //切换到库存查询界面
+                    tabBarController!.selectedIndex = 1
+                    let animation = CATransition()
+                    animation.duration = 0.4
+                    animation.timingFunction = CAMediaTimingFunction(name: "easeInEaseOut")
+                    animation.type = "cameraIrisHollowClose"
+                    tabBarController?.view.layer.add(animation, forKey: nil)
+                }else {
+                    let stockVC = SAMStockViewController.instance(shoppingCarListModel: nil, QRCodeScanStr: str, type: .requestBuildOrder)
+                    navigationController!.pushViewController(stockVC, animated: true)
+                }
             }
         }
     }

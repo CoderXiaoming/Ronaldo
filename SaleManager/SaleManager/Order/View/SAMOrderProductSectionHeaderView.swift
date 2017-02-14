@@ -10,6 +10,7 @@ import UIKit
 
 protocol SAMOrderProductSectionHeaderViewDelegate: NSObjectProtocol {
     func headerViewDidClickAddBtn()
+    func headerViewDidClickQRBtn()
 }
 
 class SAMOrderProductSectionHeaderView: UIView {
@@ -24,6 +25,7 @@ class SAMOrderProductSectionHeaderView: UIView {
     class func instance(couldAddProduct: Bool) -> SAMOrderProductSectionHeaderView {
         let view = Bundle.main.loadNibNamed("SAMOrderProductSectionHeaderView", owner: nil, options: nil)![0] as! SAMOrderProductSectionHeaderView
         view.addProductButton.isEnabled = couldAddProduct
+        view.QRCodeButton.isEnabled = couldAddProduct
         return view
     }
     
@@ -31,7 +33,11 @@ class SAMOrderProductSectionHeaderView: UIView {
     @IBAction func AddBtnClick(_ sender: UIButton) {
         delegate?.headerViewDidClickAddBtn()
     }
+    @IBAction func QRBtnClick(_ sender: UIButton) {
+        delegate?.headerViewDidClickQRBtn()
+    }
     
     //MARK: - XIB链接属性
     @IBOutlet weak var addProductButton: UIButton!
+    @IBOutlet weak var QRCodeButton: UIButton!
 }
