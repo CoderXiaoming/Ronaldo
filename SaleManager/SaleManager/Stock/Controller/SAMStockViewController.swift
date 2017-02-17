@@ -109,7 +109,6 @@ class SAMStockViewController: UIViewController {
         
         //设置上拉下拉
         collectionView.mj_header = MJRefreshNormalHeader.init(refreshingTarget: self, refreshingAction: #selector(SAMStockViewController.loadConSearchNewInfo))
-//        collectionView.mj_footer = MJRefreshBackNormalFooter(refreshingTarget: self, refreshingAction: #selector(SAMStockViewController.loadConSearchMoreInfo))
         collectionView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: #selector(SAMStockViewController.loadConSearchMoreInfo))
         
         //没有数据自动隐藏footer
@@ -271,7 +270,6 @@ class SAMStockViewController: UIViewController {
         
         //销毁条件搜索控制器
         conditionalSearchVC = nil
-        print(productNameSearchStr)
         //如果是产品名搜索，设置请求参数
         if productNameSearchStr != "" {
             conSearchParameters = ["productIDName": productNameSearchStr as AnyObject, "minCountM": "0" as AnyObject, "parentID": "-1" as AnyObject, "storehouseID": "-1" as AnyObject]
@@ -294,7 +292,6 @@ class SAMStockViewController: UIViewController {
         
         //发送请求
         SAMNetWorker.sharedNetWorker().get("getStock.ashx", parameters: conSearchParameters!, progress: nil, success: {[weak self] (Task, json) in
-            
             //清空原先数据
             self!.stockProductModels.removeAllObjects()
             
@@ -703,11 +700,26 @@ extension SAMStockViewController: SAMStockProductCellDelegate {
         showShoppingCar(stockProductImage, productModel: stockProductModel)
     }
     
-    //点击了库存警报
-    func productCellDidClickStockWarnningButton(_ stockProductModel: SAMStockProductModel) {
-    
+    //点击了库存警报图片
+    func productCellDidTapWarnningImage(_ stockProductModel: SAMStockProductModel) {
         let owedVC = SAMOrderOwedOperationController.buildOwe(productModel: stockProductModel, type: .buildOwe)
         navigationController!.pushViewController(owedVC, animated: true)
+    }
+    
+    //长按了库存警报图片
+    func productCellDidLongPressWarnningImage(_ stockProductModel: SAMStockProductModel) {
+        
+        let productName = stockProductModel.productIDName
+        //发出通知
+        NotificationCenter.default.post(name: NSNotification.Name.init(SAMStockProductCellLongPressWarnningImageNotification), object: nil, userInfo: ["productIDName": productName])
+        
+        //切换到库存查询界面
+        tabBarController!.selectedIndex = 0
+        let animation = CATransition()
+        animation.duration = 0.4
+        animation.timingFunction = CAMediaTimingFunction(name: "easeInEaseOut")
+        animation.type = "kCATransitionFade"
+        tabBarController?.view.layer.add(animation, forKey: nil)
     }
 }
 

@@ -43,6 +43,9 @@ class SAMComOperationController: UIViewController {
         
         //设置待售布匹搜索控件UI
         setupForSaleSearchViewUI()
+        
+        //设置通知
+        setupNotification()
     }
     
     ///设置导航栏指示器
@@ -123,7 +126,7 @@ class SAMComOperationController: UIViewController {
             //设置上拉下拉
             collectionView.mj_header = MJRefreshNormalHeader.init(refreshingTarget: self, refreshingAction: collectionViewsMjheaderSelectors[index])
             if collectionView != forSaleColView {
-                collectionView.mj_footer = MJRefreshBackNormalFooter(refreshingTarget: self, refreshingAction: collectionViewsMjfooterSelectors[index])
+                collectionView.mj_footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: collectionViewsMjfooterSelectors[index])
                 //没有数据自动隐藏footer
                 collectionView.mj_footer.isAutomaticallyHidden = true
             }
@@ -171,6 +174,19 @@ class SAMComOperationController: UIViewController {
         
         //隐藏待售布匹搜索控件
         forSaleSearchView.isHidden = true
+    }
+    
+    ///设置通知监听
+    fileprivate func setupNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(SAMComOperationController.receiveStockSearchOwedNotification(_:)), name: NSNotification.Name.init(SAMStockProductCellLongPressWarnningImageNotification), object: nil)
+    }
+    
+    ///接收到查询库存警报通知调用的方法
+    func receiveStockSearchOwedNotification(_ notification: NSNotification) {
+        let productName = notification.userInfo!["productIDName"] as! String
+        comOperationIndicaterViewDidSelected(index: 2)
+        owedSearchProductTF.text = productName
+        owedColView.mj_header.beginRefreshing()
     }
     
     //MARK: - 设置orderManageColView长按手势

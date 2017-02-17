@@ -154,7 +154,6 @@ class SAMLoginController: UIViewController {
         
         //发送请求
         SAMNetWorker.sharedLoginNetWorker().get(URLStr, parameters: parameters, progress: nil, success: { (Task, json) in
-            
             //判断返回数据状态
             let Json = json as! [String: AnyObject]
             let status = Json["head"]! as! [String: String]

@@ -134,8 +134,13 @@ class SAMOrderOwedOperationController: UIViewController {
         
         //设置title，请求路径
         performByControllerType(buildOrder: {
-            self.titles = [[["客户", ""], ["备注", ""]], [["666", "666"]], [["优惠", "0"], ["其他金额", "0"], ["总金额", "0"], ["已收定金", "0"]]]
+            self.titles = [[["客户", ""], ["备注", ""], ["业务员", "不选择默认自己"]], [["666", "666"]], [["优惠", "0"], ["其他金额", "0"], ["总金额", "0"], ["已收定金", "0"]]]
             self.saveUrlStr = "OrderBillAdd.ashx"
+            
+            let model = SAMOrderBuildEmployeeModel()
+            model.employeeID = ""
+            model.name = ""
+            self.orderBuildEmployeeModel = model
             
         }, checkOrder: { 
             self.titles = self.orderInfoModel!.orderDetailContentArr
@@ -330,12 +335,17 @@ class SAMOrderOwedOperationController: UIViewController {
         
         switch controllerType! {
         case OrderOwedOperationControllerType.buildOrder, OrderOwedOperationControllerType.checkOrder:
-            let employeeID = SAMUserAuth.shareUser()!.employeeID!
+            var employeeID = SAMUserAuth.shareUser()!.employeeID!
             let memoInfo = self.titleModels![0][1]!.cellContent
             let cutMoney = self.titleModels![2][0]!.cellContent
             let otherMoney = self.titleModels![2][1]!.cellContent
             let totalMoney = self.titleModels![2][2]!.cellContent
             let receiveMoney = self.titleModels![2][3]!.cellContent
+            
+            
+            if (self.orderBuildEmployeeModel?.name != "") && (self.orderBuildEmployeeModel != nil) {
+                employeeID = orderBuildEmployeeModel!.employeeID
+            }
             
             MainData = ["startDate": dateStr, "CGUnitID": CGUnitID, "employeeID": employeeID, "memoInfo": memoInfo, "cutMoney": cutMoney, "otherMoney": otherMoney, "totalMoney": totalMoney, "receiveMoney": receiveMoney, "userID": userID]
             
@@ -527,6 +537,9 @@ class SAMOrderOwedOperationController: UIViewController {
         
         return maskView
     }()
+    
+    ///业务员数据模型
+    fileprivate var orderBuildEmployeeModel: SAMOrderBuildEmployeeModel?
 
     //MARK: - XIB链接属性
     @IBOutlet weak var tableView: UITableView!
@@ -736,7 +749,7 @@ extension SAMOrderOwedOperationController: UITableViewDelegate {
             }else {
                 //取出模型，跳转编辑界面
                 let model = titleModels![indexPath.section][indexPath.row]!
-                let editVC = SAMOrderInfoEditController.editInfo(orderTitleModel: model)
+                let editVC = SAMOrderInfoEditController.editInfo(orderTitleModel: model, employeeModel: orderBuildEmployeeModel)
                 navigationController!.pushViewController(editVC, animated: true)
             }
         }

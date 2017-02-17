@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		038F85C51E5553240084EFE9 /* SAMOrderBuildEmployeeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038F85C41E5553240084EFE9 /* SAMOrderBuildEmployeeModel.swift */; };
+		038F85C91E558E040084EFE9 /* SAMOrderImageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 038F85C81E558E040084EFE9 /* SAMOrderImageView.xib */; };
+		038F85CC1E5591E60084EFE9 /* SAMOrderImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038F85CA1E5591E60084EFE9 /* SAMOrderImageCell.swift */; };
+		038F85CD1E5591E60084EFE9 /* SAMOrderImageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 038F85CB1E5591E60084EFE9 /* SAMOrderImageCell.xib */; };
+		03F9AC0B1E559B1B00CCBA37 /* SAMOrderImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03F9AC0A1E559B1B00CCBA37 /* SAMOrderImageView.swift */; };
 		1808BD681DE140B800D79718 /* provinces.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1808BD671DE140B800D79718 /* provinces.plist */; };
 		1808BD6A1DE1414200D79718 /* LXMProCityList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1808BD691DE1414200D79718 /* LXMProCityList.swift */; };
 		180F9B211E00D799004FCBEA /* SAMShoppingCarController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 180F9B201E00D799004FCBEA /* SAMShoppingCarController.xib */; };
@@ -142,6 +147,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		038F85C41E5553240084EFE9 /* SAMOrderBuildEmployeeModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMOrderBuildEmployeeModel.swift; sourceTree = "<group>"; };
+		038F85C81E558E040084EFE9 /* SAMOrderImageView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMOrderImageView.xib; sourceTree = "<group>"; };
+		038F85CA1E5591E60084EFE9 /* SAMOrderImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMOrderImageCell.swift; sourceTree = "<group>"; };
+		038F85CB1E5591E60084EFE9 /* SAMOrderImageCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMOrderImageCell.xib; sourceTree = "<group>"; };
+		03F9AC0A1E559B1B00CCBA37 /* SAMOrderImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMOrderImageView.swift; sourceTree = "<group>"; };
 		1808BD671DE140B800D79718 /* provinces.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = provinces.plist; sourceTree = "<group>"; };
 		1808BD691DE1414200D79718 /* LXMProCityList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LXMProCityList.swift; sourceTree = "<group>"; };
 		180F9B201E00D799004FCBEA /* SAMShoppingCarController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMShoppingCarController.xib; sourceTree = "<group>"; };
@@ -336,6 +346,10 @@
 				18BA15221DFAAFC4003D524C /* SAMOrderDetailListCell.xib */,
 				18BA15291DFB8093003D524C /* SAMOrderMishuCell.swift */,
 				18BA152A1DFB8093003D524C /* SAMOrderMishuCell.xib */,
+				03F9AC0A1E559B1B00CCBA37 /* SAMOrderImageView.swift */,
+				038F85C81E558E040084EFE9 /* SAMOrderImageView.xib */,
+				038F85CA1E5591E60084EFE9 /* SAMOrderImageCell.swift */,
+				038F85CB1E5591E60084EFE9 /* SAMOrderImageCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -657,6 +671,7 @@
 			children = (
 				18DE1AE31E0912C300E69965 /* SAMOrderDetailModel.swift */,
 				18C73D401E03EB2E00A8BB8E /* SAMOrderBuildTitleModel.swift */,
+				038F85C41E5553240084EFE9 /* SAMOrderBuildEmployeeModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -877,6 +892,7 @@
 				183CC3521E17625F00EA9412 /* SAMRankDetailController.xib in Resources */,
 				18F50F101DD5A94F00CEA8C9 /* SAMLoginController.xib in Resources */,
 				183FDC191E076B50007117E8 /* SAMOrderBuildBigCell.xib in Resources */,
+				038F85C91E558E040084EFE9 /* SAMOrderImageView.xib in Resources */,
 				18DE1B041E0CBDE600E69965 /* SAMComOperationCell.xib in Resources */,
 				183FDC291E07ED03007117E8 /* SAMOrderProductSectionFooterView.xib in Resources */,
 				18BA15241DFAAFC4003D524C /* SAMOrderDetailListCell.xib in Resources */,
@@ -903,6 +919,7 @@
 				185429571DF90722005BDAA6 /* SAMOrderDetailBigCell.xib in Resources */,
 				18C202C11DD3081A00C0117C /* Assets.xcassets in Resources */,
 				183FDC1B1E076B50007117E8 /* SAMOrderBuildSmallCell.xib in Resources */,
+				038F85CD1E5591E60084EFE9 /* SAMOrderImageCell.xib in Resources */,
 				180F9B211E00D799004FCBEA /* SAMShoppingCarController.xib in Resources */,
 				188A0ACF1E239D680086951F /* SAMStockDetailController.xib in Resources */,
 				184570D51DE87E1F00F8AAB0 /* SAMStockProductDetailCell.xib in Resources */,
@@ -972,7 +989,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		B975061B70AAA1C75FB6B257 /* [CP] Copy Pods Resources */ = {
@@ -1052,7 +1069,9 @@
 				1816D7B11E12B03F00CA9308 /* SAMCustomerVistModel.swift in Sources */,
 				18206D081E4B213D007D5ED4 /* LXMCodeViewController.swift in Sources */,
 				18C73D571E064E5500A8BB8E /* SAMProductOperationView.swift in Sources */,
+				038F85C51E5553240084EFE9 /* SAMOrderBuildEmployeeModel.swift in Sources */,
 				18DE1B001E0C07CD00E69965 /* SAMSaleOrderInfoModel.swift in Sources */,
+				038F85CC1E5591E60084EFE9 /* SAMOrderImageCell.swift in Sources */,
 				183FDC271E07ECF2007117E8 /* SAMOrderProductSectionFooterView.swift in Sources */,
 				18F50F121DD698FF00CEA8C9 /* SAMLoginTextField.swift in Sources */,
 				187EA27E1DE54794004523A4 /* SAMStockStorehouse.swift in Sources */,
@@ -1069,6 +1088,7 @@
 				18206D011E49A63D007D5ED4 /* SAMCacheClearer.swift in Sources */,
 				185429391DF8122B005BDAA6 /* SAMSaleOrderDetailModel.swift in Sources */,
 				18BA15201DFAAA7C003D524C /* SAMSaleOrderDetailListModel.swift in Sources */,
+				03F9AC0B1E559B1B00CCBA37 /* SAMOrderImageView.swift in Sources */,
 				1854292F1DF69DBF005BDAA6 /* NSDate+Extension.swift in Sources */,
 				1816D7BF1E139B4200CA9308 /* SAMQRCoder.m in Sources */,
 			);

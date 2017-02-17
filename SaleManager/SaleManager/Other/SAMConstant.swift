@@ -23,6 +23,8 @@ let SAMStockDetailControllerDismissSuccessNotification = "SAMStockDetailControll
 let SAMStockConSearchControllerDismissSuccessNotification = "SAMStockConSearchControllerDismissSuccessNotification"
 ///产品库存条件搜索语音识别成功后发出的通知
 let SAMStockConSearchControllerSpeechSuccessNotification = "SAMStockConSearchControllerSpeechSuccessNotification"
+///长按产品库存Cell库存警告图片发出的通知
+let SAMStockProductCellLongPressWarnningImageNotification = "SAMStockProductCellLongPressWarnningImageNotification"
 
 
 let ScreenW = UIScreen.main.bounds.width

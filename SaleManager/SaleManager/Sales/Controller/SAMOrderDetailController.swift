@@ -35,6 +35,9 @@ class SAMOrderDetailController: UIViewController {
 
         //初始化collectionView
         setupCollectionView()
+        
+        //设置右上角按钮
+        setupNavRightButton()
     }
 
     //MARK: - 初始化orderDetailCollectionView
@@ -52,6 +55,34 @@ class SAMOrderDetailController: UIViewController {
         
         //注册小cell
         collectionView.register(UINib(nibName: "SAMOrderDetailSmallCell", bundle: nil), forCellWithReuseIdentifier: SAMOrderDetailSmallCellReuseIdentifier)
+    }
+    
+    //MARK: - 设置右上角按钮
+    fileprivate func setupNavRightButton() {
+        let buttonItem = UIBarButtonItem(title: "生成图片", style: .plain, target: self, action: #selector(SAMOrderDetailController.setupOrderImage))
+        navigationItem.rightBarButtonItem = buttonItem
+    }
+    
+    func setupOrderImage() {
+        let orderImageView = SAMOrderImageView.instance(orderInfoModel: orderDetailModel!, productDetailModels: orderDetailListModels)
+        orderImageView.frame = CGRect(x: 0, y: 0, width: 594, height: 895)
+        
+        UIGraphicsBeginImageContextWithOptions(orderImageView.bounds.size, false, 0)
+        let ctx = UIGraphicsGetCurrentContext()
+        orderImageView.layer.render(in: ctx!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()!
+        //保存照片
+        UIImageWriteToSavedPhotosAlbum(image, self, #selector(SAMOrderDetailController.didFinishSaveImageWithError(_:error:contextInfo:)), nil)
+        UIGraphicsEndImageContext()
+    }
+    
+    //MARK: - 保存照片后的回调方法
+    func didFinishSaveImageWithError(_ image: UIImage?, error: NSError?, contextInfo: AnyObject) {
+        if error == nil {
+            let _ = SAMHUD.showMessage("保存成功", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+        }else {
+            let _ = SAMHUD.showMessage("保存失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+        }
     }
     
     //MARK: - viewWillAppear
@@ -139,7 +170,6 @@ class SAMOrderDetailController: UIViewController {
         
         //发送请求
         SAMNetWorker.sharedNetWorker().get("getSellDetailDataByBillNumber.ashx", parameters: parameters, progress: nil, success: {[weak self] (Task, json) in
-            
             //获取模型数组
             let Json = json as! [String: AnyObject]
             let dictArr = Json["body"] as? [[String: AnyObject]]

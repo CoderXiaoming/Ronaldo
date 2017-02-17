@@ -15,9 +15,10 @@ let SAMStockProductCellNormalHeight: CGFloat = 75
 //MARK: - 代理方法
 protocol SAMStockProductCellDelegate: NSObjectProtocol {
     func productCellDidClickShoppingCarButton(_ stockProductModel: SAMStockProductModel, stockProductImage: UIImage)
-    func productCellDidClickStockWarnningButton(_ stockProductModel: SAMStockProductModel)
+    func productCellDidTapWarnningImage(_ stockProductModel: SAMStockProductModel)
     func productCellDidClickProductImage(_ stockProductModel: SAMStockProductModel)
     func productCellDidLongPressProductImage(_ stockProductModel: SAMStockProductModel)
+    func productCellDidLongPressWarnningImage(_ stockProductModel: SAMStockProductModel)
 }
 
 class SAMStockProductCell: UICollectionViewCell {
@@ -54,8 +55,11 @@ class SAMStockProductCell: UICollectionViewCell {
             
             //设置警告，购物车按钮状态
             if !stockProductModel!.couldOperateCell {
-                stockWarningBtn.isEnabled = false
+                warningNormalImage.isHidden = true
                 shoppingCarBtn.isEnabled = false
+            }else {
+                warningNormalImage.isHidden = false
+                shoppingCarBtn.isEnabled = true
             }
         }
     }
@@ -72,11 +76,23 @@ class SAMStockProductCell: UICollectionViewCell {
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(SAMStockProductCell.productImageViewDidLongPress))
         productImageView.addGestureRecognizer(tapGesture)
         productImageView.addGestureRecognizer(longPressGesture)
+        
+        //设置库存警告监听
+        let tapWarnningGesture = UITapGestureRecognizer(target: self, action: #selector(SAMStockProductCell.tapStockWarnningImage(tap:)))
+        let longWarnningPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(SAMStockProductCell.longPressWarnningImage(longPress:)))
+        warningNormalImage.addGestureRecognizer(tapWarnningGesture)
+        warningNormalImage.addGestureRecognizer(longWarnningPressGesture)
     }
     
     //MARK: - 用户点击事件处理
-    @IBAction func stockWaringBtnClick(_ sender: AnyObject) {
-        delegate?.productCellDidClickStockWarnningButton(stockProductModel!)
+    func tapStockWarnningImage(tap: UITapGestureRecognizer) {
+        delegate?.productCellDidTapWarnningImage(stockProductModel!)
+    }
+    
+    func longPressWarnningImage(longPress: UILongPressGestureRecognizer) {
+        if longPress.state == .began {
+            delegate?.productCellDidLongPressWarnningImage(stockProductModel!)
+        }
     }
     
     //点击了产品图片
@@ -101,6 +117,6 @@ class SAMStockProductCell: UICollectionViewCell {
     @IBOutlet weak var productNameLabel: UILabel!
     @IBOutlet weak var pishuLabel: UILabel!
     @IBOutlet weak var mishuLabel: UILabel!
-    @IBOutlet weak var stockWarningBtn: UIButton!
     @IBOutlet weak var shoppingCarBtn: UIButton!
+    @IBOutlet weak var warningNormalImage: UIImageView!
 }

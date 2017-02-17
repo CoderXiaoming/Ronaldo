@@ -11,10 +11,11 @@ import UIKit
 class SAMOrderInfoEditController: UIViewController {
 
     //对外提供的类方法
-    class func editInfo(orderTitleModel: SAMOrderBuildTitleModel) -> SAMOrderInfoEditController {
+    class func editInfo(orderTitleModel: SAMOrderBuildTitleModel, employeeModel: SAMOrderBuildEmployeeModel?) -> SAMOrderInfoEditController {
         
         let editVC = SAMOrderInfoEditController()
         editVC.orderTitleModel = orderTitleModel
+        editVC.orderBuildEmployeeModel = employeeModel
         return editVC
     }
     
@@ -30,11 +31,20 @@ class SAMOrderInfoEditController: UIViewController {
         
         //设置右按钮
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightButton)
-        rightButton.isEnabled = false
+        if orderTitleModel?.cellTitle == "业务员" {
+            rightButton.isEnabled = true
+        }else {
+            rightButton.isEnabled = false
+        }
         
         //监听文本框，并设置代理
         contentTextField.addTarget(self, action: #selector(SAMOrderInfoEditController.textFieldEditChange), for: .editingChanged)
         contentTextField.delegate = self
+        
+        //设置订单业务员数据模型数组
+        if SAMOrderBuildEmployeeModel.shareModelArr().count == 0 {
+            SAMOrderBuildEmployeeModel.setupModels()
+        }
     }
     
     //MARK: - viewWillAppear
@@ -48,6 +58,8 @@ class SAMOrderInfoEditController: UIViewController {
             contentTextField.keyboardType = UIKeyboardType.default
         }else if orderTitleModel!.cellTitle == "交货日期" {
             contentTextField.inputView = datePicker
+        }else if orderTitleModel!.cellTitle == "业务员" {
+            contentTextField.inputView = employeePicker
         }else {
             contentTextField.keyboardType = UIKeyboardType.decimalPad
         }
@@ -98,6 +110,9 @@ class SAMOrderInfoEditController: UIViewController {
         }
     }
     
+    ///接收的订单业务员数据模型
+    fileprivate var orderBuildEmployeeModel: SAMOrderBuildEmployeeModel?
+    
     ///当前是编辑文字，否则是编辑数字
     fileprivate var isEditTitle: Bool = true
     
@@ -122,6 +137,14 @@ class SAMOrderInfoEditController: UIViewController {
         datePicker.addTarget(self, action: #selector(SAMOrderInfoEditController.dateChanged(_:)), for: .valueChanged)
         return datePicker
     }()
+    
+    ///业务员选择器
+    fileprivate lazy var employeePicker: UIPickerView? = {
+        let pickerView = UIPickerView()
+        pickerView.delegate = self
+        pickerView.dataSource = self
+        return pickerView
+    }()
 
     //MARK: - xib链接属性
     @IBOutlet weak var contentTextField: UITextField!
@@ -144,6 +167,12 @@ class SAMOrderInfoEditController: UIViewController {
 
 //MARK: - 文本框代理 UITextFieldDelegate
 extension SAMOrderInfoEditController: UITextFieldDelegate {
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if orderTitleModel?.cellTitle == "业务员" {
+            
+        }
+    }
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
@@ -223,3 +252,28 @@ extension SAMOrderInfoEditController: UITextFieldDelegate {
         return true
     }
 }
+
+//MARK: - PickerViewDataSource PickerViewDelegate
+extension SAMOrderInfoEditController: UIPickerViewDataSource, UIPickerViewDelegate {
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return SAMOrderBuildEmployeeModel.shareModelArr().count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        let model = SAMOrderBuildEmployeeModel.shareModelArr()[row] as! SAMOrderBuildEmployeeModel
+        return model.name
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        let model = SAMOrderBuildEmployeeModel.shareModelArr()[row] as! SAMOrderBuildEmployeeModel
+        contentTextField.text = model.name
+        orderBuildEmployeeModel?.employeeID = model.employeeID
+        orderBuildEmployeeModel?.name = model.name
+    }
+}
+

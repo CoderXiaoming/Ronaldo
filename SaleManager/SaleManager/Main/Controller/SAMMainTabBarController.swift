@@ -12,7 +12,7 @@ class SAMMainTabBarController: UITabBarController {
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         //初始化UI
         setupUI()
         

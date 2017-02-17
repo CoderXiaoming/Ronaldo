@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1217" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="SAMOrderImageView" customModule="SaleManager" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="594" height="895"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="orderImage" translatesAutoresizingMaskIntoConstraints="NO" id="YQ4-sI-RsU">
+                    <rect key="frame" x="20" y="30" width="554" height="835"/>
+                </imageView>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="8Ip-ED-JRS">
+                    <rect key="frame" x="20" y="167" width="534" height="533"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="iN0-l3-epB" id="aHw-3i-egB"/>
+                    </connections>
+                </tableView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z2N-yP-Izv">
+                    <rect key="frame" x="85" y="145" width="600" height="17"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="600" id="erX-RZ-dt8"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NAI-ba-OX3">
+                    <rect key="frame" x="-46" y="145" width="600" height="17"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="600" id="Dck-jf-Tha"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="8Ip-ED-JRS" secondAttribute="bottom" constant="195" id="3Cm-SY-bB4"/>
+                <constraint firstAttribute="bottom" secondItem="YQ4-sI-RsU" secondAttribute="bottom" constant="30" id="4Wc-1X-2Dc"/>
+                <constraint firstItem="NAI-ba-OX3" firstAttribute="trailing" secondItem="8Ip-ED-JRS" secondAttribute="trailing" id="HtN-XV-Uba"/>
+                <constraint firstItem="8Ip-ED-JRS" firstAttribute="top" secondItem="NAI-ba-OX3" secondAttribute="bottom" constant="5" id="JCk-uM-TMa"/>
+                <constraint firstItem="YQ4-sI-RsU" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="30" id="Je1-CW-sg0"/>
+                <constraint firstItem="8Ip-ED-JRS" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="167" id="Mhz-Ty-BWk"/>
+                <constraint firstItem="z2N-yP-Izv" firstAttribute="leading" secondItem="8Ip-ED-JRS" secondAttribute="leading" constant="65" id="VwX-j4-qVe"/>
+                <constraint firstItem="8Ip-ED-JRS" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="c7X-gg-Ijx"/>
+                <constraint firstAttribute="trailing" secondItem="8Ip-ED-JRS" secondAttribute="trailing" constant="40" id="f99-lO-ct0"/>
+                <constraint firstItem="8Ip-ED-JRS" firstAttribute="top" secondItem="z2N-yP-Izv" secondAttribute="bottom" constant="5" id="gJL-OU-d1o"/>
+                <constraint firstAttribute="trailing" secondItem="YQ4-sI-RsU" secondAttribute="trailing" constant="20" id="joF-pv-QSN"/>
+                <constraint firstItem="YQ4-sI-RsU" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="pFg-Nq-T9F"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="customerLabel" destination="z2N-yP-Izv" id="pmg-j9-agf"/>
+                <outlet property="orderTimeLabel" destination="NAI-ba-OX3" id="Chs-BU-wJx"/>
+                <outlet property="tableView" destination="8Ip-ED-JRS" id="UXY-Kg-1BE"/>
+            </connections>
+            <point key="canvasLocation" x="33" y="72.5"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="orderImage" width="3321" height="5113"/>
+    </resources>
+</document>

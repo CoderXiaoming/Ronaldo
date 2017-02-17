@@ -158,7 +158,7 @@ class SAMRankDetailController: UIViewController {
         
         if productRankModel != nil {
             //设置下拉
-            collectionView.mj_footer = MJRefreshBackNormalFooter.init(refreshingTarget: self, refreshingAction: #selector(SAMRankDetailController.loadMoreInfo))
+            collectionView.mj_footer = MJRefreshAutoNormalFooter.init(refreshingTarget: self, refreshingAction: #selector(SAMRankDetailController.loadMoreInfo))
             
             //判断是否还有更多数据
             if !hasMoreData {
