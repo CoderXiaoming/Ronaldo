@@ -153,13 +153,13 @@ class SAMLoginController: UIViewController {
         let parameters = ["userName": userNameStr!, "pwd": PWDStr!]
         
         //发送请求
-        SAMNetWorker.sharedLoginNetWorker().get(URLStr, parameters: parameters, progress: nil, success: { (Task, json) in
+        SAMNetWorker.sharedLoginNetWorker().get(URLStr, parameters: parameters, progress: nil, success: {[weak self] (Task, json) in
             //判断返回数据状态
             let Json = json as! [String: AnyObject]
             let status = Json["head"]! as! [String: String]
             if status["status"]! == "fail" { //用户名或者密码错误
                 
-                self.showLoginDefeatInfo("用户名或者密码错误")
+                self!.showLoginDefeatInfo("用户名或者密码错误")
             } else { //登录成功
                 
                 //模型化数据
@@ -169,14 +169,14 @@ class SAMLoginController: UIViewController {
                 let employeeID = dict["employeeID"]
                 let appPower = dict["appPower"]
                 let deptID = dict["deptID"]
-                let _ = SAMUserAuth.auth(id, employeeID: employeeID, appPower: appPower, deptID: deptID)
-                
+                let model = SAMUserAuth.auth(id, employeeID: employeeID, appPower: appPower, deptID: deptID)
+                model.userName = self!.userNameTF.text
                 //执行登录成功动画
-                self.loginSuccessAnim()
+                self!.loginSuccessAnim()
             }
-            }) { (Task, Error) in
+            }) {[weak self] (Task, Error) in
                 
-                self.showLoginDefeatInfo("请检查网络")
+                self!.showLoginDefeatInfo("请检查网络")
         }
     }
     

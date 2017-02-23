@@ -20,7 +20,6 @@
                 <outlet property="saveButton" destination="3af-ul-1PM" id="ZaJ-tO-ZcF"/>
                 <outlet property="saveEditButton" destination="aqR-UQ-urf" id="uiv-4D-bxR"/>
                 <outlet property="tableView" destination="YXQ-Tz-6b2" id="boR-di-aNY"/>
-                <outlet property="tableViewTopDistance" destination="E81-Ll-CWJ" id="JAg-Up-zB4"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>

@@ -24,6 +24,14 @@ fileprivate let SAMOrderBuildBigCellReuseIdentifier = "SAMOrderBuildBigCellReuse
 
 class SAMOrderOwedOperationController: UIViewController {
     
+    ///缺货登记新建单例
+    static let owedBuildInstance: SAMOrderOwedOperationController = {
+        let vc = SAMOrderOwedOperationController()
+        vc.hidesBottomBarWhenPushed = true
+        vc.controllerType = OrderOwedOperationControllerType.buildOwe
+        return vc
+    }()
+    
     //MARK: - 对外提供的类方法，接收产品数据模型，添加到订单中
     class func buildOrder(productModels: [SAMShoppingCarListModel]?, type: OrderOwedOperationControllerType) -> SAMOrderOwedOperationController {
         let vc = SAMOrderOwedOperationController()
@@ -51,12 +59,10 @@ class SAMOrderOwedOperationController: UIViewController {
     
     //MARK: - 对外提供的类方法，接收库存产品数据模型，新建缺货登记
     class func buildOwe(productModel: SAMStockProductModel, type: OrderOwedOperationControllerType) -> SAMOrderOwedOperationController {
-        let vc = SAMOrderOwedOperationController()
-        vc.controllerType = type
-        vc.stockModel = productModel
+        owedBuildInstance.controllerType = type
+        owedBuildInstance.stockModel = productModel
         
-        vc.hidesBottomBarWhenPushed = true
-        return vc
+        return owedBuildInstance
     }
     
     //MARK: - 对外提供的类方法，接收缺货登记数据模型，查看缺货登记
@@ -126,11 +132,21 @@ class SAMOrderOwedOperationController: UIViewController {
     //MARK: - viewWillAppear，修改后返回界面刷新数据
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if controllerType! == .buildOwe {
+            setupMainInfo()
+        }
         tableView.reloadData()
     }
     
     //MARK: - 设置主要数据
     fileprivate func setupMainInfo() {
+        
+        //如果是新建缺货登记
+        if (controllerType! == .buildOwe) && (titleModels != nil) {
+            let titleModel = titleModels![1][0]! as SAMOrderBuildTitleModel
+            titleModel.cellContent = stockModel!.productIDName
+            return
+        }
         
         //设置title，请求路径
         performByControllerType(buildOrder: {
@@ -153,7 +169,7 @@ class SAMOrderOwedOperationController: UIViewController {
             self.saveUrlStr = "OOSRecordAdd.ashx"
             
         }) {
-            self.titles = [[["客户", self.oweModel!.CGUnitName], ["交货日期", self.oweModel!.endDate]], [["产品型号", self.oweModel!.productIDName], ["匹数", String(format: "%d", self.oweModel!.countP)], ["米数", String(format: "%.1f", self.oweModel!.countM)]], [["备注", self.oweModel!.memoInfo], ["状态", self.oweModel!.iState]]]
+            self.titles = [[["客户", self.oweModel!.CGUnitName], ["交货日期", self.oweModel!.endDate]], [["产品型号", self.oweModel!.productIDName], ["匹数", String(format: "%d", self.oweModel!.countP)], ["米数", String(format: "%.1f", self.oweModel!.countM)], ["备注", self.oweModel!.memoInfo]], [["状态", self.oweModel!.iState]]]
             self.saveUrlStr = "OOSRecordEdit.ashx"
             //设置用户
             self.orderCustomerModel = self.oweModel?.orderCustomerModel!
@@ -170,7 +186,7 @@ class SAMOrderOwedOperationController: UIViewController {
             let strArrArr = titles![section] as [[String?]]
 
             //如果数组为空返回
-            if strArrArr.count == 1 {
+            if strArrArr[0][0] == "666" {
                 titleModels!.append([SAMOrderBuildTitleModel.titleModel(title: "666", content: "666")])
             }else {
                 //遍历数组，创建数据源数组
@@ -188,6 +204,11 @@ class SAMOrderOwedOperationController: UIViewController {
     //MARK: - 初始化UI
     fileprivate func setupUI() {
     
+        //新建缺货登记采取单例，新加以下判断
+        if (controllerType! == .buildOwe) && (saveAndAgreeSendButtonWidth.constant) == -(ScreenW + 1) {
+            return
+        }
+        
         performByControllerType(buildOrder: { 
             //隐藏编辑按钮父控件
             self.editBtnView.isHidden = true
@@ -315,6 +336,12 @@ class SAMOrderOwedOperationController: UIViewController {
     }
     @IBAction func saveBtnClick(_ sender: Any) {
         
+        //判断权限
+        if (controllerType! == OrderOwedOperationControllerType.buildOwe) && !hasOwedXZAuth {
+            _ = SAMHUD.showMessage("暂无权限", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+            return
+        }
+        
         saveAndAgreeSend(isAgreeSend: false)
     }
     
@@ -358,7 +385,7 @@ class SAMOrderOwedOperationController: UIViewController {
             let productID = self.stockModel!.id
             let countP = self.titleModels![1][1]!.cellContent
             let countM = self.titleModels![1][2]!.cellContent
-            let memoInfo = self.titleModels![2][0]!.cellContent
+            let memoInfo = self.titleModels![1][3]!.cellContent
             
             MainData = ["CGUnitID": CGUnitID, "startDate": dateStr, "endDate": endDate, "productID": productID, "countP": countP, "countM": countM, "memoInfo": memoInfo, "userID": userID]
         }
@@ -427,12 +454,21 @@ class SAMOrderOwedOperationController: UIViewController {
                 let _ = SAMHUD.showMessage("保存失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
             }
         }) { (task, error) in
+            //隐藏HUD
+            hud?.hide(true)
+            
             let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
         }
     }
     
     
     @IBAction func deleteBtnClick(_ sender: UIButton) {
+        
+        //判断权限
+        if (controllerType! == OrderOwedOperationControllerType.checkOwe) && !hasOwedSCAuth {
+            _ = SAMHUD.showMessage("暂无权限", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+            return
+        }
         
         let alertVC = UIAlertController(title: "确定删除？", message: nil, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "取消", style: .cancel, handler: nil))
@@ -487,6 +523,12 @@ class SAMOrderOwedOperationController: UIViewController {
     
     @IBAction func saveEditBtnClick(_ sender: UIButton) {
         
+        //判断权限
+        if (controllerType! == OrderOwedOperationControllerType.checkOwe) && !hasOwedXGAuth {
+            _ = SAMHUD.showMessage("暂无权限", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+            return
+        }
+        
         saveBtnClick(saveButton)
     }
     
@@ -540,6 +582,13 @@ class SAMOrderOwedOperationController: UIViewController {
     
     ///业务员数据模型
     fileprivate var orderBuildEmployeeModel: SAMOrderBuildEmployeeModel?
+    
+    ///缺货登记新增权限
+    fileprivate lazy var hasOwedXZAuth: Bool = SAMUserAuth.checkAuth(["QH_XZ_APP"])
+    ///缺货登记修改权限
+    fileprivate lazy var hasOwedXGAuth: Bool = SAMUserAuth.checkAuth(["QH_XG_APP"])
+    ///缺货登记删除权限
+    fileprivate lazy var hasOwedSCAuth: Bool = SAMUserAuth.checkAuth(["QH_SC_APP"])
 
     //MARK: - XIB链接属性
     @IBOutlet weak var tableView: UITableView!
@@ -553,7 +602,7 @@ class SAMOrderOwedOperationController: UIViewController {
     @IBOutlet weak var saveEditButton: UIButton!
     
     @IBOutlet weak var saveAndAgreeSendButtonWidth: NSLayoutConstraint!
-    @IBOutlet weak var tableViewTopDistance: NSLayoutConstraint!
+    
     //MARK: - 其他方法
     fileprivate init() { //重写该方法，为单例服务
         super.init(nibName: nil, bundle: nil)

@@ -86,8 +86,9 @@ class SAMShoppingCarController: UIViewController {
         
         //发送请求
         SAMNetWorker.sharedNetWorker().get("getCartList.ashx", parameters: parameters, progress: nil, success: {[weak self] (Task, json) in
-            //设置全选按钮不选中
-            self!.allSelectedButton.isSelected = false
+            //设置全选，减样按钮不选中
+            self!.daHuoButton.isSelected = false
+            self!.jianYangButton.isSelected = false
             
             //清空原先数据
             self!.clearExpiredInfo()
@@ -166,10 +167,12 @@ class SAMShoppingCarController: UIViewController {
         let allCount = listModels.count
         if allCount != 0 && !isSearch {
             
-            allSelectedButton.isEnabled = true
+            daHuoButton.isEnabled = true
+            jianYangButton.isEnabled = true
         }else {
             
-            allSelectedButton.isEnabled = false
+            daHuoButton.isEnabled = false
+            jianYangButton.isEnabled = false
         }
     }
     
@@ -225,7 +228,8 @@ class SAMShoppingCarController: UIViewController {
     ///记录当前是否在搜索
     fileprivate var isSearch: Bool = false {
         didSet{
-            self.allSelectedButton.isEnabled = !isSearch
+            self.daHuoButton.isEnabled = !isSearch
+            self.jianYangButton.isEnabled = !isSearch
         }
     }
     ///符合搜索结果模型数组
@@ -251,7 +255,7 @@ class SAMShoppingCarController: UIViewController {
     }()
 
     //MARK: - XIB链接点击事件处理
-    @IBAction func allSelectedBtnClick(_ sender: UIButton) {
+    @IBAction func daHuoBtnClick(_ sender: UIButton) {
         
         //获取更改后的选中状态
         let selected = !sender.isSelected
@@ -259,33 +263,43 @@ class SAMShoppingCarController: UIViewController {
         //改变按钮状态
         sender.isSelected = selected
         
-        //移除所有记录数据
-        selectedModels.removeAllObjects()
+        listModels.enumerateObjects({ (obj, index, _) in
+            let model = obj as! SAMShoppingCarListModel
+            if model.countP != 0 {
+                model.selected = selected
+                if selected {
+                    if !selectedModels.contains(model) {
+                        selectedModels.add(model)
+                    }
+                }else {
+                    selectedModels.remove(model)
+                }
+            }
+        })
         
-        //更改所有模型状态
-        if isSearch { //正在搜索状态
-            
-            searchResultModels.enumerateObjects({ (obj, index, _) in
-                let model = obj as! SAMShoppingCarListModel
+        //更新tableView
+        tableView.reloadData()
+    }
+    @IBAction func jianYangBtnClick(_ sender: UIButton) {
+        //获取更改后的选中状态
+        let selected = !sender.isSelected
+        
+        //改变按钮状态
+        sender.isSelected = selected
+        
+        listModels.enumerateObjects({ (obj, index, _) in
+            let model = obj as! SAMShoppingCarListModel
+            if model.countP == 0 {
                 model.selected = selected
-                
-                //如果为选中状态，当前模型对应源数组的序号添加到记录数组中
                 if selected {
-                    selectedModels.add(model)
+                    if !selectedModels.contains(model) {
+                        selectedModels.add(model)
+                    }
+                }else {
+                    selectedModels.remove(model)
                 }
-            })
-        }else { //不是在搜索状态
-            
-            listModels.enumerateObjects({ (obj, index, _) in
-                let model = obj as! SAMShoppingCarListModel
-                model.selected = selected
-                
-                //如果为选中状态，创建indexPath添加到数组中
-                if selected {
-                    selectedModels.add(model)
-                }
-            })
-        }
+            }
+        })
         
         //更新tableView
         tableView.reloadData()
@@ -310,7 +324,8 @@ class SAMShoppingCarController: UIViewController {
         alertVC.addAction(UIAlertAction(title: "确定", style: .destructive, handler: { (_) in
             
             //设置全选按钮状态
-            self.allSelectedButton.isSelected = false
+            self.daHuoButton.isSelected = false
+            self.jianYangButton.isSelected = false
             
             let deleateArr = self.selectedModels.mutableCopy()
             
@@ -379,7 +394,8 @@ class SAMShoppingCarController: UIViewController {
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var bottomToolBar: UIView!
-    @IBOutlet weak var allSelectedButton: UIButton!
+    @IBOutlet weak var daHuoButton: UIButton!
+    @IBOutlet weak var jianYangButton: UIButton!
     @IBOutlet weak var orderButton: UIButton!
     @IBOutlet weak var deleateButton: UIButton!
     
@@ -583,8 +599,9 @@ extension SAMShoppingCarController: UISearchBarDelegate {
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
-        //取消全选按钮选中状态
-        allSelectedButton.isSelected = false
+        //取消全选,减样按钮选中状态
+        daHuoButton.isSelected = false
+        jianYangButton.isSelected = false
         
         //清空搜索结果数组,并赋值
         searchResultModels.removeAllObjects()
@@ -639,8 +656,9 @@ extension SAMShoppingCarController: UISearchBarDelegate {
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         
-        //取消全选按钮选中状态
-        allSelectedButton.isSelected = false
+        //取消全选，减样按钮选中状态
+        daHuoButton.isSelected = false
+        jianYangButton.isSelected = false
         
         //设置删除，下单按钮不可用
         deleateButton.isEnabled = false

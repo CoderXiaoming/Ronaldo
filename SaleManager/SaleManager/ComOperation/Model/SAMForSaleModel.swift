@@ -38,7 +38,7 @@ class SAMForSaleModel: NSObject {
     ///产品编号单位
     var unit = ""
     ///数量
-    var meter = ""
+    var meter = 0.0
     ///扫码人
     var employeeName = "" {
         didSet{

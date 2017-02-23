@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1212" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1217" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -13,6 +14,7 @@
             <connections>
                 <outlet property="beginDateTF" destination="MYu-2u-SKR" id="zXj-cN-mWX"/>
                 <outlet property="collectionView" destination="mZI-XP-IFW" id="34n-2h-R15"/>
+                <outlet property="countLabel" destination="aa6-xx-hcb" id="EMs-Pf-Qp2"/>
                 <outlet property="dateBtnContentView" destination="X0n-qH-MDN" id="CHw-Yv-jlb"/>
                 <outlet property="dateBtnView" destination="QgF-7F-U7V" id="B81-DK-WUr"/>
                 <outlet property="dropDownBtn" destination="3Wu-D1-9Nj" id="DFU-rb-djC"/>
@@ -141,9 +143,23 @@
                     </constraints>
                 </view>
                 <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="Ncu-gn-RCe">
-                    <rect key="frame" x="0.0" y="63" width="375" height="44"/>
+                    <rect key="frame" x="0.0" y="63" width="250" height="44"/>
                     <textInputTraits key="textInputTraits"/>
                 </searchBar>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aa6-xx-hcb">
+                    <rect key="frame" x="250" y="63" width="125" height="44"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C8K-O8-d4S">
+                    <rect key="frame" x="250" y="106" width="125" height="1"/>
+                    <color key="backgroundColor" red="0.78823529410000004" green="0.78823529410000004" blue="0.80784313730000001" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="JvR-yh-Xxa"/>
+                    </constraints>
+                </view>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="mZI-XP-IFW">
                     <rect key="frame" x="0.0" y="107" width="375" height="560"/>
                     <color key="backgroundColor" red="0.94509803920000002" green="0.94117647059999998" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -291,18 +307,25 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="Ncu-gn-RCe" secondAttribute="trailing" id="BUE-HY-LlK"/>
+                <constraint firstItem="aa6-xx-hcb" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" multiplier="0.333333" id="9mm-vj-dWn"/>
+                <constraint firstItem="aa6-xx-hcb" firstAttribute="leading" secondItem="Ncu-gn-RCe" secondAttribute="trailing" id="ER3-oB-ERh"/>
                 <constraint firstItem="mZI-XP-IFW" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="EoE-or-NkR"/>
+                <constraint firstItem="aa6-xx-hcb" firstAttribute="top" secondItem="CRn-hj-dQ6" secondAttribute="bottom" id="Etx-ms-qpz"/>
                 <constraint firstAttribute="bottom" secondItem="mZI-XP-IFW" secondAttribute="bottom" id="I1Z-iw-mcU"/>
+                <constraint firstItem="Ncu-gn-RCe" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Ifx-tG-DFf"/>
                 <constraint firstAttribute="trailing" secondItem="mZI-XP-IFW" secondAttribute="trailing" id="KL7-ZC-ilb"/>
+                <constraint firstItem="C8K-O8-d4S" firstAttribute="bottom" secondItem="aa6-xx-hcb" secondAttribute="bottom" id="Lkq-Ov-Dlp"/>
                 <constraint firstItem="Cfz-GD-mFZ" firstAttribute="top" secondItem="Ncu-gn-RCe" secondAttribute="bottom" id="MVs-QU-ATl"/>
+                <constraint firstItem="C8K-O8-d4S" firstAttribute="trailing" secondItem="aa6-xx-hcb" secondAttribute="trailing" id="NYm-Kq-2Vj"/>
                 <constraint firstAttribute="trailing" secondItem="QgF-7F-U7V" secondAttribute="trailing" constant="-30" id="PIv-fD-rWi"/>
+                <constraint firstItem="Cfz-GD-mFZ" firstAttribute="top" secondItem="aa6-xx-hcb" secondAttribute="bottom" id="Qus-yS-M7a"/>
+                <constraint firstAttribute="trailing" secondItem="aa6-xx-hcb" secondAttribute="trailing" id="RdE-uY-lHr"/>
                 <constraint firstItem="CRn-hj-dQ6" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="20" id="Szw-ps-IRQ"/>
                 <constraint firstItem="CRn-hj-dQ6" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Thj-bE-5zY"/>
+                <constraint firstItem="C8K-O8-d4S" firstAttribute="leading" secondItem="aa6-xx-hcb" secondAttribute="leading" id="a2k-k3-XXV"/>
                 <constraint firstAttribute="bottom" secondItem="Cfz-GD-mFZ" secondAttribute="bottom" id="aKs-87-i5f"/>
                 <constraint firstItem="QgF-7F-U7V" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="-13" id="aRn-5l-jzQ"/>
                 <constraint firstItem="Cfz-GD-mFZ" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="bij-UJ-FwT"/>
-                <constraint firstItem="Ncu-gn-RCe" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="cX5-KT-Eyh"/>
                 <constraint firstAttribute="trailing" secondItem="Cfz-GD-mFZ" secondAttribute="trailing" id="hW4-e1-A3r"/>
                 <constraint firstItem="mZI-XP-IFW" firstAttribute="top" secondItem="Ncu-gn-RCe" secondAttribute="bottom" id="uCJ-KY-j6g"/>
                 <constraint firstItem="Ncu-gn-RCe" firstAttribute="top" secondItem="CRn-hj-dQ6" secondAttribute="bottom" id="v72-hS-TCj"/>

@@ -631,7 +631,7 @@ extension SAMComOperationController: UICollectionViewDelegate {
         case self.orderManageColView:
             orderManageColViewdidSelected(indexpath: indexPath)
         case self.forSaleColView:
-            break
+            forSaleColViewdidSelected(indexpath: indexPath)
         case self.owedColView:
             owedColViewdidSelected(indexpath: indexPath)
         case self.saleHistoryColView:
@@ -1566,7 +1566,8 @@ extension SAMComOperationController {
 
     //待售布匹
     fileprivate func forSaleColViewdidSelected(indexpath: IndexPath) {
-        
+        let vc = SAMForSaleOrderDetailController.instance(forSaleModels: forSaleModels, selectedIndex: indexpath)
+        navigationController!.present(vc, animated: true, completion: nil)
     }
     //缺货登记
     fileprivate func owedColViewdidSelected(indexpath: IndexPath) {

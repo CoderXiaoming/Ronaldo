@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03208A9A1E5D303B007DADEC /* SAMForSaleOrderDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03208A981E5D303B007DADEC /* SAMForSaleOrderDetailController.swift */; };
+		03208A9B1E5D303B007DADEC /* SAMForSaleOrderDetailController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03208A991E5D303B007DADEC /* SAMForSaleOrderDetailController.xib */; };
+		03208A9D1E5D33BD007DADEC /* NSMutableArr+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03208A9C1E5D33BD007DADEC /* NSMutableArr+Extension.swift */; };
+		03208A9F1E5D3A2A007DADEC /* SAMForSaleOrderDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03208A9E1E5D3A2A007DADEC /* SAMForSaleOrderDetailModel.swift */; };
+		03208AA21E5D3DC9007DADEC /* SAMForSaleDetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03208AA01E5D3DC9007DADEC /* SAMForSaleDetailCell.swift */; };
+		03208AA31E5D3DC9007DADEC /* SAMForSaleDetailCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 03208AA11E5D3DC9007DADEC /* SAMForSaleDetailCell.xib */; };
 		038F85C51E5553240084EFE9 /* SAMOrderBuildEmployeeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038F85C41E5553240084EFE9 /* SAMOrderBuildEmployeeModel.swift */; };
 		038F85C91E558E040084EFE9 /* SAMOrderImageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 038F85C81E558E040084EFE9 /* SAMOrderImageView.xib */; };
 		038F85CC1E5591E60084EFE9 /* SAMOrderImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038F85CA1E5591E60084EFE9 /* SAMOrderImageCell.swift */; };
@@ -147,6 +153,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		03208A981E5D303B007DADEC /* SAMForSaleOrderDetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMForSaleOrderDetailController.swift; sourceTree = "<group>"; };
+		03208A991E5D303B007DADEC /* SAMForSaleOrderDetailController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMForSaleOrderDetailController.xib; sourceTree = "<group>"; };
+		03208A9C1E5D33BD007DADEC /* NSMutableArr+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSMutableArr+Extension.swift"; sourceTree = "<group>"; };
+		03208A9E1E5D3A2A007DADEC /* SAMForSaleOrderDetailModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMForSaleOrderDetailModel.swift; sourceTree = "<group>"; };
+		03208AA01E5D3DC9007DADEC /* SAMForSaleDetailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMForSaleDetailCell.swift; sourceTree = "<group>"; };
+		03208AA11E5D3DC9007DADEC /* SAMForSaleDetailCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMForSaleDetailCell.xib; sourceTree = "<group>"; };
 		038F85C41E5553240084EFE9 /* SAMOrderBuildEmployeeModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMOrderBuildEmployeeModel.swift; sourceTree = "<group>"; };
 		038F85C81E558E040084EFE9 /* SAMOrderImageView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SAMOrderImageView.xib; sourceTree = "<group>"; };
 		038F85CA1E5591E60084EFE9 /* SAMOrderImageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SAMOrderImageCell.swift; sourceTree = "<group>"; };
@@ -571,6 +583,7 @@
 				1854292E1DF69DBF005BDAA6 /* NSDate+Extension.swift */,
 				18C73D4C1E0614FC00A8BB8E /* UIColor+Extension.swift */,
 				18206D021E4B151B007D5ED4 /* LXMSpeechWorker.swift */,
+				03208A9C1E5D33BD007DADEC /* NSMutableArr+Extension.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -715,6 +728,8 @@
 				18DE1AEC1E0BBBA400E69965 /* SAMComOperationController.xib */,
 				183CC34F1E17625F00EA9412 /* SAMRankDetailController.swift */,
 				183CC3501E17625F00EA9412 /* SAMRankDetailController.xib */,
+				03208A981E5D303B007DADEC /* SAMForSaleOrderDetailController.swift */,
+				03208A991E5D303B007DADEC /* SAMForSaleOrderDetailController.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -731,6 +746,7 @@
 				183CC3531E1A389C00EA9412 /* SAMProductRankModel.swift */,
 				183CC3551E1A4E1400EA9412 /* SAMProductRankListModel.swift */,
 				182CD9741E2DA44F00EE612A /* SAMForSaleDrawerModel.swift */,
+				03208A9E1E5D3A2A007DADEC /* SAMForSaleOrderDetailModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -744,6 +760,8 @@
 				18DE1B021E0CBDE600E69965 /* SAMComOperationCell.xib */,
 				183CC3451E1743FE00EA9412 /* SAMComOperationViewRankCell.swift */,
 				183CC3461E1743FE00EA9412 /* SAMComOperationViewRankCell.xib */,
+				03208AA01E5D3DC9007DADEC /* SAMForSaleDetailCell.swift */,
+				03208AA11E5D3DC9007DADEC /* SAMForSaleDetailCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -917,8 +935,10 @@
 				1849464C1DDE8D6700C2E9E8 /* SAMCustomerAddController.xib in Resources */,
 				18206D0C1E4C576A007D5ED4 /* SAMCustomerVistManagerController.xib in Resources */,
 				185429571DF90722005BDAA6 /* SAMOrderDetailBigCell.xib in Resources */,
+				03208A9B1E5D303B007DADEC /* SAMForSaleOrderDetailController.xib in Resources */,
 				18C202C11DD3081A00C0117C /* Assets.xcassets in Resources */,
 				183FDC1B1E076B50007117E8 /* SAMOrderBuildSmallCell.xib in Resources */,
+				03208AA31E5D3DC9007DADEC /* SAMForSaleDetailCell.xib in Resources */,
 				038F85CD1E5591E60084EFE9 /* SAMOrderImageCell.xib in Resources */,
 				180F9B211E00D799004FCBEA /* SAMShoppingCarController.xib in Resources */,
 				188A0ACF1E239D680086951F /* SAMStockDetailController.xib in Resources */,
@@ -1014,6 +1034,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03208A9F1E5D3A2A007DADEC /* SAMForSaleOrderDetailModel.swift in Sources */,
 				18DE1AE41E0912C300E69965 /* SAMOrderDetailModel.swift in Sources */,
 				18C203401DD30EA900C0117C /* SAMMainTabBarController.swift in Sources */,
 				18DE1AFE1E0C076A00E69965 /* SAMOrderModel.swift in Sources */,
@@ -1028,6 +1049,7 @@
 				18DE1B031E0CBDE600E69965 /* SAMComOperationCell.swift in Sources */,
 				18ABA9561DDB4EE100B503F0 /* SAMUserAuth.swift in Sources */,
 				18206D031E4B151B007D5ED4 /* LXMSpeechWorker.swift in Sources */,
+				03208A9A1E5D303B007DADEC /* SAMForSaleOrderDetailController.swift in Sources */,
 				1816D7B41E12C7CA00CA9308 /* SAMCustomerVistSearchCell.swift in Sources */,
 				183CC3511E17625F00EA9412 /* SAMRankDetailController.swift in Sources */,
 				18DE1B061E0CC29A00E69965 /* SAMOwedInfoModel.swift in Sources */,
@@ -1039,9 +1061,11 @@
 				185429561DF90722005BDAA6 /* SAMOrderDetailBigCell.swift in Sources */,
 				18C2034C1DD3100900C0117C /* SAMCustomerViewController.swift in Sources */,
 				184570D11DE80D3E00F8AAB0 /* SAMStockProductModel.swift in Sources */,
+				03208AA21E5D3DC9007DADEC /* SAMForSaleDetailCell.swift in Sources */,
 				18F4530D1DDF43E100574FCB /* SAMStringExtension.swift in Sources */,
 				180F9B261E00DCFB004FCBEA /* SAMShoppingCarListCell.swift in Sources */,
 				18C73D531E063AE000A8BB8E /* SAMProductImageOpetationView.swift in Sources */,
+				03208A9D1E5D33BD007DADEC /* NSMutableArr+Extension.swift in Sources */,
 				18FA537E1E013D8F00952F76 /* SAMShoppingCarListModel.swift in Sources */,
 				18C202BA1DD3081A00C0117C /* AppDelegate.swift in Sources */,
 				1849464B1DDE8D6700C2E9E8 /* SAMCustomerAddController.swift in Sources */,

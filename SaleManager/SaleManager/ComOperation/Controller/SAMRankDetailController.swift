@@ -16,10 +16,12 @@ class SAMRankDetailController: UIViewController {
         let vc = SAMRankDetailController()
         if customerRankModel != nil {
             vc.customerRankModel = customerRankModel
+            vc.productRankModel = nil
             vc.requestURLStr = "getCustomerProductStatic.ashx"
             
         }else {
             vc.productRankModel = productRankModel
+            vc.customerRankModel = nil
             vc.requestURLStr = "getSellStaticProductDetail.ashx"
         }
         
@@ -477,6 +479,7 @@ class SAMRankDetailController: UIViewController {
     @IBOutlet weak var dateBtnView: UIView!
     @IBOutlet weak var dateBtnContentView: UIView!
     @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var countLabel: UILabel!
     
     @IBOutlet weak var hudView: UIView!
     @IBOutlet weak var collectionView: UICollectionView!
@@ -509,11 +512,24 @@ extension SAMRankDetailController: UICollectionViewDelegate {
 extension SAMRankDetailController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if isSearch {
-            return searchResultModels.count
+        let arr = isSearch ? searchResultModels : rankListModels
+        print(arr.count)
+        //统计总米数
+        var countM = 0.0
+        if customerRankModel != nil {
+            for obj in arr {
+                let model = obj as! SAMCustomerRankListModel
+                countM += model.countM
+            }
         }else {
-            return rankListModels.count
+            for obj in arr {
+                let model = obj as! SAMProductRankListModel
+                countM += model.countM
+            }
         }
+        countLabel.text = String(format: "%.1f米", countM)
+        
+        return arr.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

@@ -59,7 +59,7 @@ class SAMComOperationCell: UICollectionViewCell {
             
             //设置数量数
             secondInfoTitleLabel.text = "数量："
-            secondInfoContentLabel.text = forSaleInfoModel!.meter + forSaleInfoModel!.unit
+            secondInfoContentLabel.text = String(format: "%.1f", forSaleInfoModel!.meter) + forSaleInfoModel!.unit
             
             //设置米数
             thirdInfoTitleLabel.text = ""

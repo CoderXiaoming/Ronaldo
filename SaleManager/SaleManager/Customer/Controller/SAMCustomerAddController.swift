@@ -284,6 +284,8 @@ class SAMCustomerAddController: UIViewController {
                 let _ = SAMHUD.showMessage("保存失败", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
             }
         }) {[weak self] (task, error) in
+            //隐藏HUD
+            hud?.hide(true)
             let _ = SAMHUD.showMessage("请检查网络", superView: self!.view, hideDelay: SAMHUDNormalDuration, animated: true)
         }
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1212" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1217" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -11,9 +11,10 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SAMShoppingCarController" customModule="SaleManager" customModuleProvider="target">
             <connections>
-                <outlet property="allSelectedButton" destination="SmO-66-QwR" id="gGj-ti-a4V"/>
                 <outlet property="bottomToolBar" destination="GKp-Oz-kyK" id="q70-gP-KlB"/>
+                <outlet property="daHuoButton" destination="SmO-66-QwR" id="cVn-qx-XGK"/>
                 <outlet property="deleateButton" destination="HMp-mC-Kxr" id="gzz-Jz-0V5"/>
+                <outlet property="jianYangButton" destination="87M-XB-i3L" id="IEw-fu-XrM"/>
                 <outlet property="orderButton" destination="OHX-SH-aKX" id="XZh-aJ-rLv"/>
                 <outlet property="searchBar" destination="ji8-Yo-Zph" id="q8F-Sr-LVA"/>
                 <outlet property="tableView" destination="0kI-Vb-GVu" id="8Kb-Gd-5PO"/>
@@ -43,14 +44,13 @@
                     <rect key="frame" x="0.0" y="627" width="375" height="40"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SmO-66-QwR">
-                            <rect key="frame" x="0.0" y="0.0" width="90" height="40"/>
+                            <rect key="frame" x="0.0" y="0.0" width="80" height="40"/>
                             <constraints>
-                                <constraint firstAttribute="width" constant="90" id="7cp-cm-89v"/>
+                                <constraint firstAttribute="width" constant="80" id="7cp-cm-89v"/>
                             </constraints>
-                            <inset key="contentEdgeInsets" minX="-10" minY="0.0" maxX="0.0" maxY="0.0"/>
                             <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="10" maxY="0.0"/>
-                            <state key="normal" title="全选" image="shoppingCarSelectedButton_normal">
+                            <state key="normal" title="大货" image="shoppingCarSelectedButton_normal">
                                 <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
                             <state key="disabled">
@@ -58,7 +58,7 @@
                             </state>
                             <state key="selected" image="shoppingCarSelectedButton_selected"/>
                             <connections>
-                                <action selector="allSelectedBtnClick:" destination="-1" eventType="touchUpInside" id="a0W-0q-Vvl"/>
+                                <action selector="daHuoBtnClick:" destination="-1" eventType="touchUpInside" id="DMH-xi-iHq"/>
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OHX-SH-aKX">
@@ -100,21 +100,42 @@
                                 <constraint firstAttribute="width" constant="1" id="MrQ-3y-rma"/>
                             </constraints>
                         </view>
+                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="87M-XB-i3L">
+                            <rect key="frame" x="80" y="0.0" width="80" height="40"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="80" id="9lm-Ea-Ebb"/>
+                            </constraints>
+                            <inset key="titleEdgeInsets" minX="5" minY="0.0" maxX="0.0" maxY="0.0"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="10" maxY="0.0"/>
+                            <state key="normal" title="剪样" image="shoppingCarSelectedButton_normal">
+                                <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <state key="disabled">
+                                <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <state key="selected" image="shoppingCarSelectedButton_selected"/>
+                            <connections>
+                                <action selector="jianYangBtnClick:" destination="-1" eventType="touchUpInside" id="OKI-GL-rBL"/>
+                            </connections>
+                        </button>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstItem="yue-yx-mUo" firstAttribute="leading" secondItem="HMp-mC-Kxr" secondAttribute="trailing" id="1VF-sk-z8d"/>
                         <constraint firstAttribute="bottom" secondItem="SmO-66-QwR" secondAttribute="bottom" id="3HQ-k2-SxB"/>
+                        <constraint firstAttribute="bottom" secondItem="87M-XB-i3L" secondAttribute="bottom" id="477-tV-jwa"/>
                         <constraint firstItem="OHX-SH-aKX" firstAttribute="top" secondItem="GKp-Oz-kyK" secondAttribute="top" id="5Eq-km-UOg"/>
                         <constraint firstItem="SmO-66-QwR" firstAttribute="top" secondItem="GKp-Oz-kyK" secondAttribute="top" id="5gc-Eu-dkS"/>
                         <constraint firstItem="HMp-mC-Kxr" firstAttribute="top" secondItem="GKp-Oz-kyK" secondAttribute="top" id="5uE-rk-Kvz"/>
                         <constraint firstItem="SmO-66-QwR" firstAttribute="leading" secondItem="GKp-Oz-kyK" secondAttribute="leading" id="9oA-dD-Zoo"/>
+                        <constraint firstItem="87M-XB-i3L" firstAttribute="top" secondItem="GKp-Oz-kyK" secondAttribute="top" id="D21-lx-q2M"/>
                         <constraint firstAttribute="bottom" secondItem="yue-yx-mUo" secondAttribute="bottom" id="KSW-i8-ayz"/>
                         <constraint firstAttribute="trailing" secondItem="OHX-SH-aKX" secondAttribute="trailing" id="Vop-ea-TPE"/>
                         <constraint firstItem="yue-yx-mUo" firstAttribute="top" secondItem="GKp-Oz-kyK" secondAttribute="top" id="Xaw-lY-7ny"/>
                         <constraint firstAttribute="bottom" secondItem="HMp-mC-Kxr" secondAttribute="bottom" id="nhM-hK-VgV"/>
                         <constraint firstAttribute="bottom" secondItem="OHX-SH-aKX" secondAttribute="bottom" id="qIb-iO-YcH"/>
                         <constraint firstAttribute="height" constant="40" id="qo6-0Q-QZF"/>
+                        <constraint firstItem="87M-XB-i3L" firstAttribute="leading" secondItem="SmO-66-QwR" secondAttribute="trailing" id="v2d-oj-McM"/>
                         <constraint firstItem="OHX-SH-aKX" firstAttribute="leading" secondItem="yue-yx-mUo" secondAttribute="trailing" id="zTp-CL-A0N"/>
                     </constraints>
                 </view>

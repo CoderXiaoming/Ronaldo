@@ -78,6 +78,12 @@ class SAMCustomerCollectionCell: UICollectionViewCell {
     
     //MARK: - SwipeGesture
     func leftSwipeCell() {
+        
+        //判断用户归属
+        if customerModel!.employeeName != SAMUserAuth.shareUser()!.userName {
+            return
+        }
+        
         //当前未被选中，返回
         if  hasSelected() == false {
             return

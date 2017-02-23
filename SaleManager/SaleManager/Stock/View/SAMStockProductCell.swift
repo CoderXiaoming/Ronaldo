@@ -14,11 +14,15 @@ let SAMStockProductCellNormalHeight: CGFloat = 75
 
 //MARK: - 代理方法
 protocol SAMStockProductCellDelegate: NSObjectProtocol {
-    func productCellDidClickShoppingCarButton(_ stockProductModel: SAMStockProductModel, stockProductImage: UIImage)
-    func productCellDidTapWarnningImage(_ stockProductModel: SAMStockProductModel)
     func productCellDidClickProductImage(_ stockProductModel: SAMStockProductModel)
     func productCellDidLongPressProductImage(_ stockProductModel: SAMStockProductModel)
+    
+    func productCellDidTapWarnningImage(_ stockProductModel: SAMStockProductModel)
     func productCellDidLongPressWarnningImage(_ stockProductModel: SAMStockProductModel)
+    
+    func productCellDidTapShoppingCarImage(_ stockProductModel: SAMStockProductModel, stockProductImage: UIImage)
+    func productCellDidLongPressShoppingCarImage(_ stockProductModel: SAMStockProductModel)
+    
 }
 
 class SAMStockProductCell: UICollectionViewCell {
@@ -56,10 +60,10 @@ class SAMStockProductCell: UICollectionViewCell {
             //设置警告，购物车按钮状态
             if !stockProductModel!.couldOperateCell {
                 warningNormalImage.isHidden = true
-                shoppingCarBtn.isEnabled = false
+                shoppingCarNormalImage.isHidden = true
             }else {
                 warningNormalImage.isHidden = false
-                shoppingCarBtn.isEnabled = true
+                shoppingCarNormalImage.isHidden = false
             }
         }
     }
@@ -71,17 +75,23 @@ class SAMStockProductCell: UICollectionViewCell {
         //设置图片圆角
         productImageView.layer.cornerRadius = 10
         
-        //设置产品图片监听事件
+        //设置产品图片手势
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(SAMStockProductCell.productImageViewDidTap))
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(SAMStockProductCell.productImageViewDidLongPress))
         productImageView.addGestureRecognizer(tapGesture)
         productImageView.addGestureRecognizer(longPressGesture)
         
-        //设置库存警告监听
+        //设置库存警告图片手势
         let tapWarnningGesture = UITapGestureRecognizer(target: self, action: #selector(SAMStockProductCell.tapStockWarnningImage(tap:)))
         let longWarnningPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(SAMStockProductCell.longPressWarnningImage(longPress:)))
         warningNormalImage.addGestureRecognizer(tapWarnningGesture)
         warningNormalImage.addGestureRecognizer(longWarnningPressGesture)
+        
+        //设置库存警告图片手势
+        let tapShoppingCarGesture = UITapGestureRecognizer(target: self, action: #selector(SAMStockProductCell.tapShoppingCarImage(tap:)))
+        let longPressShoppingCarGesture = UILongPressGestureRecognizer(target: self, action: #selector(SAMStockProductCell.longPressShoppingCarImage(longPress:)))
+        shoppingCarNormalImage.addGestureRecognizer(tapShoppingCarGesture)
+        shoppingCarNormalImage.addGestureRecognizer(longPressShoppingCarGesture)
     }
     
     //MARK: - 用户点击事件处理
@@ -92,6 +102,16 @@ class SAMStockProductCell: UICollectionViewCell {
     func longPressWarnningImage(longPress: UILongPressGestureRecognizer) {
         if longPress.state == .began {
             delegate?.productCellDidLongPressWarnningImage(stockProductModel!)
+        }
+    }
+    
+    func tapShoppingCarImage(tap: UITapGestureRecognizer) {
+        delegate?.productCellDidTapShoppingCarImage(stockProductModel!, stockProductImage: productImageView.image!)
+    }
+    
+    func longPressShoppingCarImage(longPress: UILongPressGestureRecognizer) {
+        if longPress.state == .began {
+            delegate?.productCellDidLongPressShoppingCarImage(stockProductModel!)
         }
     }
     
@@ -107,16 +127,12 @@ class SAMStockProductCell: UICollectionViewCell {
         }
     }
     
-    @IBAction func shoppingCarBtnClick(_ sender: AnyObject) {
-        delegate?.productCellDidClickShoppingCarButton(stockProductModel!, stockProductImage: productImageView.image!)
-    }
-    
     //MARK: - XIB链接属性
     @IBOutlet weak var topContentView: UIView!
     @IBOutlet weak var productImageView: UIImageView!
     @IBOutlet weak var productNameLabel: UILabel!
     @IBOutlet weak var pishuLabel: UILabel!
     @IBOutlet weak var mishuLabel: UILabel!
-    @IBOutlet weak var shoppingCarBtn: UIButton!
     @IBOutlet weak var warningNormalImage: UIImageView!
+    @IBOutlet weak var shoppingCarNormalImage: UIImageView!
 }
