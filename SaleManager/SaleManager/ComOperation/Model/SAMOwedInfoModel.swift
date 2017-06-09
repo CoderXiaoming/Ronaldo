@@ -8,6 +8,8 @@
 
 import UIKit
 
+var SAMOwedStockNode = 0.0
+
 class SAMOwedInfoModel: NSObject {
 
 
@@ -74,6 +76,8 @@ class SAMOwedInfoModel: NSObject {
                     orderStateImageName = "owedCompletion"
                 case "已删除":
                     orderStateImageName = "owedDelete"
+                case "统计":
+                    orderStateImageName = "owedCount"
                 default:
                     break
             }
@@ -101,4 +105,7 @@ class SAMOwedInfoModel: NSObject {
     
     ///状态图片
     var orderStateImageName = ""
+    
+    ///库存米数
+    var stockCountM: Double = 0.0
 }

@@ -124,6 +124,8 @@ class SAMLoginController: UIViewController {
     }
     //点击界面退出编辑状态
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        //TODO: - 登录测试
+//        loginRequest(userName: "王超超", passWord: "yzh0918")
         endEditing()
     }
     //服务器地址确认按钮点击 和 返回服务器设置界面按钮点击 处理在下面动画项中
@@ -146,11 +148,11 @@ class SAMLoginController: UIViewController {
     }
     
     //MARK: - 发送用户登录请求
-    fileprivate func loginRequest() {
+    fileprivate func loginRequest(userName: String, passWord: String) {
         
         //创建请求路径，请求参数
         let URLStr = String(format: "http://%@/handleLogin.ashx", severAddStr!)
-        let parameters = ["userName": userNameStr!, "pwd": PWDStr!]
+        let parameters = ["userName": userName, "pwd": passWord]
         
         //发送请求
         SAMNetWorker.sharedLoginNetWorker().get(URLStr, parameters: parameters, progress: nil, success: {[weak self] (Task, json) in
@@ -285,7 +287,7 @@ class SAMLoginController: UIViewController {
         
         //等待一秒后向服务器发送登录请求
         DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + Double(Int64(1000000000 * animationDuration)) / Double(NSEC_PER_SEC)) {
-            self.loginRequest()
+            self.loginRequest(userName: self.userNameTF.text!, passWord: self.PwdTF.text!)
         }
     }
     

@@ -13,11 +13,15 @@ class SAMStockProductInfoController: UITableViewController {
 
     ///接收的数据模型
     var stockProductModel: SAMStockProductModel?
+    
+    ///接收的相同二维码名称数据模型数组
+    var sameCodeNameModels: NSMutableArray?
 
     //MARK: - 对外提供的类工厂方法
-    class func instance(stockModel: SAMStockProductModel) -> SAMStockProductInfoController? {
+    class func instance(stockModel: SAMStockProductModel, sameCodeNameModels: NSMutableArray) -> SAMStockProductInfoController? {
         let vc = UIStoryboard(name: "SAMStockProductInfoController", bundle: nil).instantiateInitialViewController() as? SAMStockProductInfoController
         vc?.stockProductModel = stockModel
+        vc?.sameCodeNameModels = sameCodeNameModels
         return vc
     }
     
@@ -97,7 +101,7 @@ extension SAMStockProductInfoController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let imageIndex = IndexPath(row: 0, section: 0)
         if indexPath == imageIndex {
-            let productImageVC = SAMProductImageController.instance(stockModel: stockProductModel!)
+            let productImageVC = SAMProductImageController.instance(stockModel: stockProductModel!, sameNameModels: sameCodeNameModels!)
             navigationController!.pushViewController(productImageVC, animated: true)
         }
     }

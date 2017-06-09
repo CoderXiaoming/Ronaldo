@@ -33,6 +33,7 @@ class SAMComOperationCell: UICollectionViewCell {
             
             thirdInfoTitleLabel.text = ""
             thirdInfoContentLabel.text = ""
+            thirdDetailInfoContentLabel.text = ""
             
             //设置时间
             startDateLabel.text = orderInfoModel!.startDate
@@ -64,6 +65,7 @@ class SAMComOperationCell: UICollectionViewCell {
             //设置米数
             thirdInfoTitleLabel.text = ""
             thirdInfoContentLabel.text = ""
+            thirdDetailInfoContentLabel.text = ""
             
             //设置扫码人
             startDateLabel.text = forSaleInfoModel!.employeeName
@@ -97,12 +99,25 @@ class SAMComOperationCell: UICollectionViewCell {
             //设置米数
             thirdInfoTitleLabel.text = "米数："
             thirdInfoContentLabel.text = String(format: "%.1f", owedInfoModel!.countM)
+            if owedInfoModel!.stockCountM == 1000000 {
+                thirdDetailInfoContentLabel.text = ""
+            }else {
+            
+                thirdDetailInfoContentLabel.text = String(format: "(%.1f)", owedInfoModel!.stockCountM)
+            }
             
             //设置起始日期
             startDateLabel.text = owedInfoModel!.startDate
             
             //设置交货日期
             endDateLabel.text = owedInfoModel!.endDate
+            
+            //根据背景
+            if owedInfoModel!.stockCountM < SAMOwedStockNode {
+                contentView.backgroundColor = UIColor(red: 200 / 255.0, green: 200 / 255.0, blue: 200 / 255.0, alpha: 1.0)
+            }else {
+                contentView.backgroundColor = UIColor.white
+            }
         }
     }
     
@@ -129,6 +144,7 @@ class SAMComOperationCell: UICollectionViewCell {
             
             thirdInfoTitleLabel.text = ""
             thirdInfoContentLabel.text = ""
+            thirdDetailInfoContentLabel.text = ""
             
             //设置时间
             startDateLabel.text = saleOrderInfoModel!.startDate
@@ -153,6 +169,7 @@ class SAMComOperationCell: UICollectionViewCell {
     
     @IBOutlet weak var thirdInfoTitleLabel: UILabel!
     @IBOutlet weak var thirdInfoContentLabel: UILabel!
+    @IBOutlet weak var thirdDetailInfoContentLabel: UILabel!
     
     @IBOutlet weak var startDateLabel: UILabel!
     @IBOutlet weak var endDateLabel: UILabel!

@@ -9,19 +9,23 @@
 import UIKit
 
 ///operationView的高度
-private let OperationViewHeight: CGFloat = 187.0
+private let OperationViewHeight: CGFloat = 233.0
 ///operationView的动画时长
 private let OperationViewShowHideAnimationDuration = 0.3
 
 class SAMProductImageController: UIViewController {
 
     ///接收的数据模型
-    var stockProductModel: SAMStockProductModel?
+    fileprivate var stockProductModel: SAMStockProductModel?
+    
+    ///接收的相同二维码名称数据模型数组
+    fileprivate var sameCodeNameModels: NSMutableArray?
     
     ///对外提供的类工厂方法
-    class func instance(stockModel: SAMStockProductModel) -> SAMProductImageController {
+    class func instance(stockModel: SAMStockProductModel, sameNameModels: NSMutableArray) -> SAMProductImageController {
         let vc = SAMProductImageController()
         vc.stockProductModel = stockModel
+        vc.sameCodeNameModels = sameNameModels
         vc.hidesBottomBarWhenPushed = true
         return vc
     }
@@ -326,6 +330,25 @@ extension SAMProductImageController: SAMProductImageOpetationViewDelegate {
         
         //隐藏operationView
         hideOperationView()
+    }
+    func opetationViewDidClickSaveProductStockImageBtn() {
+        
+        //隐藏operationView
+        hideOperationView()
+        
+        //生成图片
+        let productImageStockView = SAMProducutStockImageView.instace(stockModel: stockProductModel!, productModels: sameCodeNameModels!)
+        let height = ScreenW + 37.0 * CGFloat(sameCodeNameModels!.count)
+        productImageStockView.frame = CGRect(x: 0, y: 0, width: ScreenW, height: height)
+        view.insertSubview(productImageStockView, at: 0)
+        
+        UIGraphicsBeginImageContextWithOptions(productImageStockView.bounds.size, false, 0)
+        let ctx = UIGraphicsGetCurrentContext()
+        productImageStockView.layer.render(in: ctx!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()!
+        //保存照片
+        UIImageWriteToSavedPhotosAlbum(image, self, #selector(SAMOrderDetailController.didFinishSaveImageWithError(_:error:contextInfo:)), nil)
+        UIGraphicsEndImageContext()
     }
 }
 

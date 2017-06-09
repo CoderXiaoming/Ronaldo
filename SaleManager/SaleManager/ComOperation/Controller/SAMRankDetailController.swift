@@ -513,7 +513,6 @@ extension SAMRankDetailController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let arr = isSearch ? searchResultModels : rankListModels
-        print(arr.count)
         //统计总米数
         var countM = 0.0
         if customerRankModel != nil {

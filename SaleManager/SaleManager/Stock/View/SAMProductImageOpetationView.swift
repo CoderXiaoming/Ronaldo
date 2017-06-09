@@ -13,6 +13,7 @@ protocol SAMProductImageOpetationViewDelegate: NSObjectProtocol {
     func opetationViewDidClickSelectBtn()
     func opetationViewDidClickSaveBtn()
     func opetationViewDidClickCancelBtn()
+    func opetationViewDidClickSaveProductStockImageBtn()
 }
 
 class SAMProductImageOpetationView: UIView {
@@ -28,8 +29,10 @@ class SAMProductImageOpetationView: UIView {
     override func awakeFromNib() {
         super.awakeFromNib()
         if !hasTP_SZ_Auth {
-            selectImageButton.isEnabled = false
-            cameraButton.isEnabled = false
+            selectImageButton.isHidden = true
+            topSeperaterView.isHidden = true
+            cameraButton.isHidden = true
+            centerSeperaterView.isHidden = true
         }
     }
     
@@ -39,6 +42,9 @@ class SAMProductImageOpetationView: UIView {
     }
     @IBAction func selectBtnClick(_ sender: AnyObject) {
         delegate?.opetationViewDidClickSelectBtn()
+    }
+    @IBAction func saveStockImageBtnClick(_ sender: UIButton) {
+        delegate?.opetationViewDidClickSaveProductStockImageBtn()
     }
     @IBAction func saveBtnClick(_ sender: AnyObject) {
         delegate?.opetationViewDidClickSaveBtn()
@@ -51,6 +57,8 @@ class SAMProductImageOpetationView: UIView {
     @IBOutlet weak var selectImageButton: UIButton!
     @IBOutlet weak var cameraButton: UIButton!
     
+    @IBOutlet weak var topSeperaterView: UIView!
+    @IBOutlet weak var centerSeperaterView: UIView!
     //MARK: - 属性
     ///新增图片权限
     fileprivate lazy var hasTP_SZ_Auth: Bool = SAMUserAuth.checkAuth(["TP_SZ_APP"])

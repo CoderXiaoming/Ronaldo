@@ -164,8 +164,10 @@ class SAMOrderOwedOperationController: UIViewController {
             //设置用户
             self.orderCustomerModel = self.orderInfoModel?.orderCustomerModel!
             
-        }, buildOwe: { 
-            self.titles = [[["客户", ""], ["交货日期", ""]], [["产品型号", self.stockModel!.productIDName], ["匹数", "0"], ["米数", "0"], ["备注", ""]]]
+        }, buildOwe: {
+            let date = Date().beforeOrAfter(3, before: false)
+            let disStr = date.yyyyMMddStr()
+            self.titles = [[["客户", ""], ["交货日期", disStr]], [["产品型号", self.stockModel!.productIDName], ["匹数", "0"], ["米数", "0"], ["备注", ""]]]
             self.saveUrlStr = "OOSRecordAdd.ashx"
             
         }) {

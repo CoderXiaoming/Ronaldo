@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1212" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -104,6 +104,12 @@
                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2vW-Wl-Z76">
+                        <rect key="frame" x="244" y="66.5" width="37.5" height="18"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" red="0.11764705882352941" green="0.56470588235294117" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
             </view>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -112,6 +118,7 @@
                 <constraint firstItem="2XA-wN-5KY" firstAttribute="top" secondItem="5Aj-wd-7Xu" secondAttribute="bottom" constant="10" id="7I8-TI-l78"/>
                 <constraint firstAttribute="trailing" secondItem="DA0-UM-Myn" secondAttribute="trailing" id="88O-vR-dvd"/>
                 <constraint firstItem="0Gt-hO-jgF" firstAttribute="trailing" secondItem="Oey-DE-okf" secondAttribute="trailing" id="9O4-cN-FPw"/>
+                <constraint firstItem="2vW-Wl-Z76" firstAttribute="centerY" secondItem="RG8-Vm-kcK" secondAttribute="centerY" id="LIw-E7-M6S"/>
                 <constraint firstItem="Nuq-ao-sWj" firstAttribute="leading" secondItem="W5K-0J-bKw" secondAttribute="trailing" constant="5" id="Lft-XA-gTk"/>
                 <constraint firstAttribute="bottom" secondItem="DA0-UM-Myn" secondAttribute="bottom" id="ORE-7J-waD"/>
                 <constraint firstItem="2XA-wN-5KY" firstAttribute="leading" secondItem="X60-zr-teO" secondAttribute="leading" constant="10" id="SqH-SA-yvt"/>
@@ -128,6 +135,7 @@
                 <constraint firstItem="DA0-UM-Myn" firstAttribute="leading" secondItem="X60-zr-teO" secondAttribute="leading" id="q1M-zP-Unx"/>
                 <constraint firstItem="Oey-DE-okf" firstAttribute="centerY" secondItem="Nuq-ao-sWj" secondAttribute="centerY" id="q1m-sP-ebH"/>
                 <constraint firstItem="Nuq-ao-sWj" firstAttribute="top" secondItem="X60-zr-teO" secondAttribute="top" constant="10" id="uLb-cS-1Mr"/>
+                <constraint firstItem="2vW-Wl-Z76" firstAttribute="leading" secondItem="LcQ-oQ-FEw" secondAttribute="trailing" constant="3" id="unL-go-9J9"/>
                 <constraint firstItem="W5K-0J-bKw" firstAttribute="top" secondItem="X60-zr-teO" secondAttribute="top" constant="5" id="xRA-70-Gtn"/>
                 <constraint firstItem="5Aj-wd-7Xu" firstAttribute="leading" secondItem="pvm-cU-tnx" secondAttribute="trailing" id="xeC-ov-2pr"/>
                 <constraint firstItem="L2R-0D-dUa" firstAttribute="centerY" secondItem="2XA-wN-5KY" secondAttribute="centerY" id="zTH-Kv-4Z9"/>
@@ -142,6 +150,7 @@
                 <outlet property="secondInfoContentLabel" destination="L2R-0D-dUa" id="iqY-Zq-K3O"/>
                 <outlet property="secondInfoTitleLabel" destination="2XA-wN-5KY" id="VRE-Mf-pb6"/>
                 <outlet property="startDateLabel" destination="Oey-DE-okf" id="jlh-A2-Ecd"/>
+                <outlet property="thirdDetailInfoContentLabel" destination="2vW-Wl-Z76" id="c8L-7l-8im"/>
                 <outlet property="thirdInfoContentLabel" destination="LcQ-oQ-FEw" id="ro9-tV-9GX"/>
                 <outlet property="thirdInfoTitleLabel" destination="RG8-Vm-kcK" id="hdd-EC-7Y3"/>
             </connections>

@@ -16,6 +16,8 @@ class SAMShoppingCarListModel: NSObject {
     var startDate = ""
     ///产品编号ID
     var productID = ""
+    ///订单编号
+    var billNumber = ""
     ///匹数
     var countP: Int = 0
     ///米数

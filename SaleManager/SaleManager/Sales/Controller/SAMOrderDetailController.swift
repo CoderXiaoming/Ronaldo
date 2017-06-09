@@ -36,8 +36,8 @@ class SAMOrderDetailController: UIViewController {
         //初始化collectionView
         setupCollectionView()
         
-        //设置右上角按钮
-        setupNavRightButton()
+        //设置右上角按钮。暂时不需要这个按钮，
+        //setupNavRightButton()
     }
 
     //MARK: - 初始化orderDetailCollectionView

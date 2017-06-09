@@ -9,6 +9,7 @@
 import UIKit
 import MJRefresh
 import Speech
+import MBProgressHUD
 
 ///控制器类型
 enum stockControllerType {
@@ -164,6 +165,8 @@ class SAMStockViewController: UIViewController {
     //MARK: - viewDidAppear
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        noOrdercountPSearchAlertVCIsShowing = false
         
         //判断是否刚上传图片成功 或者是否有外界请求，如果有则触发下拉刷新。
         if SAMStockHasUnloadProductImage || hasOutRequest {
@@ -368,6 +371,19 @@ class SAMStockViewController: UIViewController {
     //MARK: - 加载所有库存数据统计
     fileprivate func calculateStockStatistic() {
         
+        let parameters = ["productIDName": conSearchParameters!["productIDName"], "minCountM": conSearchParameters!["minCountM"], "parentID": conSearchParameters!["parentID"], "storehouseID": conSearchParameters!["storehouseID"]]
+        
+        SAMNetWorker.sharedNetWorker().get("getStockStatic.ashx", parameters: parameters, progress: nil, success: {[weak self] (Task, Json) in
+            //获取模型数组
+            let Json = Json as! [String: AnyObject]
+            let dictArr = Json["body"] as? [[String: AnyObject]]
+            self!.totalCountPString = dictArr![0]["totalCountP"] as? String
+            self!.totalCountMString = dictArr![0]["totalCountM"] as? String
+        }) {[weak self] (Task, error) in
+            self!.totalCountPString = "--"
+            self!.totalCountMString = "---"
+        }
+        
         var staticCountP = 0
         var staticCountM = 0.0
         
@@ -434,7 +450,6 @@ class SAMStockViewController: UIViewController {
                 
                 //刷新数据
                 DispatchQueue.main.async(execute: {
-                    self!.calculateStockStatistic()
                     self!.collectionView.reloadData()
                 })
             }
@@ -574,43 +589,293 @@ class SAMStockViewController: UIViewController {
     fileprivate var microphoneImageView: UIImageView?
     
     ///统计匹数订单管理数据模型数组
+    fileprivate var stockSearchProductName = ""
+    fileprivate var loadModelSuccess = true
+    fileprivate let orderMarr1 = NSMutableArray()
+    fileprivate var orderMarr1DidSet = false
+    fileprivate let orderMarr2 = NSMutableArray()
+    fileprivate var orderMarr2DidSet = false
+    fileprivate let orderMarr3 = NSMutableArray()
+    fileprivate var orderMarr3DidSet = false
+    fileprivate let orderMarr4 = NSMutableArray()
+    fileprivate var orderMarr4DidSet = false
+    fileprivate let orderMarr5 = NSMutableArray()
+    fileprivate var orderMarr5DidSet = false
+    
+    fileprivate let forSaleModels = NSMutableArray()
+    fileprivate var forSaleModelsDidSet = false
+    
     fileprivate let orderManageModels = NSMutableArray()
-    fileprivate var currentOrderCountP = 0 {
+    fileprivate let searchShoppingCarListArr = NSMutableArray()
+    fileprivate var noOrdercountP = 0
+    fileprivate var noOrdercountM = 0.0
+    fileprivate var noOrdercountPSearchIsSuccess = true {
+    
         didSet{
-            if currentOrderCountP == -1 {
+            if noOrdercountPSearchIsSuccess == false {
+                noOrderSearchProgressHud!.hide(true)
+                noOrderSearchProgressHud = nil
+            }
+        }
+    }
+    
+    fileprivate var noOrdercountPSearchHud: SAMHUD?
+    fileprivate var noOrdercountPSearchAlertVC: UIAlertController?
+    fileprivate var noOrdercountPSearchAlertVCIsShowing = false
+    
+    fileprivate var noOrderSearchProgressHud: SAMHUD?
+    fileprivate var hudProgress: Float {
+    
+        get{
+            return  Float(currentOrderSearchCount1 + currentOrderSearchCount2 + currentOrderSearchCount3 + currentOrderSearchCount4 + currentOrderSearchCount5) / Float(self.orderManageModels.count)
+        }
+    }
+    
+    fileprivate var orderArr1DidSet = true
+    fileprivate let orderManageModels1 = NSMutableArray()
+    fileprivate let searchShoppingCarListArr1 = NSMutableArray()
+    fileprivate var currentOrderSearchCount1 = 0 {
+        didSet{
+            setHUDProgress()
+        }
+    }
+    fileprivate var noOrdercountP1 = 0
+    fileprivate var noOrdercountM1 = 0.0
+    fileprivate var currentOrderCountM1 = 0.0 {
+        
+        didSet{
+            noOrdercountM1 += currentOrderCountM1
+        }
+    }
+    fileprivate var currentOrderCountP1 = 0 {
+        didSet{
+            
+            if !noOrdercountPSearchIsSuccess {
+                return
+            }
+            
+            if currentOrderCountP1 == -1 {
+                
                 if noOrdercountPSearchHud != nil {
                     noOrdercountPSearchHud?.hide(true)
                 }
-                let _ = SAMHUD.showMessage("请求失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+                let _ = SAMHUD.showMessage("获取订单详情失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
                 noOrdercountPSearchIsSuccess = false
                 
             }else {
-                noOrdercountP += currentOrderCountP
                 
-                if currentOrderSearchIndex == orderManageModels.count - 1 {
-                    if noOrdercountPSearchHud != nil {
-                        noOrdercountPSearchHud?.hide(true)
-                    }
-                    if !noOrdercountPSearchAlertVCIsShowing {
-                        let message = String(format: "未开单中共有%d匹", noOrdercountP)
-                        noOrdercountPSearchAlertVC = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-                        noOrdercountPSearchAlertVC!.addAction(UIAlertAction(title: "确定", style: .cancel, handler: { (action) in
-                            self.noOrdercountPSearchAlertVCIsShowing = false
-                        }))
-                        
-                        present(noOrdercountPSearchAlertVC!, animated: true, completion: nil)
-                        noOrdercountPSearchAlertVCIsShowing = true
-                    }
+                noOrdercountP1 += currentOrderCountP1
+                
+                if currentOrderSearchCount1 == orderManageModels1.count {
+                    
+                    orderArr1DidSet = true
+                    getOrderDetail()
+                    
+                }else {
+                
+                    let model = orderManageModels1[currentOrderSearchCount1] as! SAMOrderModel
+                    loadOrderDetailArr1(orderModel: model)
                 }
             }
         }
     }
-    fileprivate var currentOrderSearchIndex = 0
-    fileprivate var noOrdercountP = 0
-    fileprivate var noOrdercountPSearchIsSuccess = true
-    fileprivate var noOrdercountPSearchHud: SAMHUD?
-    fileprivate var noOrdercountPSearchAlertVC: UIAlertController?
-    fileprivate var noOrdercountPSearchAlertVCIsShowing = false
+    
+    fileprivate var orderArr2DidSet = true
+    fileprivate let orderManageModels2 = NSMutableArray()
+    fileprivate let searchShoppingCarListArr2 = NSMutableArray()
+    fileprivate var currentOrderSearchCount2 = 0 {
+        didSet{
+            setHUDProgress()
+        }
+    }
+    fileprivate var noOrdercountP2 = 0
+    fileprivate var noOrdercountM2 = 0.0
+    fileprivate var currentOrderCountM2 = 0.0 {
+        
+        didSet{
+            noOrdercountM2 += currentOrderCountM2
+        }
+    }
+    fileprivate var currentOrderCountP2 = 0 {
+        didSet{
+            
+            if !noOrdercountPSearchIsSuccess {
+                return
+            }
+            
+            if currentOrderCountP2 == -1 {
+                
+                if noOrdercountPSearchHud != nil {
+                    noOrdercountPSearchHud?.hide(true)
+                }
+                let _ = SAMHUD.showMessage("获取订单详情失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+                noOrdercountPSearchIsSuccess = false
+                
+            }else {
+                
+                noOrdercountP2 += currentOrderCountP2
+                
+                if currentOrderSearchCount2 == orderManageModels2.count {
+                    
+                    orderArr2DidSet = true
+                    getOrderDetail()
+                    
+                }else {
+                    
+                    let model = orderManageModels2[currentOrderSearchCount2] as! SAMOrderModel
+                    loadOrderDetailArr2(orderModel: model)
+                }
+            }
+        }
+    }
+    
+    fileprivate var orderArr3DidSet = true
+    fileprivate let orderManageModels3 = NSMutableArray()
+    fileprivate let searchShoppingCarListArr3 = NSMutableArray()
+    fileprivate var currentOrderSearchCount3 = 0 {
+        didSet{
+            setHUDProgress()
+        }
+    }
+    fileprivate var noOrdercountP3 = 0
+    fileprivate var noOrdercountM3 = 0.0
+    fileprivate var currentOrderCountM3 = 0.0 {
+        
+        didSet{
+            noOrdercountM3 += currentOrderCountM3
+        }
+    }
+    fileprivate var currentOrderCountP3 = 0 {
+        didSet{
+            
+            if !noOrdercountPSearchIsSuccess {
+                return
+            }
+            
+            if currentOrderCountP3 == -1 {
+                
+                if noOrdercountPSearchHud != nil {
+                    noOrdercountPSearchHud?.hide(true)
+                }
+                let _ = SAMHUD.showMessage("获取订单详情失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+                noOrdercountPSearchIsSuccess = false
+                
+            }else {
+                
+                noOrdercountP3 += currentOrderCountP3
+                
+                if currentOrderSearchCount3 == orderManageModels3.count {
+                    
+                    orderArr3DidSet = true
+                    getOrderDetail()
+                    
+                }else {
+                    
+                    let model = orderManageModels3[currentOrderSearchCount3] as! SAMOrderModel
+                    loadOrderDetailArr3(orderModel: model)
+                }
+            }
+        }
+    }
+    
+    fileprivate var orderArr4DidSet = true
+    fileprivate let orderManageModels4 = NSMutableArray()
+    fileprivate let searchShoppingCarListArr4 = NSMutableArray()
+    fileprivate var currentOrderSearchCount4 = 0 {
+        didSet{
+            setHUDProgress()
+        }
+    }
+    fileprivate var noOrdercountP4 = 0
+    fileprivate var noOrdercountM4 = 0.0
+    fileprivate var currentOrderCountM4 = 0.0 {
+        
+        didSet{
+            noOrdercountM4 += currentOrderCountM4
+        }
+    }
+    fileprivate var currentOrderCountP4 = 0 {
+        didSet{
+            
+            if !noOrdercountPSearchIsSuccess {
+                return
+            }
+            
+            if currentOrderCountP4 == -1 {
+                
+                if noOrdercountPSearchHud != nil {
+                    noOrdercountPSearchHud?.hide(true)
+                }
+                let _ = SAMHUD.showMessage("获取订单详情失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+                noOrdercountPSearchIsSuccess = false
+                
+            }else {
+                
+                noOrdercountP4 += currentOrderCountP4
+                
+                if currentOrderSearchCount4 == orderManageModels4.count {
+                    
+                    orderArr4DidSet = true
+                    getOrderDetail()
+                    
+                }else {
+                    
+                    let model = orderManageModels4[currentOrderSearchCount4] as! SAMOrderModel
+                    loadOrderDetailArr4(orderModel: model)
+                }
+            }
+        }
+    }
+    
+    fileprivate var orderArr5DidSet = true
+    fileprivate let orderManageModels5 = NSMutableArray()
+    fileprivate let searchShoppingCarListArr5 = NSMutableArray()
+    fileprivate var currentOrderSearchCount5 = 0 {
+        didSet{
+            setHUDProgress()
+        }
+    }
+    fileprivate var noOrdercountP5 = 0
+    fileprivate var noOrdercountM5 = 0.0
+    fileprivate var currentOrderCountM5 = 0.0 {
+        
+        didSet{
+            noOrdercountM5 += currentOrderCountM5
+        }
+    }
+    fileprivate var currentOrderCountP5 = 0 {
+        didSet{
+            
+            if !noOrdercountPSearchIsSuccess {
+                return
+            }
+            
+            if currentOrderCountP5 == -1 {
+                
+                if noOrdercountPSearchHud != nil {
+                    noOrdercountPSearchHud?.hide(true)
+                }
+                let _ = SAMHUD.showMessage("获取订单详情失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+                noOrdercountPSearchIsSuccess = false
+                
+            }else {
+                
+                noOrdercountP5 += currentOrderCountP5
+                
+                if currentOrderSearchCount5 == orderManageModels5.count {
+                    
+                    orderArr5DidSet = true
+                    getOrderDetail()
+                    
+                }else {
+                    
+                    let model = orderManageModels5[currentOrderSearchCount5] as! SAMOrderModel
+                    loadOrderDetailArr5(orderModel: model)
+                }
+            }
+        }
+    }
+
     
     
     //MARK: - xibffs束属性
@@ -681,8 +946,11 @@ extension SAMStockViewController: UICollectionViewDelegate {
         let selectedModel = stockProductModels[indexPath.item] as! SAMStockProductModel
         
         //展示产品详情控制器
-        let productInfoVC = SAMStockProductInfoController.instance(stockModel: selectedModel)
-        productInfoVC!.stockProductModel = selectedModel
+        let codeName = selectedModel.codeName
+        let sameCodeNameModels = stockProductModels.compare(modelKeys: ["codeName"], searchItems: [codeName])
+        let productInfoVC = SAMStockProductInfoController.instance(stockModel: selectedModel, sameCodeNameModels: NSMutableArray(array: sameCodeNameModels))
+//        productInfoVC!.stockProductModel = selectedModel
+        //TODO: - 暂时注释，看有没有影响
         navigationController!.pushViewController(productInfoVC!, animated: true)
     }
 }
@@ -718,7 +986,9 @@ extension SAMStockViewController: SAMStockProductCellDelegate {
     //点击了产品图片
     func productCellDidClickProductImage(_ stockProductModel: SAMStockProductModel) {
         //展示产品图片控制器
-        let productImageVC = SAMProductImageController.instance(stockModel: stockProductModel)
+        let codeName = stockProductModel.codeName
+        let sameCodeNameModels = stockProductModels.compare(modelKeys: ["codeName"], searchItems: [codeName])
+        let productImageVC = SAMProductImageController.instance(stockModel: stockProductModel, sameNameModels: NSMutableArray(array: sameCodeNameModels))
         navigationController!.pushViewController(productImageVC, animated: true)
     }
     
@@ -760,7 +1030,9 @@ extension SAMStockViewController: SAMStockProductCellDelegate {
         showShoppingCar(stockProductImage, productModel: stockProductModel)
     }
     func productCellDidLongPressShoppingCarImage(_ stockProductModel: SAMStockProductModel) {
-        countCountPInNoOrder(productName: stockProductModel.productIDName)
+        
+        stockSearchProductName = stockProductModel.productIDName
+        countCountPInNoOrder()
     }
 }
 
@@ -956,70 +1228,358 @@ extension SAMStockViewController: UITextFieldDelegate {
 
 //MARK: - 新增扩展方法，计算未开单总匹数
 extension SAMStockViewController {
-    func countCountPInNoOrder(productName: String) {
+    
+    ///设置初始化数据，调用获取订单，待售布匹方法
+    func countCountPInNoOrder() {
         
-        //清空数据
+        //初始化数据
         orderManageModels.removeAllObjects()
-        currentOrderSearchIndex = 0
-        noOrdercountP = 0
-        noOrdercountPSearchIsSuccess = true
+        orderMarr1.removeAllObjects()
+        orderMarr2.removeAllObjects()
+        orderMarr3.removeAllObjects()
+        orderMarr4.removeAllObjects()
+        orderMarr5.removeAllObjects()
+        forSaleModels.removeAllObjects()
+        orderMarr1DidSet = false
+        orderMarr2DidSet = false
+        orderMarr3DidSet = false
+        orderMarr4DidSet = false
+        orderMarr5DidSet = false
+        forSaleModelsDidSet = false;
         
         //设置加载hud
         noOrdercountPSearchHud = SAMHUD.showAdded(to: KeyWindow!, animated: true)
         noOrdercountPSearchHud!.labelText = NSLocalizedString("", comment: "HUD loading title")
         
-        ///1，请求所有订单模型数组
+        self.loadNewforSaleModels()
+        self.loadModel(pageIndex: "1")
+        self.loadModel(pageIndex: "2")
+        self.loadModel(pageIndex: "3")
+        self.loadModel(pageIndex: "4")
+        self.loadModel(pageIndex: "5")
+    }
+    
+    ///获取订单
+    func loadModel(pageIndex: String) {
+    
         //创建请求参数
         let employeeID = "-1"
         let CGUnitName = ""
-        let pageSize = "1000"
-        let pageIndex = "1"
-        let startDate = Date().yyyyMMddStr()
-        let endDate = Date().yyyyMMddStr()
+        let pageSize = "100"
         let statusStr = "未开单"
+        let yesterDayStr = Date.init(timeIntervalSinceNow: -60 * 60 * 24).yyyyMMddStr()
+        let startDate = yesterDayStr
+        let endDate = Date().yyyyMMddStr()
+        
         let orderRequestParameters = ["employeeID": employeeID, "CGUnitName": CGUnitName, "pageSize": pageSize, "pageIndex": pageIndex, "startDate": startDate, "endDate": endDate, "status": statusStr]
         
-        //发送请求
         SAMNetWorker.sharedNetWorker().get("getOrderMainData.ashx", parameters: orderRequestParameters, progress: nil, success: {[weak self] (Task, json) in
-            //清空原先数据
-            self!.orderManageModels.removeAllObjects()
             
             //获取模型数组
             let Json = json as! [String: AnyObject]
             let dictArr = Json["body"] as? [[String: AnyObject]]
-            let count = dictArr?.count ?? 0
             
-            //判断是否有模型数据
-            if count == 0 { //没有模型数据
-                if self!.noOrdercountPSearchHud != nil {
-                    self!.noOrdercountPSearchHud?.hide(true)
-                }
-                let _ = SAMHUD.showMessage("没有数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
-                return
-            }else { //有数据模型
-                
-                let arr = SAMOrderModel.mj_objectArray(withKeyValuesArray: dictArr)!
-                self!.orderManageModels.addObjects(from: arr as [AnyObject])
-                
-                for index in 0...(self!.orderManageModels.count - 1) {
-                    let model = self!.orderManageModels[index] as! SAMOrderModel
-                    self!.countOrderCountP(product: productName, orderModel: model)
-                }
-//                for obj in self!.orderManageModels {
-//                    let model = obj as! SAMOrderModel
-//                    self!.countOrderCountP(product: productName, orderModel: model)
-//                }
+            let arr = SAMOrderModel.mj_objectArray(withKeyValuesArray: dictArr)!
+            let pageIndexStr = orderRequestParameters["pageIndex"]!
+            switch pageIndexStr {
+                case "1":
+                    self!.orderMarr1DidSet = true
+                    self!.orderMarr1.addObjects(from: arr as! [Any])
+                    self!.setModelArr()
+                    break
+                case "2":
+                    self!.orderMarr2DidSet = true
+                    self!.orderMarr2.addObjects(from: arr as! [Any])
+                    self!.setModelArr()
+                    break
+                case "3":
+                    self!.orderMarr3DidSet = true
+                    self!.orderMarr3.addObjects(from: arr as! [Any])
+                    self!.setModelArr()
+                    break
+                case "4":
+                    self!.orderMarr4DidSet = true
+                    self!.orderMarr4.addObjects(from: arr as! [Any])
+                    self!.setModelArr()
+                    break
+                case "5":
+                    self!.orderMarr5DidSet = true
+                    self!.orderMarr5.addObjects(from: arr as! [Any])
+                    self!.setModelArr()
+                    break
+                default:
+                    break
             }
+            
         }) {[weak self] (Task, Error) in
+            
             if self!.noOrdercountPSearchHud != nil {
                 self!.noOrdercountPSearchHud?.hide(true)
             }
-            let _ = SAMHUD.showMessage("请求失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
-            return
+            let _ = SAMHUD.showMessage("获取订单失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+            
+            self!.loadModelSuccess = false
         }
     }
     
-    func countOrderCountP(product: String, orderModel: SAMOrderModel){
+    ///获取待售布匹
+    func loadNewforSaleModels() {
+        
+        //创建请求参数
+        let userID = "-1"
+        let CGUnitName = ""
+        let productIDName = stockSearchProductName
+        let parameters = ["userID": userID, "CGUnitName": CGUnitName, "productIDName": productIDName]
+        
+        //发送请求
+        SAMNetWorker.sharedNetWorker().get("getReadySellProductListNew.ashx", parameters: parameters, progress: nil, success: {[weak self] (Task, json) in
+            
+            //获取模型数组
+            let Json = json as! [String: AnyObject]
+            let dictArr = Json["body"] as? [[String: AnyObject]]
+            
+            let arr = SAMForSaleModel.mj_objectArray(withKeyValuesArray: dictArr)!
+            self!.forSaleModels.addObjects(from: arr as [AnyObject])
+            self!.forSaleModelsDidSet = true;
+            
+        }) {[weak self] (Task, Error) in
+            
+            self!.loadModelSuccess = false
+            self!.forSaleModelsDidSet = true;
+            
+            if self!.noOrdercountPSearchHud != nil {
+                self!.noOrdercountPSearchHud?.hide(true)
+            }
+            let _ = SAMHUD.showMessage("获取待售布匹失败", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+        }
+    }
+    
+    ///订单获取后调用方法，对订单进行筛选
+    func setModelArr() {
+        
+        if !loadModelSuccess {
+            return
+        }
+        
+        if orderMarr1DidSet && orderMarr2DidSet && orderMarr3DidSet && orderMarr4DidSet && orderMarr5DidSet && forSaleModelsDidSet {
+            
+            orderManageModels.addObjects(from: orderMarr1 as! [Any])
+            orderManageModels.addObjects(from: orderMarr2 as! [Any])
+            orderManageModels.addObjects(from: orderMarr3 as! [Any])
+            orderManageModels.addObjects(from: orderMarr4 as! [Any])
+            orderManageModels.addObjects(from: orderMarr5 as! [Any])
+            
+            if orderManageModels.count == 0  {
+                
+                _ = SAMHUD.showMessage("暂无未开单订单", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+                return
+            }
+            
+            //剔除已在待售布匹里的订单
+            if forSaleModels.count > 0 {
+                
+                let forSaleOrderArr = NSMutableArray()
+                for forSaleIndex in 0...(forSaleModels.count - 1) {
+                    
+                    let model = forSaleModels[forSaleIndex] as! SAMForSaleModel
+                    let orderBillNum = model.orderBillNumber
+                    
+                    for orderIndex in 0...(orderManageModels.count - 1) {
+                        
+                        let orderModel = orderManageModels[orderIndex] as! SAMOrderModel
+                        if orderModel.billNumber == orderBillNum {
+                            
+                            if !forSaleOrderArr.contains(orderModel) {
+                                forSaleOrderArr.add(orderModel)
+                                break
+                            }
+                        }
+                    }
+                }
+                
+                orderManageModels.removeObjects(in: forSaleOrderArr as! [Any])
+            }
+            
+            if orderManageModels.count == 0  {
+                return
+            }
+            
+            searchShoppingCarListArr.removeAllObjects()
+            noOrdercountPSearchIsSuccess = true
+            noOrdercountP = 0
+            noOrdercountM = 0.0
+            
+            orderArr1DidSet = false
+            orderManageModels1.removeAllObjects()
+            searchShoppingCarListArr1.removeAllObjects()
+            currentOrderSearchCount1 = 0
+            noOrdercountP1 = 0
+            noOrdercountM1 = 0.0
+            
+            orderArr2DidSet = false
+            orderManageModels2.removeAllObjects()
+            searchShoppingCarListArr2.removeAllObjects()
+            currentOrderSearchCount2 = 0
+            noOrdercountP2 = 0
+            noOrdercountM2 = 0.0
+            
+            orderArr3DidSet = false
+            orderManageModels3.removeAllObjects()
+            searchShoppingCarListArr3.removeAllObjects()
+            currentOrderSearchCount3 = 0
+            noOrdercountP3 = 0
+            noOrdercountM3 = 0.0
+            
+            orderArr4DidSet = false
+            orderManageModels4.removeAllObjects()
+            searchShoppingCarListArr4.removeAllObjects()
+            currentOrderSearchCount4 = 0
+            noOrdercountP4 = 0
+            noOrdercountM4 = 0.0
+            
+            orderArr5DidSet = false
+            orderManageModels5.removeAllObjects()
+            searchShoppingCarListArr5.removeAllObjects()
+            currentOrderSearchCount5 = 0
+            noOrdercountP5 = 0
+            noOrdercountM5 = 0.0
+            
+            let perCount = orderManageModels.count / 5
+            
+            for index in 0...(orderManageModels.count - 1) {
+                
+                if index < perCount {
+                    
+                    orderManageModels1.add(orderManageModels[index])
+                    
+                }else if (index >= perCount) && (index < perCount * 2) {
+                    
+                    orderManageModels2.add(orderManageModels[index])
+                    
+                }else if (index >= perCount * 2) && (index < perCount * 3) {
+                    
+                    orderManageModels3.add(orderManageModels[index])
+                    
+                }else if (index >= perCount * 3) && (index < perCount * 4) {
+                    
+                    orderManageModels4.add(orderManageModels[index])
+                    
+                }else {
+                    
+                    orderManageModels5.add(orderManageModels[index])
+                }
+            }
+            
+            setupProgressHUD()
+            
+            let model1 = orderManageModels1[0] as! SAMOrderModel
+            loadOrderDetailArr1(orderModel: model1)
+            
+            let model2 = orderManageModels2[0] as! SAMOrderModel
+            loadOrderDetailArr2(orderModel: model2)
+            
+            let model3 = orderManageModels3[0] as! SAMOrderModel
+            loadOrderDetailArr3(orderModel: model3)
+            
+            let model4 = orderManageModels4[0] as! SAMOrderModel
+            loadOrderDetailArr4(orderModel: model4)
+            
+            let model5 = orderManageModels5[0] as! SAMOrderModel
+            loadOrderDetailArr5(orderModel: model5)
+        }
+    }
+    
+    fileprivate func setupProgressHUD() {
+        
+        if noOrdercountPSearchHud != nil {
+            noOrdercountPSearchHud?.hide(true)
+        }
+        noOrderSearchProgressHud = SAMHUD.showAdded(to: KeyWindow!, animated: true)
+        noOrderSearchProgressHud!.mode = MBProgressHUDMode.annularDeterminate
+        let userName = UserDefaults.standard.object(forKey: "userNameStrKey") as? String
+        var remarkText: String?
+        if userName == "任玉" {
+            
+            remarkText = String.init(format: "别急嘛~ 小玉😳", userName!)
+        }else if userName == "王超超" {
+            
+            remarkText = String.init(format: "别急嘛~ 超超😉", userName!)
+        }else {
+            
+            remarkText = "正在解析..."
+        }
+        noOrderSearchProgressHud!.labelText = NSLocalizedString(remarkText!, comment: "HUD loading title")
+        setHUDProgress()
+    }
+    
+    fileprivate func setHUDProgress() {
+        
+        if noOrderSearchProgressHud == nil {
+            return
+        }
+        
+        if hudProgress < 1.0 {
+            noOrderSearchProgressHud!.progress = hudProgress
+            
+        }else {
+        
+            noOrderSearchProgressHud!.hide(true)
+            noOrderSearchProgressHud = nil
+        }
+    }
+    
+    
+    fileprivate func getOrderDetail() {
+    
+        if orderArr1DidSet && orderArr2DidSet && orderArr3DidSet && orderArr4DidSet && orderArr5DidSet{
+            
+            searchShoppingCarListArr.addObjects(from: searchShoppingCarListArr1 as! [Any])
+            noOrdercountP += noOrdercountP1
+            noOrdercountM += noOrdercountM1
+            
+            searchShoppingCarListArr.addObjects(from: searchShoppingCarListArr2 as! [Any])
+            noOrdercountP += noOrdercountP2
+            noOrdercountM += noOrdercountM2
+            
+            searchShoppingCarListArr.addObjects(from: searchShoppingCarListArr3 as! [Any])
+            noOrdercountP += noOrdercountP3
+            noOrdercountM += noOrdercountM3
+            
+            searchShoppingCarListArr.addObjects(from: searchShoppingCarListArr4 as! [Any])
+            noOrdercountP += noOrdercountP4
+            noOrdercountM += noOrdercountM4
+            
+            searchShoppingCarListArr.addObjects(from: searchShoppingCarListArr5 as! [Any])
+            noOrdercountP += noOrdercountP5
+            noOrdercountM += noOrdercountM5
+            
+            if noOrdercountPSearchHud != nil {
+                noOrdercountPSearchHud?.hide(true)
+            }
+            
+            if !noOrdercountPSearchAlertVCIsShowing {
+                
+                if noOrdercountP == 0 {
+                    
+                    let message = String(format: "未开单中共有%d匹", noOrdercountP)
+                    noOrdercountPSearchAlertVC = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+                    noOrdercountPSearchAlertVC!.addAction(UIAlertAction(title: "确定", style: .cancel, handler: { (action) in
+                        self.noOrdercountPSearchAlertVCIsShowing = false
+                    }))
+                    
+                    present(noOrdercountPSearchAlertVC!, animated: true, completion: nil)
+                }else {
+                    
+                    let vc = SAMNoOrderSearchDetailController.instance(orderArr: orderManageModels, shoppingCarListArr: searchShoppingCarListArr, productIDName: stockSearchProductName, countP: noOrdercountP, countM: noOrdercountM)
+                    present(vc, animated: true, completion: nil)
+                }
+                
+                noOrdercountPSearchAlertVCIsShowing = true
+            }
+        }
+    }
+    
+    func loadOrderDetailArr1(orderModel: SAMOrderModel){
         
         if !noOrdercountPSearchIsSuccess {
             return
@@ -1035,24 +1595,214 @@ extension SAMStockViewController {
             
             //判断是否有模型数据
             if count == 0 { //没有数据
-                self!.currentOrderSearchIndex = self!.orderManageModels.index(of: orderModel)
-                self!.currentOrderCountP = 0
+                
+                self!.currentOrderSearchCount1 += 1
+                self!.currentOrderCountP1 = 0
+                self!.currentOrderCountM1 = 0.0
+                
             }else { //有数据模型
+                
                 let arr = SAMShoppingCarListModel.mj_objectArray(withKeyValuesArray: dictArr)!
                 var countP = 0
+                var countM = 0.0
                 for model in arr {
                     let shoppingCarListModel = model as! SAMShoppingCarListModel
-                    if shoppingCarListModel.productIDName == product {
+                    if shoppingCarListModel.productIDName == self!.stockSearchProductName {
                         countP += shoppingCarListModel.countP
+                        countM += shoppingCarListModel.countM
+                        self!.searchShoppingCarListArr1.add(shoppingCarListModel)
                     }
                 }
-                self!.currentOrderSearchIndex = self!.orderManageModels.index(of: orderModel)
-                self!.currentOrderCountP = countP
+                self!.currentOrderSearchCount1 += 1
+                self!.currentOrderCountP1 = countP
+                self!.currentOrderCountM1 = countM
             }
         }) {[weak self] (Task, Error) in
-            self!.currentOrderSearchIndex = self!.orderManageModels.index(of: orderModel)
-            self!.currentOrderCountP = -1
+            
+            self!.currentOrderSearchCount1 += 1
+            self!.currentOrderCountP1 = -1
         }
     }
+    
+    func loadOrderDetailArr2(orderModel: SAMOrderModel){
+        
+        if !noOrdercountPSearchIsSuccess {
+            return
+        }
+        
+        //发送请求，获取订单产品数据模型数组
+        SAMNetWorker.sharedNetWorker().get("getOrderDetailData.ashx", parameters: ["billNumber": orderModel.billNumber], progress: nil, success: {[weak self] (Task, json) in
+            
+            //获取模型数组
+            let Json = json as! [String: AnyObject]
+            let dictArr = Json["body"] as? [[String: AnyObject]]
+            let count = dictArr?.count ?? 0
+            
+            //判断是否有模型数据
+            if count == 0 { //没有数据
+                
+                self!.currentOrderSearchCount2 += 1
+                self!.currentOrderCountP2 = 0
+                self!.currentOrderCountM2 = 0.0
+                
+            }else { //有数据模型
+                
+                let arr = SAMShoppingCarListModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                var countP = 0
+                var countM = 0.0
+                for model in arr {
+                    let shoppingCarListModel = model as! SAMShoppingCarListModel
+                    if shoppingCarListModel.productIDName == self!.stockSearchProductName {
+                        countP += shoppingCarListModel.countP
+                        countM += shoppingCarListModel.countM
+                        self!.searchShoppingCarListArr2.add(shoppingCarListModel)
+                    }
+                }
+                self!.currentOrderSearchCount2 += 1
+                self!.currentOrderCountP2 = countP
+                self!.currentOrderCountM2 = countM
+            }
+        }) {[weak self] (Task, Error) in
+            
+            self!.currentOrderSearchCount2 += 1
+            self!.currentOrderCountP2 = -1
+        }
+    }
+    
+    func loadOrderDetailArr3(orderModel: SAMOrderModel){
+        
+        if !noOrdercountPSearchIsSuccess {
+            return
+        }
+        
+        //发送请求，获取订单产品数据模型数组
+        SAMNetWorker.sharedNetWorker().get("getOrderDetailData.ashx", parameters: ["billNumber": orderModel.billNumber], progress: nil, success: {[weak self] (Task, json) in
+            
+            //获取模型数组
+            let Json = json as! [String: AnyObject]
+            let dictArr = Json["body"] as? [[String: AnyObject]]
+            let count = dictArr?.count ?? 0
+            
+            //判断是否有模型数据
+            if count == 0 { //没有数据
+                
+                self!.currentOrderSearchCount3 += 1
+                self!.currentOrderCountP3 = 0
+                self!.currentOrderCountM3 = 0.0
+                
+            }else { //有数据模型
+                
+                let arr = SAMShoppingCarListModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                var countP = 0
+                var countM = 0.0
+                for model in arr {
+                    let shoppingCarListModel = model as! SAMShoppingCarListModel
+                    if shoppingCarListModel.productIDName == self!.stockSearchProductName {
+                        countP += shoppingCarListModel.countP
+                        countM += shoppingCarListModel.countM
+                        self!.searchShoppingCarListArr3.add(shoppingCarListModel)
+                    }
+                }
+                self!.currentOrderSearchCount3 += 1
+                self!.currentOrderCountP3 = countP
+                self!.currentOrderCountM3 = countM
+            }
+        }) {[weak self] (Task, Error) in
+            
+            self!.currentOrderSearchCount3 += 1
+            self!.currentOrderCountP3 = -1
+        }
+    }
+    
+    func loadOrderDetailArr4(orderModel: SAMOrderModel){
+        
+        if !noOrdercountPSearchIsSuccess {
+            return
+        }
+        
+        //发送请求，获取订单产品数据模型数组
+        SAMNetWorker.sharedNetWorker().get("getOrderDetailData.ashx", parameters: ["billNumber": orderModel.billNumber], progress: nil, success: {[weak self] (Task, json) in
+            
+            //获取模型数组
+            let Json = json as! [String: AnyObject]
+            let dictArr = Json["body"] as? [[String: AnyObject]]
+            let count = dictArr?.count ?? 0
+            
+            //判断是否有模型数据
+            if count == 0 { //没有数据
+                
+                self!.currentOrderSearchCount4 += 1
+                self!.currentOrderCountP4 = 0
+                self!.currentOrderCountM4 = 0.0
+                
+            }else { //有数据模型
+                
+                let arr = SAMShoppingCarListModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                var countP = 0
+                var countM = 0.0
+                for model in arr {
+                    let shoppingCarListModel = model as! SAMShoppingCarListModel
+                    if shoppingCarListModel.productIDName == self!.stockSearchProductName {
+                        countP += shoppingCarListModel.countP
+                        countM += shoppingCarListModel.countM
+                        self!.searchShoppingCarListArr4.add(shoppingCarListModel)
+                    }
+                }
+                self!.currentOrderSearchCount4 += 1
+                self!.currentOrderCountP4 = countP
+                self!.currentOrderCountM4 = countM
+            }
+        }) {[weak self] (Task, Error) in
+            
+            self!.currentOrderSearchCount4 += 1
+            self!.currentOrderCountP4 = -1
+        }
+    }
+    
+    func loadOrderDetailArr5(orderModel: SAMOrderModel){
+        
+        if !noOrdercountPSearchIsSuccess {
+            return
+        }
+        
+        //发送请求，获取订单产品数据模型数组
+        SAMNetWorker.sharedNetWorker().get("getOrderDetailData.ashx", parameters: ["billNumber": orderModel.billNumber], progress: nil, success: {[weak self] (Task, json) in
+            
+            //获取模型数组
+            let Json = json as! [String: AnyObject]
+            let dictArr = Json["body"] as? [[String: AnyObject]]
+            let count = dictArr?.count ?? 0
+            
+            //判断是否有模型数据
+            if count == 0 { //没有数据
+                
+                self!.currentOrderSearchCount5 += 1
+                self!.currentOrderCountP5 = 0
+                self!.currentOrderCountM5 = 0.0
+                
+            }else { //有数据模型
+                
+                let arr = SAMShoppingCarListModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                var countP = 0
+                var countM = 0.0
+                for model in arr {
+                    let shoppingCarListModel = model as! SAMShoppingCarListModel
+                    if shoppingCarListModel.productIDName == self!.stockSearchProductName {
+                        countP += shoppingCarListModel.countP
+                        countM += shoppingCarListModel.countM
+                        self!.searchShoppingCarListArr5.add(shoppingCarListModel)
+                    }
+                }
+                self!.currentOrderSearchCount5 += 1
+                self!.currentOrderCountP5 = countP
+                self!.currentOrderCountM5 = countM
+            }
+        }) {[weak self] (Task, Error) in
+            
+            self!.currentOrderSearchCount5 += 1
+            self!.currentOrderCountP5 = -1
+        }
+    }
+    
 }
 

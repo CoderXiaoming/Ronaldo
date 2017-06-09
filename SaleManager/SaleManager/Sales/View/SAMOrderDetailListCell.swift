@@ -75,7 +75,7 @@ class SAMOrderDetailListCell: UICollectionViewCell {
         //布局子控件,因为要用VFL，先要进行初始化设置
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         var cons = [NSLayoutConstraint]()
-        let dict = ["collectionView" : collectionView, "remarkLabel":remarkLabel] as [String : AnyObject]
+        let dict = ["collectionView" : collectionView, "remarkLabel":remarkLabel] as [String : UIView]
         
         cons += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[collectionView]-0-|", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
         cons += NSLayoutConstraint.constraints(withVisualFormat: "V:[remarkLabel]-5-[collectionView(28)]", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)

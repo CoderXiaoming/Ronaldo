@@ -8,6 +8,7 @@
 import UIKit
 import MJRefresh
 import AFNetworking
+import MBProgressHUD
 
 ///SAMOrderManagerCell重用标识符
 private let SAMOrderManagerCellReuseIdentifier = "SAMOrderManagerCellReuseIdentifier"
@@ -59,7 +60,7 @@ class SAMComOperationController: UIViewController {
         //布局navIndicaterView
         navIndicaterView!.translatesAutoresizingMaskIntoConstraints = false
         var cons = [NSLayoutConstraint]()
-        let dict = ["navIndicaterView" : navIndicaterView!] as [String : AnyObject]
+        let dict = ["navIndicaterView" : navIndicaterView!] as [String : UIView]
         cons += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[navIndicaterView]-0-|", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
         cons += NSLayoutConstraint.constraints(withVisualFormat: "V:|-20-[navIndicaterView(55)]", options: NSLayoutFormatOptions.init(rawValue: 0), metrics: nil, views: dict)
         view.addConstraints(cons)
@@ -276,7 +277,8 @@ class SAMComOperationController: UIViewController {
         case 1:
             forSaleColView.mj_header.beginRefreshing()
         case 2:
-            owedColView.mj_header.beginRefreshing()
+            
+            owedSearchBtnClick()
         case 3:
             saleHistoryColView.mj_header.beginRefreshing()
         case 4:
@@ -286,6 +288,36 @@ class SAMComOperationController: UIViewController {
         default :
             return
         }
+    }
+    
+    fileprivate func owedSearchBtnClick() {
+        
+        SAMOwedStockNode = 0.0
+        didSetStockNode = true
+        let alertVC = UIAlertController(title: "低于多少米，显示灰色😄", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+        alertVC.addTextField { (textField) in
+            
+            textField.placeholder = "请输入米数"
+            textField.addTarget(self, action: #selector(SAMComOperationController.owedSotckNodeDidChangeValue(textField:)), for: UIControlEvents.editingChanged)
+            textField.keyboardType = UIKeyboardType.decimalPad
+        }
+        
+        alertVC.addAction(UIAlertAction(title: "取消", style: UIAlertActionStyle.cancel, handler: { (action) in
+            self.didSetStockNode = false
+        }))
+        alertVC.addAction(UIAlertAction(title: "确定", style: UIAlertActionStyle.default, handler: { (action) in
+            
+            self.owedColView.mj_header.beginRefreshing()
+        }))
+        
+        present(alertVC, animated: true, completion: nil)
+    }
+    
+    func owedSotckNodeDidChangeValue(textField: UITextField) {
+        
+        let countStr = textField.text?.lxm_stringByTrimmingWhitespace()
+        let coutnNStr = NSString.init(string: countStr!)
+        SAMOwedStockNode = coutnNStr.doubleValue
     }
     
     ///4个时间按钮的点击
@@ -367,7 +399,7 @@ class SAMComOperationController: UIViewController {
             navigationController!.pushViewController(buildOrderVC, animated: true)
         }
     }
-
+    
     //MARK: - 属性懒加载
     ///当前collectionView的序号
     fileprivate var currentColIndex = 0
@@ -431,6 +463,139 @@ class SAMComOperationController: UIViewController {
     fileprivate let customerRankModels = NSMutableArray()
     ///产品排行collectionView数据模型数组
     fileprivate let productRankModels = NSMutableArray()
+    
+    ///缺货登记搜索ID分类
+    fileprivate let owedProductIDSearchArr = NSMutableArray()
+    ///缺货登记数据模型分类数组
+    fileprivate let owedClassifyArr = NSMutableArray()
+    fileprivate var owedStockSearchProgressHud: SAMHUD?
+    ///是否主动设置的缺货登记库存节点
+    fileprivate var didSetStockNode = false
+    
+    fileprivate let owedProductIDSearchArr1 = NSMutableArray()
+    fileprivate let owedClassifyArr1 = NSMutableArray()
+    ///缺货登记已经查询了数据数组的数量
+    fileprivate var owedArrSearchCount1 = 0 {
+        
+        didSet{
+            
+            if owedArrSearchCount1 == 0{
+                return
+            }
+            
+            setHUDProgress()
+            
+            if owedArrSearchCount1 == owedClassifyArr1.count { //搜索完毕
+                
+                getOwedStockComplete()
+                
+            }else {
+                
+                self.loadStock1()
+            }
+            
+        }
+    }
+    fileprivate let owedProductIDSearchArr2 = NSMutableArray()
+    fileprivate let owedClassifyArr2 = NSMutableArray()
+    ///缺货登记已经查询了数据数组的数量
+    fileprivate var owedArrSearchCount2 = 0 {
+        
+        didSet{
+            
+            if owedArrSearchCount2 == 0{
+                return
+            }
+            
+            setHUDProgress()
+            
+            if owedArrSearchCount2 == owedClassifyArr2.count { //搜索完毕
+                
+                getOwedStockComplete()
+                
+            }else {
+                
+                self.loadStock2()
+            }
+            
+        }
+    }
+    
+    fileprivate let owedProductIDSearchArr3 = NSMutableArray()
+    fileprivate let owedClassifyArr3 = NSMutableArray()
+    ///缺货登记已经查询了数据数组的数量
+    fileprivate var owedArrSearchCount3 = 0 {
+        
+        didSet{
+            
+            if owedArrSearchCount3 == 0{
+                return
+            }
+            
+            setHUDProgress()
+            
+            if owedArrSearchCount3 == owedClassifyArr3.count { //搜索完毕
+                
+                getOwedStockComplete()
+                
+            }else {
+                
+                self.loadStock3()
+            }
+            
+        }
+    }
+    
+    fileprivate let owedProductIDSearchArr4 = NSMutableArray()
+    fileprivate let owedClassifyArr4 = NSMutableArray()
+    ///缺货登记已经查询了数据数组的数量
+    fileprivate var owedArrSearchCount4 = 0 {
+        
+        didSet{
+            
+            if owedArrSearchCount4 == 0{
+                return
+            }
+            
+            setHUDProgress()
+            
+            if owedArrSearchCount4 == owedClassifyArr4.count { //搜索完毕
+                
+                getOwedStockComplete()
+                
+            }else {
+                
+                self.loadStock4()
+            }
+            
+        }
+    }
+    
+    fileprivate let owedProductIDSearchArr5 = NSMutableArray()
+    fileprivate let owedClassifyArr5 = NSMutableArray()
+    ///缺货登记已经查询了数据数组的数量
+    fileprivate var owedArrSearchCount5 = 0 {
+        
+        didSet{
+            
+            if owedArrSearchCount5 == 0{
+                return
+            }
+            
+            setHUDProgress()
+            
+            if owedArrSearchCount5 == owedClassifyArr5.count { //搜索完毕
+                
+                getOwedStockComplete()
+                
+            }else {
+                
+                self.loadStock5()
+            }
+            
+        }
+    }
+    
     
     ///导航栏指示器
     fileprivate lazy var navIndicaterView: SAMComOperationIndicaterView? = {
@@ -549,63 +714,63 @@ extension SAMComOperationController: UICollectionViewDelegate {
         navIndicaterView?.checkSelectedIndex(shouldSelectedIndex: currentColIndex)
         
         switch currentColIndex {
-            case 0:
-                beginDateTF.isEnabled = true
-                endDateTF.isEnabled = true
-                customerSearchTF.placeholder = "客户名称"
-                stateSearchTF.isEnabled = true
-                stateSearchTF.placeholder = "状态"
-                stateSearchTF.inputView = stateSearchPickerView
+        case 0:
+            beginDateTF.isEnabled = true
+            endDateTF.isEnabled = true
+            customerSearchTF.placeholder = "客户名称"
+            stateSearchTF.isEnabled = true
+            stateSearchTF.placeholder = "状态"
+            stateSearchTF.inputView = stateSearchPickerView
             
-                scrolltoForSaleView(isForSale: false)
-                owedSearchView.isHidden = true
+            scrolltoForSaleView(isForSale: false)
+            owedSearchView.isHidden = true
             
-            case 1:
-                scrolltoForSaleView(isForSale: true)
+        case 1:
+            scrolltoForSaleView(isForSale: true)
             
-            case 2:
-                beginDateTF.isEnabled = true
-                endDateTF.isEnabled = true
-                customerSearchTF.placeholder = "客户名称"
-                stateSearchTF.isEnabled = true
-                stateSearchTF.placeholder = "状态"
-                stateSearchTF.inputView = stateSearchPickerView
+        case 2:
+            beginDateTF.isEnabled = true
+            endDateTF.isEnabled = true
+            customerSearchTF.placeholder = "客户名称"
+            stateSearchTF.isEnabled = true
+            stateSearchTF.placeholder = "状态"
+            stateSearchTF.inputView = stateSearchPickerView
             
-                scrolltoForSaleView(isForSale: false)
-                owedSearchView.isHidden = false
+            scrolltoForSaleView(isForSale: false)
+            owedSearchView.isHidden = false
             
-            case 3:
-                beginDateTF.isEnabled = true
-                endDateTF.isEnabled = true
-                customerSearchTF.placeholder = "客户名称"
-                stateSearchTF.isEnabled = false
-                stateSearchTF.placeholder = "---"
+        case 3:
+            beginDateTF.isEnabled = true
+            endDateTF.isEnabled = true
+            customerSearchTF.placeholder = "客户名称"
+            stateSearchTF.isEnabled = false
+            stateSearchTF.placeholder = "---"
             
-                scrolltoForSaleView(isForSale: false)
-                owedSearchView.isHidden = true
+            scrolltoForSaleView(isForSale: false)
+            owedSearchView.isHidden = true
             
-            case 4:
-                beginDateTF.isEnabled = true
-                endDateTF.isEnabled = true
-                customerSearchTF.placeholder = "客户名称"
-                stateSearchTF.placeholder = "部门"
-                stateSearchTF.isEnabled = false
+        case 4:
+            beginDateTF.isEnabled = true
+            endDateTF.isEnabled = true
+            customerSearchTF.placeholder = "客户名称"
+            stateSearchTF.placeholder = "部门"
+            stateSearchTF.isEnabled = false
             
-                scrolltoForSaleView(isForSale: false)
-                owedSearchView.isHidden = true
+            scrolltoForSaleView(isForSale: false)
+            owedSearchView.isHidden = true
             
-            case 5:
-                beginDateTF.isEnabled = true
-                endDateTF.isEnabled = true
-                customerSearchTF.placeholder = "产品名称"
-                stateSearchTF.placeholder = "分类"
-                stateSearchTF.isEnabled = false
+        case 5:
+            beginDateTF.isEnabled = true
+            endDateTF.isEnabled = true
+            customerSearchTF.placeholder = "产品名称"
+            stateSearchTF.placeholder = "分类"
+            stateSearchTF.isEnabled = false
             
-                scrolltoForSaleView(isForSale: false)
-                owedSearchView.isHidden = true
+            scrolltoForSaleView(isForSale: false)
+            owedSearchView.isHidden = true
             
-            default:
-                break
+        default:
+            break
         }
         
         customerSearchTF.text = ""
@@ -651,20 +816,20 @@ extension SAMComOperationController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch collectionView {
-            case self.orderManageColView:
-                return self.orderManageModels.count
-            case self.forSaleColView:
-                return self.forSaleModels.count
-            case self.owedColView:
-                return self.owedModels.count
-            case self.saleHistoryColView:
-                return self.saleHistoryModels.count
-            case self.customerRankColView:
-                return self.customerRankModels.count
-            case self.productRankColView:
-                return self.productRankModels.count
-            default :
-                return 0
+        case self.orderManageColView:
+            return self.orderManageModels.count
+        case self.forSaleColView:
+            return self.forSaleModels.count
+        case self.owedColView:
+            return self.owedModels.count
+        case self.saleHistoryColView:
+            return self.saleHistoryModels.count
+        case self.customerRankColView:
+            return self.customerRankModels.count
+        case self.productRankColView:
+            return self.productRankModels.count
+        default :
+            return 0
         }
     }
     
@@ -723,7 +888,7 @@ extension SAMComOperationController: UICollectionViewDataSource {
 extension SAMComOperationController: SAMComOperationIndicaterViewDelegate {
     func comOperationIndicaterViewDidSelected(index: Int) {
         
-        endFirstTextFieldEditing()  
+        endFirstTextFieldEditing()
         comScrollView.setContentOffset(CGPoint(x: ScreenW * CGFloat(index), y: 0), animated: true)
     }
 }
@@ -806,7 +971,7 @@ extension SAMComOperationController: UIPickerViewDataSource, UIPickerViewDelegat
 
 //MARK: - 订单请求方法
 extension SAMComOperationController {
-
+    
     func loadNewOrderModels() {
         
         //结束下拉刷新
@@ -1066,20 +1231,19 @@ extension SAMComOperationController {
             
             //判断是否有模型数据
             if count == 0 { //没有模型数据
+                
                 let _ = SAMHUD.showMessage("没有数据", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
+                self!.owedColView.reloadData()
             }else { //有数据模型
                 
                 let arr = SAMOwedInfoModel.mj_objectArray(withKeyValuesArray: dictArr)!
                 self!.owedModels.addObjects(from: arr as [AnyObject])
                 self!.owedColView.mj_footer.endRefreshingWithNoMoreData()
+                self!.countOwed()
+                self!.searchOwedStock()
             }
-            
-            //回主线程，刷新数据
-            DispatchQueue.main.async(execute: {
-                self!.owedColView.mj_header.endRefreshing()
-                self!.owedColView.reloadData()
-            })
         }) {[weak self] (Task, Error) in
+            
             //处理上拉
             self!.owedColView.mj_header.endRefreshing()
             let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
@@ -1087,6 +1251,398 @@ extension SAMComOperationController {
     }
     
     func loadMoreOwedModels() {}
+    
+    fileprivate func searchOwedStock() {
+        
+        ///初始化数据
+        if !didSetStockNode {
+            SAMOwedStockNode = 0.0
+        }
+        didSetStockNode = false
+        owedProductIDSearchArr.removeAllObjects()
+        owedClassifyArr.removeAllObjects()
+        
+        //数据分类
+        for owedModelIndex in 1...(owedModels.count - 1) {
+            
+            let owedModel = owedModels[owedModelIndex] as! SAMOwedInfoModel
+            let searchStrArr = owedModel.productIDName.components(separatedBy: "-")
+            let searchStr = searchStrArr[0] + "-" + searchStrArr[1]
+            
+            if !owedProductIDSearchArr.contains(searchStr) {
+                
+                owedProductIDSearchArr.add(searchStr)
+                
+                let mArr = NSMutableArray()
+                mArr.add(owedModel)
+                owedClassifyArr.add(mArr)
+                
+            }else {
+                
+                let index = owedProductIDSearchArr.index(of: searchStr)
+                let mArr = owedClassifyArr[index] as! NSMutableArray
+                mArr.add(owedModel)
+            }
+        }
+        
+        setupProgressHUD()
+        
+        owedProductIDSearchArr1.removeAllObjects()
+        owedClassifyArr1.removeAllObjects()
+        owedArrSearchCount1 = 0
+        
+        owedProductIDSearchArr2.removeAllObjects()
+        owedClassifyArr2.removeAllObjects()
+        owedArrSearchCount2 = 0
+        
+        owedProductIDSearchArr3.removeAllObjects()
+        owedClassifyArr3.removeAllObjects()
+        owedArrSearchCount3 = 0
+        
+        owedProductIDSearchArr4.removeAllObjects()
+        owedClassifyArr4.removeAllObjects()
+        owedArrSearchCount4 = 0
+        
+        owedProductIDSearchArr5.removeAllObjects()
+        owedClassifyArr5.removeAllObjects()
+        owedArrSearchCount5 = 0
+        
+        if owedProductIDSearchArr.count < 6 {
+            owedProductIDSearchArr1.addObjects(from: owedProductIDSearchArr as! [Any])
+            owedClassifyArr1.addObjects(from: owedClassifyArr as! [Any])
+            loadStock1()
+            return
+        }
+        
+        let perCount = owedProductIDSearchArr.count / 5
+        for index in 0...(owedProductIDSearchArr.count - 1) {
+            
+            if index < perCount {
+                
+                owedProductIDSearchArr1.add(owedProductIDSearchArr[index])
+                owedClassifyArr1.add(owedClassifyArr[index])
+                
+            }else if (index >= perCount) && (index < perCount * 2) {
+                
+                owedProductIDSearchArr2.add(owedProductIDSearchArr[index])
+                owedClassifyArr2.add(owedClassifyArr[index])
+                
+            }else if (index >= perCount * 2) && (index < perCount * 3) {
+                
+                owedProductIDSearchArr3.add(owedProductIDSearchArr[index])
+                owedClassifyArr3.add(owedClassifyArr[index])
+                
+            }else if (index >= perCount * 3) && (index < perCount * 4) {
+                
+                owedProductIDSearchArr4.add(owedProductIDSearchArr[index])
+                owedClassifyArr4.add(owedClassifyArr[index])
+                
+            }else {
+                
+                owedProductIDSearchArr5.add(owedProductIDSearchArr[index])
+                owedClassifyArr5.add(owedClassifyArr[index])
+            }
+        }
+        
+        loadStock1()
+        loadStock2()
+        loadStock3()
+        loadStock4()
+        loadStock5()
+        
+    }
+    
+    fileprivate func setupProgressHUD() {
+        
+        owedStockSearchProgressHud = SAMHUD.showAdded(to: KeyWindow!, animated: true)
+        owedStockSearchProgressHud!.mode = MBProgressHUDMode.annularDeterminate
+        let userName = UserDefaults.standard.object(forKey: "userNameStrKey") as? String
+        var remarkText: String?
+        if userName == "任玉" {
+            
+            remarkText = String.init(format: "别急嘛~ 小玉😳", userName!)
+        }else if userName == "王超超" {
+            
+            remarkText = String.init(format: "别急嘛~ 超超😉", userName!)
+        }else {
+            
+            remarkText = "正在解析..."
+        }
+        owedStockSearchProgressHud!.labelText = NSLocalizedString(remarkText!, comment: "HUD loading title")
+    }
+    
+    fileprivate func setHUDProgress() {
+        
+        if owedStockSearchProgressHud == nil {
+            return
+        }
+        
+        let progress = (Float)(owedArrSearchCount1 + owedArrSearchCount2 + owedArrSearchCount3 + owedArrSearchCount4 + owedArrSearchCount5) / (Float)(owedClassifyArr.count)
+        
+        if progress < 1.0 {
+            owedStockSearchProgressHud!.progress = progress
+            
+        }else {
+            
+            owedStockSearchProgressHud!.hide(true)
+            owedStockSearchProgressHud = nil
+        }
+    }
+    
+    fileprivate func getOwedStockComplete() {
+        
+        print(owedArrSearchCount1 + owedArrSearchCount2 + owedArrSearchCount3 + owedArrSearchCount4 + owedArrSearchCount5)
+        print(owedClassifyArr.count)
+        
+        if owedArrSearchCount1 + owedArrSearchCount2 + owedArrSearchCount3 + owedArrSearchCount4 + owedArrSearchCount5 == owedClassifyArr.count{
+            
+            //回主线程，刷新数据
+            DispatchQueue.main.async(execute: {
+                self.owedColView.mj_header.endRefreshing()
+                self.owedColView.reloadData()
+            })
+        }
+    }
+    
+    
+    fileprivate func loadStock1() {
+        
+        let productNameSearchStr = owedProductIDSearchArr1[owedArrSearchCount1]
+        let conSearchParameters = ["productIDName": productNameSearchStr as AnyObject, "minCountM": "0" as AnyObject, "parentID": "-1" as AnyObject, "storehouseID": "-1" as AnyObject, "pageSize": "600" as AnyObject, "pageIndex": "1" as AnyObject, "showAlert": "false" as AnyObject]
+        
+        SAMNetWorker.sharedNetWorker().get("getStock.ashx", parameters: conSearchParameters, progress: nil, success: {[weak self] (Task, Json) in
+            
+            self!.owedArrSearchCount1 += 1
+            
+            //获取模型数组
+            let Json = Json as! [String: AnyObject]
+            let dictArr = Json["body"] as? [[String: AnyObject]]
+            let count = dictArr?.count ?? 0
+            
+            if count == 0 { //没有模型数据
+                
+            }else { //有数据模型
+                
+                let stockModelArr = SAMStockProductModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                let productIDSearchStr = conSearchParameters["productIDName"] as! String
+                let searchStrIndex = self!.owedProductIDSearchArr1.index(of: productIDSearchStr)
+                let owedModelArr = self!.owedClassifyArr1[searchStrIndex] as! NSMutableArray
+                
+                for owedModelIndex in 0...(owedModelArr.count - 1) {
+                    
+                    let owedModel = owedModelArr[owedModelIndex] as! SAMOwedInfoModel
+                    for stockModelIndex in 0...(stockModelArr.count - 1) {
+                        
+                        let stockModel = stockModelArr[stockModelIndex] as! SAMStockProductModel
+                        if stockModel.productIDName == owedModel.productIDName {
+                            
+                            owedModel.stockCountM = stockModel.countM
+                            break
+                        }
+                    }
+                }
+            }
+            
+            }, failure: {[weak self] (Task, Error) in
+                
+                self!.owedArrSearchCount1 += 1
+        })
+    }
+    
+    fileprivate func loadStock2() {
+        
+        let productNameSearchStr = owedProductIDSearchArr2[owedArrSearchCount2]
+        let conSearchParameters = ["productIDName": productNameSearchStr as AnyObject, "minCountM": "0" as AnyObject, "parentID": "-1" as AnyObject, "storehouseID": "-1" as AnyObject, "pageSize": "600" as AnyObject, "pageIndex": "1" as AnyObject, "showAlert": "false" as AnyObject]
+        
+        SAMNetWorker.sharedNetWorker().get("getStock.ashx", parameters: conSearchParameters, progress: nil, success: {[weak self] (Task, Json) in
+            
+            self!.owedArrSearchCount2 += 1
+            
+            //获取模型数组
+            let Json = Json as! [String: AnyObject]
+            let dictArr = Json["body"] as? [[String: AnyObject]]
+            let count = dictArr?.count ?? 0
+            
+            if count == 0 { //没有模型数据
+                
+            }else { //有数据模型
+                
+                let stockModelArr = SAMStockProductModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                let productIDSearchStr = conSearchParameters["productIDName"] as! String
+                let searchStrIndex = self!.owedProductIDSearchArr2.index(of: productIDSearchStr)
+                let owedModelArr = self!.owedClassifyArr2[searchStrIndex] as! NSMutableArray
+                
+                for owedModelIndex in 0...(owedModelArr.count - 1) {
+                    
+                    let owedModel = owedModelArr[owedModelIndex] as! SAMOwedInfoModel
+                    for stockModelIndex in 0...(stockModelArr.count - 1) {
+                        
+                        let stockModel = stockModelArr[stockModelIndex] as! SAMStockProductModel
+                        if stockModel.productIDName == owedModel.productIDName {
+                            
+                            owedModel.stockCountM = stockModel.countM
+                            break
+                        }
+                    }
+                }
+            }
+            
+            }, failure: {[weak self] (Task, Error) in
+                
+                self!.owedArrSearchCount2 += 1
+        })
+    }
+    
+    fileprivate func loadStock3() {
+        
+        let productNameSearchStr = owedProductIDSearchArr3[owedArrSearchCount3]
+        let conSearchParameters = ["productIDName": productNameSearchStr as AnyObject, "minCountM": "0" as AnyObject, "parentID": "-1" as AnyObject, "storehouseID": "-1" as AnyObject, "pageSize": "600" as AnyObject, "pageIndex": "1" as AnyObject, "showAlert": "false" as AnyObject]
+        
+        SAMNetWorker.sharedNetWorker().get("getStock.ashx", parameters: conSearchParameters, progress: nil, success: {[weak self] (Task, Json) in
+            
+            self!.owedArrSearchCount3 += 1
+            
+            //获取模型数组
+            let Json = Json as! [String: AnyObject]
+            let dictArr = Json["body"] as? [[String: AnyObject]]
+            let count = dictArr?.count ?? 0
+            
+            if count == 0 { //没有模型数据
+                
+            }else { //有数据模型
+                
+                let stockModelArr = SAMStockProductModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                let productIDSearchStr = conSearchParameters["productIDName"] as! String
+                let searchStrIndex = self!.owedProductIDSearchArr3.index(of: productIDSearchStr)
+                let owedModelArr = self!.owedClassifyArr3[searchStrIndex] as! NSMutableArray
+                
+                for owedModelIndex in 0...(owedModelArr.count - 1) {
+                    
+                    let owedModel = owedModelArr[owedModelIndex] as! SAMOwedInfoModel
+                    for stockModelIndex in 0...(stockModelArr.count - 1) {
+                        
+                        let stockModel = stockModelArr[stockModelIndex] as! SAMStockProductModel
+                        if stockModel.productIDName == owedModel.productIDName {
+                            
+                            owedModel.stockCountM = stockModel.countM
+                            break
+                        }
+                    }
+                }
+            }
+            
+            }, failure: {[weak self] (Task, Error) in
+                
+                self!.owedArrSearchCount3 += 1
+        })
+    }
+    
+    fileprivate func loadStock4() {
+        
+        let productNameSearchStr = owedProductIDSearchArr4[owedArrSearchCount4]
+        let conSearchParameters = ["productIDName": productNameSearchStr as AnyObject, "minCountM": "0" as AnyObject, "parentID": "-1" as AnyObject, "storehouseID": "-1" as AnyObject, "pageSize": "600" as AnyObject, "pageIndex": "1" as AnyObject, "showAlert": "false" as AnyObject]
+        
+        SAMNetWorker.sharedNetWorker().get("getStock.ashx", parameters: conSearchParameters, progress: nil, success: {[weak self] (Task, Json) in
+            
+            self!.owedArrSearchCount4 += 1
+            
+            //获取模型数组
+            let Json = Json as! [String: AnyObject]
+            let dictArr = Json["body"] as? [[String: AnyObject]]
+            let count = dictArr?.count ?? 0
+            
+            if count == 0 { //没有模型数据
+                
+            }else { //有数据模型
+                
+                let stockModelArr = SAMStockProductModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                let productIDSearchStr = conSearchParameters["productIDName"] as! String
+                let searchStrIndex = self!.owedProductIDSearchArr4.index(of: productIDSearchStr)
+                let owedModelArr = self!.owedClassifyArr4[searchStrIndex] as! NSMutableArray
+                
+                for owedModelIndex in 0...(owedModelArr.count - 1) {
+                    
+                    let owedModel = owedModelArr[owedModelIndex] as! SAMOwedInfoModel
+                    for stockModelIndex in 0...(stockModelArr.count - 1) {
+                        
+                        let stockModel = stockModelArr[stockModelIndex] as! SAMStockProductModel
+                        if stockModel.productIDName == owedModel.productIDName {
+                            
+                            owedModel.stockCountM = stockModel.countM
+                            break
+                        }
+                    }
+                }
+            }
+            
+            }, failure: {[weak self] (Task, Error) in
+                
+                self!.owedArrSearchCount4 += 1
+        })
+    }
+    
+    fileprivate func loadStock5() {
+        
+        let productNameSearchStr = owedProductIDSearchArr5[owedArrSearchCount5]
+        let conSearchParameters = ["productIDName": productNameSearchStr as AnyObject, "minCountM": "0" as AnyObject, "parentID": "-1" as AnyObject, "storehouseID": "-1" as AnyObject, "pageSize": "600" as AnyObject, "pageIndex": "1" as AnyObject, "showAlert": "false" as AnyObject]
+        
+        SAMNetWorker.sharedNetWorker().get("getStock.ashx", parameters: conSearchParameters, progress: nil, success: {[weak self] (Task, Json) in
+            
+            self!.owedArrSearchCount5 += 1
+            //获取模型数组
+            let Json = Json as! [String: AnyObject]
+            let dictArr = Json["body"] as? [[String: AnyObject]]
+            let count = dictArr?.count ?? 0
+            
+            if count == 0 { //没有模型数据
+                
+            }else { //有数据模型
+                
+                let stockModelArr = SAMStockProductModel.mj_objectArray(withKeyValuesArray: dictArr)!
+                let productIDSearchStr = conSearchParameters["productIDName"] as! String
+                let searchStrIndex = self!.owedProductIDSearchArr5.index(of: productIDSearchStr)
+                let owedModelArr = self!.owedClassifyArr5[searchStrIndex] as! NSMutableArray
+                
+                for owedModelIndex in 0...(owedModelArr.count - 1) {
+                    
+                    let owedModel = owedModelArr[owedModelIndex] as! SAMOwedInfoModel
+                    for stockModelIndex in 0...(stockModelArr.count - 1) {
+                        
+                        let stockModel = stockModelArr[stockModelIndex] as! SAMStockProductModel
+                        if stockModel.productIDName == owedModel.productIDName {
+                            
+                            owedModel.stockCountM = stockModel.countM
+                            break
+                        }
+                    }
+                }
+            }
+            
+            }, failure: {[weak self] (Task, Error) in
+                
+                self!.owedArrSearchCount5 += 1
+        })
+    }
+    
+    
+    fileprivate func countOwed() {
+        
+        //对数组内所有数据模型进行遍历
+        var countP = 0
+        var countM = 0.0
+        for obj in owedModels {
+            let model = obj as! SAMOwedInfoModel
+            countP += model.countP
+            countM += model.countM
+        }
+        let countModel = SAMOwedInfoModel()
+        countModel.countP = countP
+        countModel.countM = countM
+        countModel.CGUnitName = "当前页面统计"
+        countModel.iState = "统计"
+        countModel.stockCountM = 1000000
+        owedModels.insert(countModel, at: 0)
+    }
 }
 
 //MARK: - 销售历史请求方法
@@ -1129,6 +1685,7 @@ extension SAMComOperationController {
                     
                     self!.saleHistoryColView.mj_footer.endRefreshingWithNoMoreData()
                 }else { //设置pageIndex，可能还有更多信息
+                    let textfielt = UITextField();
                     
                     self!.requestSearchPageIndexs[3] += 1
                 }
@@ -1483,7 +2040,7 @@ private class SAMComOperationRankColletionViewFlowlayout: UICollectionViewFlowLa
 
 //MARK: - 各个colectionView点击事件处理
 extension SAMComOperationController {
-
+    
     //订单管理
     fileprivate func orderManageColViewdidSelected(indexpath: IndexPath) {
         
@@ -1563,7 +2120,7 @@ extension SAMComOperationController {
         
         present(alertVC, animated: true, completion: nil)
     }
-
+    
     //待售布匹
     fileprivate func forSaleColViewdidSelected(indexpath: IndexPath) {
         let vc = SAMForSaleOrderDetailController.instance(forSaleModels: forSaleModels, selectedIndex: indexpath)
@@ -1622,7 +2179,7 @@ extension SAMComOperationController {
                 let _ = SAMHUD.showMessage("请检查网络", superView: KeyWindow!, hideDelay: SAMHUDNormalDuration, animated: true)
             })
         }
-
+        
     }
     //客户排行
     fileprivate func customerRankColViewdidSelected(indexpath: IndexPath) {
